@@ -1,0 +1,64 @@
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+
+serve(async (req) => {
+  try {
+    const payload = await req.json()
+    const record = payload.record
+
+    if (!record || record.status !== 'approved') {
+      return new Response('ok', { status: 200 })
+    }
+
+    const supabase = createClient(supabaseUrl, serviceRoleKey)
+
+    const [{ data: profile }, { data: session }] = await Promise.all([
+      supabase
+        .from('profiles')
+        .select('expo_push_token, full_name')
+        .eq('id', record.requester_id)
+        .single(),
+      supabase
+        .from('sessions')
+        .select('subject, location_name')
+        .eq('id', record.session_id)
+        .single(),
+    ])
+
+    if (profile?.expo_push_token) {
+      await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: profile.expo_push_token,
+          title: "You're in! 🎉",
+          body: `Your request for "${session?.subject}" at ${session?.location_name} was approved.`,
+          data: { sessionId: record.session_id, type: 'request_approved' },
+          sound: 'default',
+        }),
+      })
+    }
+
+    await supabase.from('messages').insert({
+      session_id: record.session_id,
+      content: `${profile?.full_name || 'Someone'} joined the session`,
+      type: 'system',
+    })
+
+    await supabase.from('notifications').insert({
+      user_id: record.requester_id,
+      type: 'request_approved',
+      title: "You're in! 🎉",
+      body: `Your request for "${session?.subject}" at ${session?.location_name} was approved.`,
+      data: { session_id: record.session_id },
+    })
+
+    return new Response('ok', { status: 200 })
+  } catch (err) {
+    console.error(err)
+    return new Response('error', { status: 500 })
+  }
+})
