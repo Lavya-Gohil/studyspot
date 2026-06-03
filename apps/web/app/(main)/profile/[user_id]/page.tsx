@@ -1,9 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { Avatar } from '@/components/profile/Avatar'
+import { ReputationCard } from '@/components/profile/ReputationCard'
 import { VerifiedBadge, UnderAgeLabel } from '@/components/ui/Badge'
 import { YEAR_LABELS } from '@studyspot/types'
-import type { YearOfStudy } from '@studyspot/types'
+import type { YearOfStudy, StudyStats } from '@studyspot/types'
 import Link from 'next/link'
 
 export default async function UserProfilePage({ params }: { params: Promise<{ user_id: string }> }) {
@@ -21,6 +22,23 @@ export default async function UserProfilePage({ params }: { params: Promise<{ us
   if (!profile) notFound()
 
   const isOwnProfile = user?.id === user_id
+
+  const { data: statsRow } = await supabase
+    .from('user_study_stats')
+    .select('*')
+    .eq('user_id', user_id)
+    .maybeSingle()
+
+  const stats: StudyStats = (statsRow as StudyStats | null) ?? {
+    user_id,
+    verified_hours: 0,
+    verified_sessions: 0,
+    on_time_count: 0,
+    approved_count: 0,
+    showed_count: 0,
+    avg_rating: null,
+    rating_count: 0,
+  }
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
@@ -82,6 +100,9 @@ export default async function UserProfilePage({ params }: { params: Promise<{ us
           </div>
         </div>
       </div>
+
+      {/* Reputation & verified hours */}
+      <ReputationCard stats={stats} isOwn={isOwnProfile} />
 
       {/* Subjects */}
       {profile.subjects && profile.subjects.length > 0 && (

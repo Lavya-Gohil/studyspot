@@ -7,17 +7,23 @@ import { VibeSelector } from './VibeSelector'
 import type { SessionVibe, SessionMode } from '@studyspot/types'
 import { SUBJECT_CATEGORIES } from '@studyspot/types'
 
-export function CreateSessionForm() {
+export function CreateSessionForm({
+  initialMode,
+  initialVibe,
+}: {
+  initialMode?: SessionMode
+  initialVibe?: SessionVibe
+} = {}) {
   const router = useRouter()
   const supabase = createClient()
 
   const [step, setStep] = useState(1)
-  const [mode, setMode] = useState<SessionMode>('in_person')
+  const [mode, setMode] = useState<SessionMode>(initialMode ?? 'in_person')
   const [locationName, setLocationName] = useState('')
   const [locationAddress, setLocationAddress] = useState('')
   const [subject, setSubject] = useState('')
   const [description, setDescription] = useState('')
-  const [vibe, setVibe] = useState<SessionVibe | null>(null)
+  const [vibe, setVibe] = useState<SessionVibe | null>(initialVibe ?? null)
   const [date, setDate] = useState('')
   const [startTime, setStartTime] = useState('')
   const [endTime, setEndTime] = useState('')
