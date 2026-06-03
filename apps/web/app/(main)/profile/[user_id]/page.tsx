@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { Avatar } from '@/components/profile/Avatar'
 import { ReputationCard } from '@/components/profile/ReputationCard'
+import { ProductivityDnaCard } from '@/components/profile/ProductivityDnaCard'
+import { computeProductivityDNA, type DnaSession } from '@/lib/dna'
 import { VerifiedBadge, UnderAgeLabel } from '@/components/ui/Badge'
 import { YEAR_LABELS } from '@studyspot/types'
 import type { YearOfStudy, StudyStats } from '@studyspot/types'
@@ -38,6 +40,28 @@ export default async function UserProfilePage({ params }: { params: Promise<{ us
     showed_count: 0,
     avg_rating: null,
     rating_count: 0,
+  }
+
+  // Productivity DNA — own profile only (private behavioural insights).
+  let dna = null
+  if (isOwnProfile) {
+    const [{ data: hosted }, { data: attended }] = await Promise.all([
+      supabase
+        .from('sessions')
+        .select('start_time, vibe, mode, spots_total')
+        .eq('host_id', user_id)
+        .neq('status', 'cancelled'),
+      supabase
+        .from('session_requests')
+        .select('session:sessions!session_id(start_time, vibe, mode, spots_total)')
+        .eq('requester_id', user_id)
+        .not('checked_in_at', 'is', null),
+    ])
+    const dnaSessions: DnaSession[] = [
+      ...(((hosted as any[]) || []) as DnaSession[]),
+      ...(((attended as any[]) || []).map((r) => r.session).filter(Boolean) as DnaSession[]),
+    ]
+    dna = computeProductivityDNA(dnaSessions)
   }
 
   return (
@@ -103,6 +127,9 @@ export default async function UserProfilePage({ params }: { params: Promise<{ us
 
       {/* Reputation & verified hours */}
       <ReputationCard stats={stats} isOwn={isOwnProfile} />
+
+      {/* Productivity DNA (own profile only) */}
+      {isOwnProfile && dna && <ProductivityDnaCard dna={dna} />}
 
       {/* Subjects */}
       {profile.subjects && profile.subjects.length > 0 && (

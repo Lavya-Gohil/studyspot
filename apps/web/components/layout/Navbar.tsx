@@ -19,6 +19,7 @@ export function Navbar() {
   const navLinks = [
     { href: '/feed', label: 'Feed' },
     { href: '/explore', label: 'Explore' },
+    { href: '/match', label: 'Match' },
     { href: '/circles', label: 'Circles' },
     { href: '/goals', label: 'Goals' },
     { href: '/notifications', label: 'Notifications' },
