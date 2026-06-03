@@ -10,28 +10,32 @@ const config: Config = {
     extend: {
       colors: {
         bg: {
-          base: '#0B0E17',
-          surface: '#121724',
-          elevated: '#1A2030',
-          subtle: '#232B3D',
+          base: 'rgb(var(--bg-base) / <alpha-value>)',
+          surface: 'rgb(var(--bg-surface) / <alpha-value>)',
+          elevated: 'rgb(var(--bg-elevated) / <alpha-value>)',
+          subtle: 'rgb(var(--bg-subtle) / <alpha-value>)',
         },
         accent: {
-          primary: '#2563EB',
-          hover: '#1D4ED8',
-          green: '#10B981',
-          amber: '#F59E0B',
-          red: '#EF4444',
+          primary: 'rgb(var(--accent-primary) / <alpha-value>)',
+          hover: 'rgb(var(--accent-hover) / <alpha-value>)',
+          green: 'rgb(var(--accent-green) / <alpha-value>)',
+          amber: 'rgb(var(--accent-amber) / <alpha-value>)',
+          red: 'rgb(var(--accent-red) / <alpha-value>)',
         },
         text: {
-          primary: '#E8EDF5',
-          secondary: '#94A3B8',
-          tertiary: '#5B6B85',
+          primary: 'rgb(var(--text-primary) / <alpha-value>)',
+          secondary: 'rgb(var(--text-secondary) / <alpha-value>)',
+          tertiary: 'rgb(var(--text-tertiary) / <alpha-value>)',
         },
         border: {
-          subtle: 'rgba(255,255,255,0.06)',
-          default: 'rgba(255,255,255,0.10)',
-          strong: 'rgba(255,255,255,0.18)',
+          subtle: 'var(--border-subtle)',
+          default: 'var(--border-default)',
+          strong: 'var(--border-strong)',
         },
+      },
+      backgroundImage: {
+        royal: 'var(--gradient-royal)',
+        'royal-soft': 'var(--gradient-royal-soft)',
       },
       fontFamily: {
         sans: ['Outfit', 'system-ui', 'sans-serif'],
@@ -39,9 +43,9 @@ const config: Config = {
         mono: ['JetBrains Mono', 'monospace'],
       },
       boxShadow: {
-        // Color-tinted, single-direction elevation (taste-skill: tinted shadows).
-        soft: '0 1px 2px rgba(8,10,20,0.4), 0 8px 24px -12px rgba(37,99,235,0.25)',
-        lift: '0 2px 4px rgba(8,10,20,0.5), 0 20px 48px -16px rgba(37,99,235,0.35)',
+        // Color-tinted, single-direction elevation; tint adapts per theme.
+        soft: '0 1px 2px rgba(8,10,20,0.10), 0 8px 24px -12px var(--shadow-tint)',
+        lift: '0 2px 4px rgba(8,10,20,0.12), 0 20px 48px -16px var(--shadow-tint)',
       },
       borderRadius: {
         sm: '6px',

@@ -9,7 +9,7 @@ export default async function ProfileSettingsPage() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('id, full_name, avatar_url, college, course, year_of_study, subjects, bio, verification_status, verification_rejected_reason')
+    .select('id, full_name, avatar_url, college, course, year_of_study, subjects, bio, verification_status, verification_rejected_reason, country, country_name, state_region, city')
     .eq('id', user.id)
     .single()
 

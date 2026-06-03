@@ -39,7 +39,7 @@ export default function LoginPage() {
   return (
     <div className="space-y-8">
       <div className="text-center space-y-2">
-        <div className="text-3xl font-bold text-accent-primary">StudySpot</div>
+        <div className="font-display text-3xl font-bold text-royal">StudySpot</div>
         <p className="text-text-secondary text-sm">Welcome back</p>
       </div>
 
@@ -86,7 +86,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={!email || !password || loading}
-          className="w-full h-11 rounded-md bg-accent-primary hover:bg-accent-hover text-white font-medium text-sm transition-colors disabled:opacity-50"
+          className="w-full h-11 rounded-md bg-royal hover:opacity-90 text-white font-semibold text-sm transition-opacity disabled:opacity-50 shadow-soft"
         >
           {loading ? 'Signing in...' : 'Sign in'}
         </button>

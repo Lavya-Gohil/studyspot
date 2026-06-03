@@ -1,5 +1,8 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { ThemeToggle } from '@/components/theme/ThemeToggle'
+import { FadeIn } from '@/components/motion/Motion'
+import { Avatar } from '@/components/profile/Avatar'
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -29,6 +32,7 @@ export default async function HomePage() {
             >
               How it works
             </Link>
+            <ThemeToggle className="mr-1" />
             {isAuthed ? (
               <Link
                 href="/feed"
@@ -58,7 +62,7 @@ export default async function HomePage() {
 
       {/* Hero */}
       <section className="ambient grain relative overflow-hidden">
-        <div className="relative z-10 mx-auto max-w-5xl px-5 pb-28 pt-24 text-center sm:pt-36">
+        <FadeIn className="relative z-10 mx-auto max-w-5xl px-5 pb-28 pt-24 text-center sm:pt-36">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border-default bg-bg-surface/70 px-3.5 py-1.5 text-xs text-text-secondary backdrop-blur">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent-green" />
             Now with live online study rooms
@@ -66,7 +70,7 @@ export default async function HomePage() {
           <h1 className="text-[clamp(2.75rem,6vw,5.25rem)] font-bold leading-[1.02] tracking-tight">
             Find your study crew.
             <br />
-            <span className="text-accent-primary">In person or online.</span>
+            <span className="text-royal">In person or online.</span>
           </h1>
           <p className="mx-auto mt-7 max-w-xl text-pretty text-base leading-relaxed text-text-secondary sm:text-lg">
             StudySpot connects students for real study sessions — at a café or library near you,
@@ -77,7 +81,7 @@ export default async function HomePage() {
             {isAuthed ? (
               <Link
                 href="/feed"
-                className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-accent-primary px-7 text-sm font-medium text-white shadow-lift transition-all hover:bg-accent-hover hover:-translate-y-0.5 active:scale-[0.98] sm:w-auto"
+                className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-royal px-7 text-sm font-medium text-white shadow-lift transition-all hover:opacity-90 hover:-translate-y-0.5 active:scale-[0.98] sm:w-auto"
               >
                 Open StudySpot
               </Link>
@@ -85,7 +89,7 @@ export default async function HomePage() {
               <>
                 <Link
                   href="/auth/signup"
-                  className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-accent-primary px-7 text-sm font-medium text-white shadow-lift transition-all hover:bg-accent-hover hover:-translate-y-0.5 active:scale-[0.98] sm:w-auto"
+                  className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-royal px-7 text-sm font-medium text-white shadow-lift transition-all hover:opacity-90 hover:-translate-y-0.5 active:scale-[0.98] sm:w-auto"
                 >
                   Get started, free
                 </Link>
@@ -101,7 +105,7 @@ export default async function HomePage() {
           <p className="mt-5 text-xs text-text-tertiary">
             Free for students · Verified profiles · No spam
           </p>
-        </div>
+        </FadeIn>
       </section>
 
       {/* Stats strip */}
@@ -122,14 +126,14 @@ export default async function HomePage() {
 
       {/* Features — bento grid */}
       <section id="features" className="mx-auto max-w-6xl px-5 py-28 sm:py-36">
-        <div className="max-w-2xl">
+        <FadeIn className="max-w-2xl">
           <h2 className="text-3xl font-bold tracking-tight sm:text-[2.75rem] sm:leading-[1.05]">
             Everything you need to study together
           </h2>
           <p className="mt-4 text-text-secondary">
             Whether you want to meet up or stay home, there is a room for you.
           </p>
-        </div>
+        </FadeIn>
 
         <div className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-6">
           {/* Large feature — online rooms */}
@@ -142,18 +146,22 @@ export default async function HomePage() {
               Join a virtual classroom where everyone sits as an avatar. See who is focused in
               real time, share a chat, and run a group timer together.
             </p>
-            {/* mini seat preview */}
+            {/* mini seat preview — a lively room */}
             <div className="mt-6 grid max-w-sm grid-cols-6 gap-2">
-              {[1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0].map((on, i) => (
-                <div
-                  key={i}
-                  className={`aspect-square rounded-lg border transition-colors ${
-                    on
-                      ? 'border-accent-primary/40 bg-accent-primary/10'
-                      : 'border-dashed border-border-subtle'
-                  }`}
-                />
-              ))}
+              {['Ana', 'Ben', '', 'Mia', 'Sam', 'Lee', '', 'Kai', 'Ivy', '', 'Noa', ''].map(
+                (n, i) => (
+                  <div
+                    key={i}
+                    className={`flex aspect-square items-center justify-center rounded-lg border ${
+                      n
+                        ? 'border-accent-primary/30 bg-accent-primary/[0.06]'
+                        : 'border-dashed border-border-subtle'
+                    }`}
+                  >
+                    {n && <Avatar userId={n} name={n} avatarUrl={null} size="sm" />}
+                  </div>
+                )
+              )}
             </div>
           </article>
 
@@ -237,16 +245,18 @@ export default async function HomePage() {
                 {SEATS.map((seat, i) => (
                   <div
                     key={i}
-                    className={`flex aspect-square flex-col items-center justify-center rounded-xl border text-2xl ${
+                    className={`flex aspect-square flex-col items-center justify-center gap-1.5 rounded-xl border ${
                       seat
-                        ? 'border-accent-primary/40 bg-accent-primary/10'
+                        ? 'border-accent-primary/40 bg-accent-primary/[0.08]'
                         : 'border-dashed border-border-subtle'
                     }`}
                   >
                     {seat ? (
                       <>
-                        <span>{seat.emoji}</span>
-                        <span className="mt-1 text-[10px] text-text-secondary">{seat.name}</span>
+                        <div className="ring-2 ring-accent-green/70 rounded-full">
+                          <Avatar userId={seat.name} name={seat.name} avatarUrl={null} size="sm" />
+                        </div>
+                        <span className="text-[10px] text-text-secondary">{seat.name}</span>
                       </>
                     ) : null}
                   </div>
@@ -288,7 +298,7 @@ export default async function HomePage() {
             </p>
             <Link
               href={isAuthed ? '/feed' : '/auth/signup'}
-              className="mt-9 inline-flex h-12 items-center justify-center rounded-lg bg-accent-primary px-8 text-sm font-medium text-white shadow-lift transition-all hover:bg-accent-hover hover:-translate-y-0.5 active:scale-[0.98]"
+              className="mt-9 inline-flex h-12 items-center justify-center rounded-lg bg-royal px-8 text-sm font-medium text-white shadow-lift transition-all hover:opacity-90 hover:-translate-y-0.5 active:scale-[0.98]"
             >
               {isAuthed ? 'Open StudySpot' : 'Create your free account'}
             </Link>
