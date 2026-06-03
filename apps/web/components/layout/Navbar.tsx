@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { ThemeToggle } from '@/components/theme/ThemeToggle'
 
 export function Navbar() {
   const pathname = usePathname()
@@ -49,9 +50,10 @@ export function Navbar() {
       </div>
 
       <div className="ml-auto flex items-center gap-2">
+        <ThemeToggle />
         <Link
           href="/sessions/create"
-          className="h-8 px-4 rounded-md bg-accent-primary hover:bg-accent-hover text-white text-sm font-medium transition-colors flex items-center"
+          className="h-8 px-4 rounded-md bg-royal hover:opacity-90 text-white text-sm font-medium transition-opacity flex items-center shadow-soft"
         >
           + Create
         </Link>

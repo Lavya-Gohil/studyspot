@@ -10,3 +10,8 @@ android
 ios
 
 .vercel
+
+# Visual-test screenshots (generated, large)
+screenshots/
+screenshots-v2/
+test-results/
