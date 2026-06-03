@@ -6,6 +6,7 @@ import { VibePill, SpotsBadge, VerifiedBadge } from '@/components/ui/Badge'
 import { formatSessionTime } from '@studyspot/utils'
 import { RequestsPanel } from './RequestsPanel'
 import { InterestButton } from './InterestButton'
+import { RateParticipants } from './RateParticipants'
 
 export default async function SessionDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -36,6 +37,40 @@ export default async function SessionDetailPage({ params }: { params: Promise<{ 
   const isLive =
     nowMs >= new Date(session.start_time).getTime() &&
     nowMs < new Date(session.end_time).getTime()
+  const hasEnded = nowMs >= new Date(session.end_time).getTime()
+  const attended = isHost || userRequest?.status === 'approved'
+
+  // For ended sessions, let attendees rate the people they studied with.
+  let rateables: { id: string; full_name: string | null; avatar_url: string | null }[] = []
+  const myRatings: Record<string, number> = {}
+  if (hasEnded && attended && user) {
+    const { data: approved } = await supabase
+      .from('session_requests')
+      .select('requester:profiles!requester_id(id, full_name, avatar_url)')
+      .eq('session_id', id)
+      .eq('status', 'approved')
+
+    if (session.host_id !== user.id) {
+      rateables.push({
+        id: session.host_id,
+        full_name: session.host_name,
+        avatar_url: session.host_avatar,
+      })
+    }
+    for (const row of (approved as any[]) || []) {
+      const p = row.requester
+      if (p && p.id !== user.id) {
+        rateables.push({ id: p.id, full_name: p.full_name, avatar_url: p.avatar_url })
+      }
+    }
+
+    const { data: rs } = await supabase
+      .from('session_ratings')
+      .select('ratee_id, rating')
+      .eq('session_id', id)
+      .eq('rater_id', user.id)
+    for (const r of (rs as any[]) || []) myRatings[r.ratee_id] = r.rating
+  }
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
@@ -162,6 +197,11 @@ export default async function SessionDetailPage({ params }: { params: Promise<{ 
             Open group chat →
           </Link>
         ))}
+
+      {/* Rate co-attendees after the session ends */}
+      {hasEnded && attended && rateables.length > 0 && (
+        <RateParticipants sessionId={id} participants={rateables} initialRatings={myRatings} />
+      )}
     </div>
   )
 }

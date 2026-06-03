@@ -134,6 +134,43 @@ export interface Notification {
   created_at: string
 }
 
+export interface StudyStats {
+  user_id: string
+  verified_hours: number
+  verified_sessions: number
+  on_time_count: number
+  approved_count: number
+  showed_count: number
+  avg_rating: number | null
+  rating_count: number
+}
+
+export interface SessionRating {
+  id: string
+  session_id: string
+  rater_id: string
+  ratee_id: string
+  rating: number
+  created_at: string
+}
+
+export type ReputationLevel = 'new' | 'building' | 'reliable' | 'trusted' | 'exemplary'
+
+export interface ReputationComponent {
+  label: string
+  /** 0–100 sub-score, or null when there's no data for it yet */
+  value: number | null
+  detail: string
+}
+
+export interface Reputation {
+  /** 0–100, or null for brand-new users with no track record */
+  score: number | null
+  level: ReputationLevel
+  label: string
+  components: ReputationComponent[]
+}
+
 export interface FeedFilters {
   vibe?: SessionVibe[]
   subjects?: string[]

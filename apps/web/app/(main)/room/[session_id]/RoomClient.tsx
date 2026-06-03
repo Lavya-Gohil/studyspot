@@ -292,6 +292,14 @@ export function RoomClient({
           </button>
         </div>
 
+        {/* Silent study banner */}
+        {session.vibe === 'silent' && (
+          <div className="shrink-0 border-b border-border-subtle bg-accent-primary/5 px-4 py-2 text-center text-xs text-text-secondary">
+            🔇 Silent study — mics off, chat quiet. Just focus together and keep each other
+            accountable.
+          </div>
+        )}
+
         {/* Seats */}
         <div className="min-h-0 flex-1 overflow-y-auto p-5">
           <div className="mx-auto grid max-w-2xl grid-cols-4 gap-3 sm:gap-4">

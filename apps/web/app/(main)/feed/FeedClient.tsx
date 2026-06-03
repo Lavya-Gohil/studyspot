@@ -127,7 +127,7 @@ export function FeedClient({ userCountry, userCountryName, userFullName }: Props
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold text-text-primary">
             {userFullName ? `Hey, ${userFullName.split(' ')[0]}` : 'Feed'}
@@ -136,6 +136,12 @@ export function FeedClient({ userCountry, userCountryName, userFullName }: Props
             <p className="text-text-secondary text-sm">Sessions in {userCountryName}</p>
           )}
         </div>
+        <Link
+          href="/sessions/create?mode=online&vibe=silent"
+          className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md border border-border-default bg-bg-elevated px-3 text-sm font-medium text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
+        >
+          🔇 Silent study
+        </Link>
       </div>
 
       {/* Filter chips */}
