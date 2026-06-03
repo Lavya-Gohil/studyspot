@@ -171,6 +171,63 @@ export interface Reputation {
   components: ReputationComponent[]
 }
 
+export type CircleRole = 'owner' | 'admin' | 'member'
+
+export interface Circle {
+  id: string
+  owner_id: string
+  name: string
+  description: string | null
+  topic: string | null
+  emoji: string | null
+  is_private: boolean
+  join_code: string
+  member_count: number
+  created_at: string
+  updated_at: string
+  // joined / computed
+  is_member?: boolean
+  my_role?: CircleRole
+}
+
+export interface CircleMember {
+  id: string
+  circle_id: string
+  user_id: string
+  role: CircleRole
+  created_at: string
+  member?: Pick<Profile, 'id' | 'full_name' | 'avatar_url' | 'college' | 'verification_status'>
+}
+
+export interface CirclePost {
+  id: string
+  circle_id: string
+  author_id: string | null
+  content: string
+  created_at: string
+  author?: Pick<Profile, 'id' | 'full_name' | 'avatar_url'>
+}
+
+export type GoalType = 'hours' | 'sessions' | 'custom'
+export type GoalStatus = 'active' | 'completed' | 'failed' | 'archived'
+
+export interface Goal {
+  id: string
+  user_id: string
+  title: string
+  description: string | null
+  type: GoalType
+  target: number
+  baseline: number
+  manual_progress: number
+  unit: string | null
+  deadline: string | null
+  status: GoalStatus
+  is_public: boolean
+  created_at: string
+  updated_at: string
+}
+
 export interface FeedFilters {
   vibe?: SessionVibe[]
   subjects?: string[]
