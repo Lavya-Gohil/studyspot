@@ -385,7 +385,7 @@ export function RoomClient({
               </button>
               <button
                 onClick={timer.running ? pauseTimer : startTimer}
-                className="h-9 rounded-md bg-accent-primary px-5 text-sm font-medium text-white hover:bg-accent-hover"
+                className="h-9 rounded-md bg-accent-primary px-5 text-sm font-medium text-accent-fg hover:bg-accent-hover"
               >
                 {timer.running ? 'Pause' : 'Start'}
               </button>
@@ -429,7 +429,7 @@ export function RoomClient({
                 <div
                   className={`max-w-[85%] rounded-xl px-3 py-1.5 text-sm ${
                     isOwn
-                      ? 'rounded-br-sm bg-accent-primary text-white'
+                      ? 'rounded-br-sm bg-accent-primary text-accent-fg'
                       : 'rounded-bl-sm bg-bg-elevated text-text-primary'
                   }`}
                 >
@@ -459,7 +459,7 @@ export function RoomClient({
             <button
               type="submit"
               disabled={!input.trim()}
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent-primary text-white hover:bg-accent-hover disabled:opacity-50"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent-primary text-accent-fg hover:bg-accent-hover disabled:opacity-50"
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <line x1="22" y1="2" x2="11" y2="13" />

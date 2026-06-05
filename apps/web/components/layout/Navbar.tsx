@@ -1,9 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
 
 export function Navbar() {
@@ -23,47 +22,52 @@ export function Navbar() {
     { href: '/match', label: 'Match' },
     { href: '/circles', label: 'Circles' },
     { href: '/goals', label: 'Goals' },
-    { href: '/notifications', label: 'Notifications' },
+    { href: '/notifications', label: 'Alerts' },
     { href: '/profile/settings', label: 'Profile' },
   ]
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 h-14 bg-bg-base/80 backdrop-blur border-b border-border-subtle flex items-center px-4 md:px-8">
-      <Link href="/feed" className="text-lg font-bold text-accent-primary mr-8 shrink-0">
-        StudySpot
-      </Link>
-
-      <div className="hidden md:flex items-center gap-1 flex-1">
-        {navLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
-              pathname.startsWith(link.href)
-                ? 'bg-accent-primary/10 text-accent-primary'
-                : 'text-text-secondary hover:text-text-primary hover:bg-bg-subtle'
-            }`}
-          >
-            {link.label}
-          </Link>
-        ))}
-      </div>
-
-      <div className="ml-auto flex items-center gap-2">
-        <ThemeToggle />
-        <Link
-          href="/sessions/create"
-          className="h-8 px-4 rounded-md bg-royal hover:opacity-90 text-white text-sm font-medium transition-opacity flex items-center shadow-soft"
-        >
-          + Create
+    <header className="fixed inset-x-0 top-3 z-50 px-3 sm:top-4">
+      <nav className="glass-strong glass-sheen mx-auto flex h-14 max-w-6xl items-center rounded-full pl-5 pr-2">
+        <Link href="/feed" className="mr-6 shrink-0 font-display text-[17px] font-bold tracking-tight">
+          Study<span className="text-text-tertiary">Spot</span>
         </Link>
-        <button
-          onClick={handleLogout}
-          className="h-8 px-3 rounded-md text-text-secondary hover:text-text-primary hover:bg-bg-subtle text-sm transition-colors"
-        >
-          Sign out
-        </button>
-      </div>
-    </nav>
+
+        <div className="hidden flex-1 items-center gap-0.5 md:flex">
+          {navLinks.map((link) => {
+            const active = pathname.startsWith(link.href)
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`rounded-full px-3 py-1.5 text-sm transition-colors ${
+                  active
+                    ? 'bg-accent-primary/10 font-semibold text-accent-primary'
+                    : 'text-text-secondary hover:text-text-primary'
+                }`}
+              >
+                {link.label}
+              </Link>
+            )
+          })}
+        </div>
+
+        <div className="ml-auto flex items-center gap-1.5">
+          <ThemeToggle />
+          <Link
+            href="/sessions/create"
+            className="inline-flex h-9 items-center rounded-full bg-accent-primary px-4 text-sm font-semibold text-accent-fg transition-all hover:bg-accent-hover active:scale-[0.98]"
+          >
+            + Create
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="hidden h-9 items-center rounded-full px-3 text-sm text-text-secondary transition-colors hover:text-text-primary sm:inline-flex"
+          >
+            Sign out
+          </button>
+        </div>
+      </nav>
+    </header>
   )
 }

@@ -104,7 +104,7 @@ export default async function SessionDetailPage({ params }: { params: Promise<{ 
         <div className="flex items-start gap-2">
           {session.mode === 'online' ? (
             <>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" className="shrink-0 mt-0.5">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 mt-0.5 text-accent-primary">
                 <rect x="2" y="3" width="20" height="14" rx="2"/>
                 <path d="M8 21h8M12 17v4"/>
               </svg>
@@ -119,7 +119,7 @@ export default async function SessionDetailPage({ params }: { params: Promise<{ 
             </>
           ) : (
             <>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" className="shrink-0 mt-0.5">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 mt-0.5 text-accent-primary">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                 <circle cx="12" cy="10" r="3"/>
               </svg>
@@ -181,7 +181,7 @@ export default async function SessionDetailPage({ params }: { params: Promise<{ 
           <div className="space-y-1.5">
             <Link
               href={`/room/${id}`}
-              className="w-full h-11 rounded-md bg-accent-primary text-white font-medium text-sm flex items-center justify-center hover:bg-accent-hover transition-colors"
+              className="w-full h-11 rounded-md bg-accent-primary text-accent-fg font-medium text-sm flex items-center justify-center hover:bg-accent-hover transition-colors"
             >
               Enter study room →
             </Link>

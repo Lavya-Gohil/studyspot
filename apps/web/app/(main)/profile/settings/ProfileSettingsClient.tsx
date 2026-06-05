@@ -213,7 +213,7 @@ export function ProfileSettingsClient({ profile }: { profile: any }) {
         </Link>
       )}
 
-      <button onClick={handleSave} disabled={loading} className="w-full h-11 rounded-md bg-accent-primary hover:bg-accent-hover text-white font-medium text-sm transition-colors disabled:opacity-50">
+      <button onClick={handleSave} disabled={loading} className="w-full h-11 rounded-md bg-accent-primary hover:bg-accent-hover text-accent-fg font-medium text-sm transition-colors disabled:opacity-50">
         {saved ? 'Saved ✓' : loading ? 'Saving...' : 'Save changes'}
       </button>
     </div>

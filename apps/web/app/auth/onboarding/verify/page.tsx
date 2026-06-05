@@ -162,7 +162,7 @@ export default function VerifyPage() {
             type="button"
             onClick={handleUpload}
             disabled={uploading}
-            className="w-full h-11 rounded-md bg-accent-primary hover:bg-accent-hover text-white font-medium text-sm transition-colors disabled:opacity-50"
+            className="w-full h-11 rounded-md bg-accent-primary hover:bg-accent-hover text-accent-fg font-medium text-sm transition-colors disabled:opacity-50"
           >
             {uploading ? 'Uploading...' : 'Upload & Continue'}
           </button>

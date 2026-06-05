@@ -85,7 +85,7 @@ export function CircleDetailClient({
           <button
             onClick={join}
             disabled={busy}
-            className="inline-flex h-9 items-center rounded-md bg-accent-primary px-5 text-sm font-medium text-white transition-all hover:bg-accent-hover active:scale-[0.98] disabled:opacity-50"
+            className="inline-flex h-9 items-center rounded-md bg-accent-primary px-5 text-sm font-medium text-accent-fg transition-all hover:bg-accent-hover active:scale-[0.98] disabled:opacity-50"
           >
             Join circle
           </button>
@@ -122,7 +122,7 @@ export function CircleDetailClient({
             <button
               type="submit"
               disabled={!input.trim()}
-              className="h-11 shrink-0 rounded-md bg-accent-primary px-4 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
+              className="h-11 shrink-0 rounded-md bg-accent-primary px-4 text-sm font-medium text-accent-fg transition-colors hover:bg-accent-hover disabled:opacity-50"
             >
               Post
             </button>

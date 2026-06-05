@@ -14,4 +14,5 @@ ios
 # Visual-test screenshots (generated, large)
 screenshots/
 screenshots-v2/
+screenshots-v3/
 test-results/

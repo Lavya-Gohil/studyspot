@@ -18,6 +18,7 @@ const config: Config = {
         accent: {
           primary: 'rgb(var(--accent-primary) / <alpha-value>)',
           hover: 'rgb(var(--accent-hover) / <alpha-value>)',
+          fg: 'rgb(var(--accent-fg) / <alpha-value>)',
           green: 'rgb(var(--accent-green) / <alpha-value>)',
           amber: 'rgb(var(--accent-amber) / <alpha-value>)',
           red: 'rgb(var(--accent-red) / <alpha-value>)',
@@ -43,9 +44,10 @@ const config: Config = {
         mono: ['JetBrains Mono', 'monospace'],
       },
       boxShadow: {
-        // Color-tinted, single-direction elevation; tint adapts per theme.
-        soft: '0 1px 2px rgba(8,10,20,0.10), 0 8px 24px -12px var(--shadow-tint)',
-        lift: '0 2px 4px rgba(8,10,20,0.12), 0 20px 48px -16px var(--shadow-tint)',
+        // Neutral, single-direction elevation; tint adapts per theme.
+        soft: '0 1px 2px rgba(0,0,0,0.12), 0 8px 24px -12px var(--shadow-tint)',
+        lift: '0 2px 4px rgba(0,0,0,0.14), 0 24px 56px -16px var(--shadow-tint)',
+        glass: '0 8px 40px -12px rgba(0,0,0,0.5)',
       },
       borderRadius: {
         sm: '6px',

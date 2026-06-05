@@ -84,7 +84,7 @@ export function InterestButton({
           <button
             onClick={sendRequest}
             disabled={loading}
-            className="flex-1 h-10 rounded-md bg-accent-primary hover:bg-accent-hover text-white font-medium text-sm transition-colors disabled:opacity-50"
+            className="flex-1 h-10 rounded-md bg-accent-primary hover:bg-accent-hover text-accent-fg font-medium text-sm transition-colors disabled:opacity-50"
           >
             {loading ? 'Sending...' : 'Send request'}
           </button>
@@ -97,7 +97,7 @@ export function InterestButton({
     <button
       onClick={() => setShowMessage(true)}
       disabled={spotsRemaining === 0}
-      className="w-full h-11 rounded-md bg-accent-primary hover:bg-accent-hover text-white font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      className="w-full h-11 rounded-md bg-accent-primary hover:bg-accent-hover text-accent-fg font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {spotsRemaining === 0 ? 'Session full' : 'Interested'}
     </button>

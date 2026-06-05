@@ -204,7 +204,7 @@ export function CreateSessionForm({
             type="button"
             onClick={() => setStep(2)}
             disabled={!step1Valid}
-            className="w-full h-11 rounded-md bg-accent-primary hover:bg-accent-hover text-white font-medium text-sm transition-colors disabled:opacity-50"
+            className="w-full h-11 rounded-md bg-accent-primary hover:bg-accent-hover text-accent-fg font-medium text-sm transition-colors disabled:opacity-50"
           >
             Next →
           </button>
@@ -324,7 +324,7 @@ export function CreateSessionForm({
               type="button"
               onClick={() => setStep(3)}
               disabled={!step2Valid}
-              className="flex-1 h-11 rounded-md bg-accent-primary hover:bg-accent-hover text-white font-medium text-sm transition-colors disabled:opacity-50"
+              className="flex-1 h-11 rounded-md bg-accent-primary hover:bg-accent-hover text-accent-fg font-medium text-sm transition-colors disabled:opacity-50"
             >
               Preview →
             </button>
@@ -366,7 +366,7 @@ export function CreateSessionForm({
               type="button"
               onClick={handleSubmit}
               disabled={loading}
-              className="flex-1 h-11 rounded-md bg-accent-primary hover:bg-accent-hover text-white font-medium text-sm transition-colors disabled:opacity-50"
+              className="flex-1 h-11 rounded-md bg-accent-primary hover:bg-accent-hover text-accent-fg font-medium text-sm transition-colors disabled:opacity-50"
             >
               {loading ? 'Posting...' : 'Post session →'}
             </button>
