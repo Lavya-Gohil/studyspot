@@ -162,7 +162,7 @@ export function ChatClient({ sessionId, session, currentUser }: Props) {
                 <div
                   className={`px-3.5 py-2 rounded-xl text-sm ${
                     isOwn
-                      ? 'bg-accent-primary text-white rounded-br-sm'
+                      ? 'bg-accent-primary text-accent-fg rounded-br-sm'
                       : 'bg-bg-elevated text-text-primary rounded-bl-sm'
                   }`}
                 >
@@ -190,7 +190,7 @@ export function ChatClient({ sessionId, session, currentUser }: Props) {
           <button
             type="submit"
             disabled={!input.trim() || sending}
-            className="w-10 h-10 rounded-full bg-accent-primary hover:bg-accent-hover text-white flex items-center justify-center disabled:opacity-50 shrink-0"
+            className="w-10 h-10 rounded-full bg-accent-primary hover:bg-accent-hover text-accent-fg flex items-center justify-center disabled:opacity-50 shrink-0"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>

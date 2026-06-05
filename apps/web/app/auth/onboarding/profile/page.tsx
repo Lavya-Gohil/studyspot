@@ -233,7 +233,7 @@ export default function ProfileSetupPage() {
         type="button"
         onClick={handleFinish}
         disabled={loading}
-        className="w-full h-11 rounded-md bg-accent-primary hover:bg-accent-hover text-white font-medium text-sm transition-colors disabled:opacity-50"
+        className="w-full h-11 rounded-md bg-accent-primary hover:bg-accent-hover text-accent-fg font-medium text-sm transition-colors disabled:opacity-50"
       >
         {loading ? 'Finishing setup...' : 'Finish setup →'}
       </button>

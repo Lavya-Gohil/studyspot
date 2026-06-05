@@ -183,7 +183,7 @@ export function FeedClient({ userCountry, userCountryName, userFullName }: Props
           <p className="text-text-secondary text-sm">Be the first to create one.</p>
           <Link
             href="/sessions/create"
-            className="inline-flex h-10 items-center justify-center rounded-md bg-accent-primary px-6 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
+            className="inline-flex h-10 items-center justify-center rounded-md bg-accent-primary px-6 text-sm font-medium text-accent-fg transition-colors hover:bg-accent-hover"
           >
             Create a session
           </Link>

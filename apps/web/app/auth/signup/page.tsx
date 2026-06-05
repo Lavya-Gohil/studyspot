@@ -88,7 +88,7 @@ export default function SignupPage() {
         <button
           type="submit"
           disabled={!isValid || loading}
-          className="w-full h-11 rounded-md bg-royal hover:opacity-90 text-white font-semibold text-sm transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-soft"
+          className="w-full h-11 rounded-md bg-royal hover:opacity-90 text-accent-fg font-semibold text-sm transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-soft"
         >
           {loading ? 'Creating account...' : 'Create account'}
         </button>

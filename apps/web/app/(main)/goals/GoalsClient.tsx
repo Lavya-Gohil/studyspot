@@ -92,7 +92,7 @@ export function GoalsClient({ initialGoals, stats, userId }: Props) {
         </div>
         <button
           onClick={() => setShowCreate((v) => !v)}
-          className="inline-flex h-9 shrink-0 items-center rounded-md bg-accent-primary px-4 text-sm font-medium text-white transition-all hover:bg-accent-hover active:scale-[0.98]"
+          className="inline-flex h-9 shrink-0 items-center rounded-md bg-accent-primary px-4 text-sm font-medium text-accent-fg transition-all hover:bg-accent-hover active:scale-[0.98]"
         >
           {showCreate ? 'Close' : '+ New goal'}
         </button>
@@ -162,7 +162,7 @@ export function GoalsClient({ initialGoals, stats, userId }: Props) {
           <button
             onClick={createGoal}
             disabled={creating || title.trim().length < 2}
-            className="h-11 w-full rounded-md bg-accent-primary text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
+            className="h-11 w-full rounded-md bg-accent-primary text-sm font-medium text-accent-fg transition-colors hover:bg-accent-hover disabled:opacity-50"
           >
             {creating ? 'Creating…' : 'Commit to goal'}
           </button>
