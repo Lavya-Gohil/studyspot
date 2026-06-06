@@ -41,6 +41,7 @@ const config: Config = {
       fontFamily: {
         sans: ['Outfit', 'system-ui', 'sans-serif'],
         display: ['Space Grotesk', 'Outfit', 'system-ui', 'sans-serif'],
+        serif: ['Instrument Serif', 'Georgia', 'serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       boxShadow: {

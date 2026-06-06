@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
@@ -8,6 +9,12 @@ import { ThemeToggle } from '@/components/theme/ThemeToggle'
 export function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
+  const [open, setOpen] = useState(false)
+
+  // Close the mobile menu whenever the route changes
+  useEffect(() => {
+    setOpen(false)
+  }, [pathname])
 
   async function handleLogout() {
     const supabase = createClient()
@@ -58,16 +65,65 @@ export function Navbar() {
             href="/sessions/create"
             className="inline-flex h-9 items-center rounded-full bg-accent-primary px-4 text-sm font-semibold text-accent-fg transition-all hover:bg-accent-hover active:scale-[0.98]"
           >
-            + Create
+            <span className="sm:hidden">+</span>
+            <span className="hidden sm:inline">+ Create</span>
           </Link>
           <button
             onClick={handleLogout}
-            className="hidden h-9 items-center rounded-full px-3 text-sm text-text-secondary transition-colors hover:text-text-primary sm:inline-flex"
+            className="hidden h-9 items-center rounded-full px-3 text-sm text-text-secondary transition-colors hover:text-text-primary md:inline-flex"
+          >
+            Sign out
+          </button>
+
+          {/* Mobile menu toggle */}
+          <button
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+            className="flex h-9 w-9 items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-bg-subtle hover:text-text-primary md:hidden"
+          >
+            {open ? (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M3 6h18M3 12h18M3 18h18" />
+              </svg>
+            )}
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile menu sheet */}
+      {open && (
+        <div className="glass-strong glass-sheen mx-auto mt-2 max-w-6xl overflow-hidden rounded-3xl p-2 md:hidden">
+          <div className="grid grid-cols-2 gap-1">
+            {navLinks.map((link) => {
+              const active = pathname.startsWith(link.href)
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`rounded-2xl px-4 py-3 text-sm transition-colors ${
+                    active
+                      ? 'bg-accent-primary/10 font-semibold text-accent-primary'
+                      : 'text-text-secondary hover:bg-bg-subtle hover:text-text-primary'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              )
+            })}
+          </div>
+          <button
+            onClick={handleLogout}
+            className="mt-1 w-full rounded-2xl px-4 py-3 text-left text-sm text-text-secondary transition-colors hover:bg-bg-subtle hover:text-text-primary"
           >
             Sign out
           </button>
         </div>
-      </nav>
+      )}
     </header>
   )
 }

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import { FadeIn, Stagger, StaggerItem } from '@/components/motion/Motion'
+import { Avatar } from '@/components/profile/Avatar'
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -53,16 +54,16 @@ export default async function HomePage() {
           <div className="aurora right-[-10%] top-[8%] h-[24rem] w-[24rem]" style={{ animationDelay: '-6s' }} />
         </div>
 
-        <FadeIn className="relative z-10 mx-auto max-w-4xl px-5 pb-24 pt-36 text-center sm:pt-44">
+        <FadeIn className="relative z-10 mx-auto max-w-4xl px-5 pt-36 text-center sm:pt-44">
           <span className="glass mb-7 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs text-text-secondary">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent-primary" />
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent-primary" />
             Study with people who actually show up
           </span>
 
-          <h1 className="text-balance text-[clamp(2.9rem,8vw,5.75rem)] font-bold leading-[0.98] tracking-[-0.04em]">
+          <h1 className="text-balance text-[clamp(2.9rem,8vw,5.75rem)] font-bold leading-[0.95] tracking-[-0.04em]">
             Stop studying
             <br />
-            <span className="text-royal">alone.</span>
+            <span className="hl">alone.</span>
           </h1>
 
           <p className="mx-auto mt-7 max-w-xl text-pretty text-base leading-relaxed text-text-secondary sm:text-lg">
@@ -73,12 +74,12 @@ export default async function HomePage() {
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
             {isAuthed ? (
               <Link href="/feed" className="btn-accent-lg w-full sm:w-auto">
-                Open StudySpot
+                Open StudySpot →
               </Link>
             ) : (
               <>
                 <Link href="/auth/signup" className="btn-accent-lg w-full sm:w-auto">
-                  Get started, free
+                  Get started, free →
                 </Link>
                 <Link href="/auth/login" className="btn-glass-lg w-full sm:w-auto">
                   I have an account
@@ -91,31 +92,18 @@ export default async function HomePage() {
           </p>
         </FadeIn>
 
-        {/* Stats strip */}
-        <div className="relative z-10 mx-auto max-w-3xl px-5 pb-24">
-          <div className="glass grid grid-cols-3 divide-x divide-[var(--border-subtle)] overflow-hidden rounded-2xl">
-            {[
-              { value: 'Six vibes', label: 'Silent, Pomodoro, coding & more' },
-              { value: 'Verified', label: 'Real students, every time' },
-              { value: 'Accountable', label: 'Goals, circles & streaks' },
-            ].map((s) => (
-              <div key={s.value} className="px-3 py-7 text-center">
-                <div className="font-display text-base font-bold sm:text-xl">{s.value}</div>
-                <div className="mt-1.5 text-[11px] leading-snug text-text-secondary sm:text-xs">{s.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Live map + sessions panel */}
+        <FadeIn delay={0.1} className="relative z-10 mx-auto mt-16 max-w-4xl px-5 pb-24">
+          <MapPanel />
+        </FadeIn>
       </section>
 
       {/* Features — bento grid */}
       <section id="features" className="mx-auto max-w-6xl px-5 py-24 sm:py-32">
         <FadeIn className="max-w-2xl">
-          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-text-tertiary">
-            Everything you need
-          </span>
-          <h2 className="mt-3 text-[clamp(2rem,4.5vw,3.25rem)] font-bold leading-[1.02] tracking-[-0.03em]">
-            Built for studying together.
+          <span className="eyebrow">Everything you need</span>
+          <h2 className="mt-4 text-[clamp(2rem,4.5vw,3.25rem)] font-bold leading-[1.0] tracking-[-0.03em]">
+            Built for studying <span className="hl">together.</span>
           </h2>
           <p className="mt-4 max-w-md text-text-secondary">
             Find your people, lock in a vibe, and hold each other to it.
@@ -123,9 +111,9 @@ export default async function HomePage() {
         </FadeIn>
 
         <Stagger className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-6">
-          {/* Large feature */}
+          {/* Large feature with mini map */}
           <StaggerItem className="sm:col-span-4 sm:row-span-2">
-            <article className="glass glass-sheen group relative h-full overflow-hidden rounded-3xl p-7 transition-transform duration-300 hover:-translate-y-1">
+            <article className="glass glass-sheen group relative flex h-full flex-col overflow-hidden rounded-3xl p-7 transition-transform duration-300 hover:-translate-y-1">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-primary/10 text-accent-primary">
                 <IconPin />
               </div>
@@ -134,16 +122,19 @@ export default async function HomePage() {
                 Browse real study sessions at cafés, libraries, and campuses around you — or host
                 your own and set the time, place, and vibe.
               </p>
-              {/* mini location chips */}
-              <div className="mt-7 flex flex-wrap gap-2">
+              <div className="mt-5 flex flex-wrap gap-2">
                 {['Central Library', 'Bean & Brew', 'CS Building', 'Quad Lawn', 'Co-work Loft'].map((p) => (
-                  <span
-                    key={p}
-                    className="glass rounded-full px-3.5 py-1.5 text-xs text-text-secondary"
-                  >
+                  <span key={p} className="glass rounded-full px-3.5 py-1.5 text-xs text-text-secondary">
                     {p}
                   </span>
                 ))}
+              </div>
+              <div className="map-grid relative mt-6 grow overflow-hidden rounded-2xl border border-border-subtle bg-bg-base/40">
+                <MapRoads />
+                <Pin className="left-[22%] top-[34%]" />
+                <Pin className="left-[58%] top-[58%]" dot />
+                <Pin className="left-[72%] top-[28%]" />
+                <Pin className="left-[42%] top-[70%]" />
               </div>
             </article>
           </StaggerItem>
@@ -166,19 +157,18 @@ export default async function HomePage() {
       {/* How it works */}
       <section id="how" className="mx-auto max-w-5xl px-5 py-24 sm:py-32">
         <FadeIn>
-          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-text-tertiary">
-            How it works
-          </span>
-          <h2 className="mt-3 text-[clamp(2rem,4.5vw,3rem)] font-bold tracking-[-0.03em]">
-            Three steps to focus.
+          <span className="eyebrow">How it works</span>
+          <h2 className="mt-4 text-[clamp(2rem,4.5vw,3rem)] font-bold tracking-[-0.03em]">
+            Three steps to <span className="hl">focus.</span>
           </h2>
         </FadeIn>
         <Stagger className="mt-14 grid gap-4 sm:grid-cols-3">
           {STEPS.map((step, i) => (
             <StaggerItem key={step.title}>
               <div className="glass glass-sheen h-full rounded-2xl p-6">
-                <div className="font-mono text-sm text-text-tertiary tnum">0{i + 1}</div>
-                <div className="mt-3 h-px w-10 bg-accent-primary/40" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-primary/10 font-mono text-sm font-semibold text-accent-primary tnum">
+                  {i + 1}
+                </div>
                 <h3 className="mt-5 font-display text-lg font-bold tracking-tight">{step.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-text-secondary">{step.body}</p>
               </div>
@@ -192,8 +182,8 @@ export default async function HomePage() {
         <FadeIn>
           <div className="ambient grain glass-strong glass-sheen relative overflow-hidden rounded-[2rem] px-6 py-16 text-center sm:py-24">
             <div className="relative z-10">
-              <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[1.02] tracking-[-0.03em]">
-                Ready to find your crew?
+              <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[1.0] tracking-[-0.03em]">
+                Ready to find your <span className="hl">crew?</span>
               </h2>
               <p className="mx-auto mt-4 max-w-md text-text-secondary">
                 Join StudySpot and study with people who actually show up.
@@ -202,36 +192,22 @@ export default async function HomePage() {
                 href={isAuthed ? '/feed' : '/auth/signup'}
                 className="btn-accent-lg mt-9 inline-flex"
               >
-                {isAuthed ? 'Open StudySpot' : 'Create your free account'}
+                {isAuthed ? 'Open StudySpot →' : 'Create your free account →'}
               </Link>
+              <p className="mt-6 text-xs text-text-tertiary">
+                Free for students · No credit card · Verified profiles
+              </p>
             </div>
           </div>
         </FadeIn>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border-subtle">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 py-9 text-sm text-text-tertiary sm:flex-row">
-          <span className="font-display font-bold">
-            Study<span className="text-text-tertiary">Spot</span>
-          </span>
-          <div className="flex gap-6">
-            <Link href="#features" className="transition-colors hover:text-text-secondary">
-              Features
-            </Link>
-            <Link href="/auth/login" className="transition-colors hover:text-text-secondary">
-              Log in
-            </Link>
-            <Link href="/auth/signup" className="transition-colors hover:text-text-secondary">
-              Sign up
-            </Link>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </main>
   )
 }
 
+/* ============================== Nav ============================== */
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     <Link
@@ -243,15 +219,143 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   )
 }
 
-function FeatureCard({
-  icon,
+/* ========================= Map + sessions ======================= */
+function MapPanel() {
+  return (
+    <div className="glass-strong glass-sheen overflow-hidden rounded-[1.75rem] p-2 shadow-glass">
+      {/* toolbar */}
+      <div className="flex items-center justify-between gap-3 px-3 py-2.5">
+        <div className="glass flex items-center gap-2 rounded-full px-3.5 py-2 text-sm text-text-tertiary">
+          <IconSearch />
+          <span>Sessions near downtown</span>
+        </div>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-primary/10 px-3 py-1.5 text-xs font-semibold text-accent-primary">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent-primary" />
+          Near you
+        </span>
+      </div>
+
+      {/* map canvas */}
+      <div className="map-grid relative h-56 overflow-hidden rounded-2xl border border-border-subtle bg-bg-base/40 sm:h-72">
+        <MapRoads />
+        <Pin className="left-[28%] top-[38%]" label="Calc II" />
+        <Pin className="left-[47%] top-[62%]" dot />
+        <Pin className="left-[64%] top-[28%]" label="CS lock-in" />
+        <Pin className="left-[55%] top-[72%]" />
+      </div>
+
+      {/* session rows */}
+      <div className="mt-2 space-y-2 p-1">
+        {SESSIONS.map((s) => (
+          <SessionRow key={s.title} {...s} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function SessionRow({
   title,
-  body,
+  when,
+  place,
+  vibe,
+  crew,
+  status,
+  join,
+}: (typeof SESSIONS)[number]) {
+  return (
+    <div className="glass flex items-center justify-between gap-4 rounded-2xl px-4 py-3.5 transition-colors hover:border-[var(--border-strong)]">
+      <div className="min-w-0">
+        <div className="flex items-center gap-2">
+          <span className="truncate font-display text-[15px] font-bold tracking-tight">{title}</span>
+          <span className="shrink-0 rounded-full border border-border-default px-2 py-0.5 text-[11px] text-text-secondary">
+            {vibe}
+          </span>
+        </div>
+        <div className="mt-0.5 truncate text-xs text-text-tertiary">
+          {when} · {place}
+        </div>
+        <div className="mt-2">
+          <AvatarStack people={crew} size="xs" />
+        </div>
+      </div>
+      <div className="shrink-0 text-right">
+        {join ? (
+          <span className="inline-flex h-8 items-center rounded-full bg-accent-primary px-4 text-xs font-semibold text-accent-fg">
+            Join
+          </span>
+        ) : (
+          <span className="text-xs font-semibold text-text-secondary">{status}</span>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function MapRoads() {
+  return (
+    <svg className="absolute inset-0 h-full w-full text-[var(--border-default)]" preserveAspectRatio="none" viewBox="0 0 400 200" fill="none">
+      <path d="M-20 70 C 90 50, 150 130, 260 110 S 420 80, 440 95" stroke="currentColor" strokeWidth="2" />
+      <path d="M120 -10 C 130 60, 90 120, 140 210" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
+      <path d="M300 -10 C 290 70, 330 120, 300 210" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
+    </svg>
+  )
+}
+
+function Pin({ className = '', label, dot }: { className?: string; label?: string; dot?: boolean }) {
+  return (
+    <div className={`absolute ${className}`}>
+      <div className="relative flex flex-col items-center">
+        {label && (
+          <span className="glass-strong mb-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-semibold">
+            {label}
+          </span>
+        )}
+        <span className="relative flex h-3 w-3 items-center justify-center">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-primary/60" />
+          {dot ? (
+            <span className="relative h-2.5 w-2.5 rounded-full bg-accent-primary ring-2 ring-bg-base" />
+          ) : (
+            <span className="relative text-accent-primary">
+              <IconMapPin />
+            </span>
+          )}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+/* ========================= Avatar stack ========================= */
+function AvatarStack({
+  people,
+  size = 'xs',
+  extra,
 }: {
-  icon: React.ReactNode
-  title: string
-  body: string
+  people: { id: string; name: string }[]
+  size?: 'xs' | 'sm'
+  extra?: string
 }) {
+  return (
+    <div className="flex items-center">
+      <div className="flex -space-x-2">
+        {people.map((p) => (
+          <span key={p.id} className="rounded-full ring-2 ring-bg-base">
+            <Avatar userId={p.id} name={p.name} avatarUrl={null} size={size} />
+          </span>
+        ))}
+      </div>
+      {extra && (
+        <span className="-ml-2 flex h-6 items-center rounded-full bg-bg-subtle px-2 text-[11px] font-semibold text-text-secondary ring-2 ring-bg-base">
+          {extra}
+        </span>
+      )}
+    </div>
+  )
+}
+
+/* ============================ Cards ============================= */
+function FeatureCard({ icon, title, body }: { icon: React.ReactNode; title: string; body: string }) {
   return (
     <article className="glass glass-sheen group h-full rounded-3xl p-7 transition-transform duration-300 hover:-translate-y-1">
       <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-primary/10 text-accent-primary">
@@ -263,6 +367,129 @@ function FeatureCard({
   )
 }
 
+/* ============================ Footer =========================== */
+function Footer() {
+  return (
+    <footer className="border-t border-border-subtle">
+      <div className="mx-auto max-w-6xl px-5 py-16">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="lg:col-span-2">
+            <span className="font-display text-lg font-bold tracking-tight">
+              Study<span className="text-text-tertiary">Spot</span>
+            </span>
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-text-secondary">
+              The place students find their crew, pick a vibe, and finally get focused — together.
+            </p>
+            <div className="mt-5 flex gap-2">
+              {[IconX, IconInstagram, IconGithub].map((Ico, i) => (
+                <span
+                  key={i}
+                  className="glass flex h-9 w-9 items-center justify-center rounded-full text-text-secondary transition-colors hover:text-text-primary"
+                >
+                  <Ico />
+                </span>
+              ))}
+            </div>
+          </div>
+          {FOOTER_COLS.map((col) => (
+            <div key={col.title}>
+              <div className="text-xs font-bold uppercase tracking-[0.16em] text-text-tertiary">
+                {col.title}
+              </div>
+              <ul className="mt-4 space-y-3">
+                {col.links.map((l) => (
+                  <li key={l.label}>
+                    <Link href={l.href} className="text-sm text-text-secondary transition-colors hover:text-text-primary">
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-border-subtle pt-6 text-xs text-text-tertiary sm:flex-row">
+          <span>© {new Date().getFullYear()} StudySpot. Made for students.</span>
+          <span>Free for students · Verified profiles · No spam</span>
+        </div>
+      </div>
+    </footer>
+  )
+}
+
+/* ============================== Data =========================== */
+const SESSIONS = [
+  {
+    title: 'Calc II grind',
+    when: 'Today 4:00 PM',
+    place: 'Bean & Brew',
+    vibe: 'Pomodoro',
+    status: '2 spots left',
+    join: false,
+    crew: [
+      { id: 'Mara', name: 'Mara' },
+      { id: 'Leo', name: 'Leo' },
+      { id: 'Nia', name: 'Nia' },
+    ],
+  },
+  {
+    title: 'CS finals lock-in',
+    when: 'Today 6:30 PM',
+    place: 'CS Building',
+    vibe: 'Silent',
+    status: 'Join',
+    join: true,
+    crew: [
+      { id: 'Priya', name: 'Priya' },
+      { id: 'Sam', name: 'Sam' },
+    ],
+  },
+  {
+    title: 'Essay co-write',
+    when: 'Tomorrow 10 AM',
+    place: 'Central Library',
+    vibe: 'Casual',
+    status: '4 spots left',
+    join: false,
+    crew: [
+      { id: 'Ivy', name: 'Ivy' },
+      { id: 'Kai', name: 'Kai' },
+      { id: 'Bo', name: 'Bo' },
+    ],
+  },
+]
+
+const FOOTER_COLS = [
+  {
+    title: 'Product',
+    links: [
+      { label: 'Features', href: '#features' },
+      { label: 'How it works', href: '#how' },
+      { label: 'Sign up', href: '/auth/signup' },
+      { label: 'Log in', href: '/auth/login' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { label: 'About', href: '#' },
+      { label: 'Careers', href: '#' },
+      { label: 'Blog', href: '#' },
+      { label: 'Contact', href: '#' },
+    ],
+  },
+  {
+    title: 'Legal',
+    links: [
+      { label: 'Privacy', href: '#' },
+      { label: 'Terms', href: '#' },
+      { label: 'Safety', href: '#' },
+      { label: 'Cookies', href: '#' },
+    ],
+  },
+]
+
+/* ============================== Icons ========================== */
 const ic = {
   width: 20,
   height: 20,
@@ -278,6 +505,11 @@ const IconPin = () => (
   <svg {...ic}>
     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
     <circle cx="12" cy="10" r="3" />
+  </svg>
+)
+const IconMapPin = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z" />
   </svg>
 )
 const IconSpark = () => (
@@ -302,6 +534,29 @@ const IconTarget = () => (
     <circle cx="12" cy="12" r="9" />
     <circle cx="12" cy="12" r="5" />
     <circle cx="12" cy="12" r="1" />
+  </svg>
+)
+const IconSearch = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <circle cx="11" cy="11" r="7" />
+    <path d="m21 21-4.3-4.3" />
+  </svg>
+)
+const IconX = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18.9 2H22l-7.3 8.3L23 22h-6.8l-5.3-6.9L4.8 22H1.6l7.8-8.9L1 2h6.9l4.8 6.3zM17.8 20h1.7L7.3 4H5.5z" />
+  </svg>
+)
+const IconInstagram = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <rect x="3" y="3" width="18" height="18" rx="5" />
+    <circle cx="12" cy="12" r="4" />
+    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+  </svg>
+)
+const IconGithub = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.3-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .3.3.6.9.6 1.8v2.7c0 .3.2.6.7.5A10 10 0 0 0 12 2z" />
   </svg>
 )
 
