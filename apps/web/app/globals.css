@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300..700&family=Space+Grotesk:wght@400..700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300..700&family=Space+Grotesk:wght@400..700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 /* ============================================================
    Monochrome theme tokens — light & dark designed together.
@@ -138,6 +138,48 @@ a {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* Editorial italic-serif accent word inside bold grotesk headlines.
+   Sits in a soft highlighted pill — gives headings life without color. */
+.hl {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  background: var(--gradient-royal-soft);
+  border: 1px solid var(--glass-border);
+  border-radius: 0.42em;
+  padding: 0 0.18em 0.06em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* Eyebrow label with a leading rule */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(var(--text-tertiary));
+}
+.eyebrow::before {
+  content: '';
+  width: 1.6rem;
+  height: 1px;
+  background: rgb(var(--accent-primary) / 0.6);
+}
+
+/* Faint map grid for the location mock */
+.map-grid {
+  background-image:
+    linear-gradient(var(--border-subtle) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+  background-size: 58px 58px;
+  background-position: center;
 }
 
 /* ============================================================
