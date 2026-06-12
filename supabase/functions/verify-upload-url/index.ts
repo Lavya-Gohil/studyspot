@@ -1,14 +1,26 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { corsHeaders, json, rateLimit, readJsonBody } from '../_shared/security.ts'
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!
 const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!
 
+const ALLOWED_TYPES: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'application/pdf': 'pdf',
+}
+const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
+
 serve(async (req) => {
+  // CORS preflight — the browser sends OPTIONS before the authed POST.
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders(req) })
+  if (req.method !== 'POST') return json(req, { error: 'method_not_allowed' }, 405)
+
   try {
     const authHeader = req.headers.get('Authorization')
-    if (!authHeader) return new Response('Unauthorized', { status: 401 })
+    if (!authHeader) return json(req, { error: 'unauthorized' }, 401)
 
     const userClient = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: authHeader } },
@@ -17,18 +29,31 @@ serve(async (req) => {
       data: { user },
       error: authError,
     } = await userClient.auth.getUser()
-    if (authError || !user) return new Response('Unauthorized', { status: 401 })
+    if (authError || !user) return json(req, { error: 'unauthorized' }, 401)
 
-    const { fileType, fileSize } = await req.json()
-    if (!['image/jpeg', 'image/png', 'application/pdf'].includes(fileType)) {
-      return new Response(JSON.stringify({ error: 'Invalid file type' }), { status: 400 })
+    // A student re-verifying legitimately needs a handful of tries at most.
+    const limited = rateLimit(req, `verify-upload:${user.id}`, 5, 10 * 60 * 1000)
+    if (limited) return limited
+
+    // Strict body: exactly { fileType, fileSize } — anything else is a 400.
+    const parsed = await readJsonBody(req, ['fileType', 'fileSize'])
+    if (!parsed.ok) return parsed.response
+    const { fileType, fileSize } = parsed.body
+
+    if (typeof fileType !== 'string' || !(fileType in ALLOWED_TYPES)) {
+      return json(req, { error: 'invalid_file_type', allowed: Object.keys(ALLOWED_TYPES) }, 400)
     }
-    if (fileSize > 10 * 1024 * 1024) {
-      return new Response(JSON.stringify({ error: 'File too large (max 10MB)' }), { status: 400 })
+    // Number.isFinite guards NaN/Infinity tricks that pass naive `>` checks.
+    if (typeof fileSize !== 'number' || !Number.isFinite(fileSize) || fileSize <= 0) {
+      return json(req, { error: 'invalid_file_size' }, 400)
+    }
+    if (fileSize > MAX_FILE_SIZE) {
+      return json(req, { error: 'file_too_large', maxBytes: MAX_FILE_SIZE }, 400)
     }
 
-    const ext = fileType === 'application/pdf' ? 'pdf' : fileType === 'image/png' ? 'png' : 'jpg'
-    const path = `${user.id}/${crypto.randomUUID()}.${ext}`
+    // Path is built only from values WE generate (auth uid + random uuid) —
+    // never from client input, so no traversal/overwrite is possible.
+    const path = `${user.id}/${crypto.randomUUID()}.${ALLOWED_TYPES[fileType]}`
 
     const adminClient = createClient(supabaseUrl, serviceRoleKey)
     const { data, error } = await adminClient.storage
@@ -52,11 +77,10 @@ serve(async (req) => {
       })
     }
 
-    return new Response(JSON.stringify({ uploadUrl: data.signedUrl, path }), {
-      headers: { 'Content-Type': 'application/json' },
-    })
+    return json(req, { uploadUrl: data.signedUrl, path })
   } catch (err) {
+    // Never echo internal error details to the client (information leakage).
     console.error(err)
-    return new Response(JSON.stringify({ error: 'Internal error' }), { status: 500 })
+    return json(req, { error: 'internal_error' }, 500)
   }
 })

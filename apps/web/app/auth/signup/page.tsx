@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { signupSchema, validate } from '@/lib/validation'
 
 export default function SignupPage() {
   const router = useRouter()
@@ -18,11 +19,16 @@ export default function SignupPage() {
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault()
-    if (!isValid) return
+    // Schema validation: proper email format, 8–72 char password.
+    const v = validate(signupSchema, { email, password })
+    if (!v.ok) {
+      setError(v.error)
+      return
+    }
     setLoading(true)
     setError('')
 
-    const { error } = await supabase.auth.signUp({ email, password })
+    const { error } = await supabase.auth.signUp(v.data)
     if (error) {
       setError(error.message)
       setLoading(false)
@@ -121,7 +127,15 @@ export default function SignupPage() {
       </p>
 
       <p className="text-center text-text-tertiary text-xs">
-        By signing up you agree to our Terms of Service and Privacy Policy.
+        By signing up you agree to our{' '}
+        <Link href="/terms" className="underline underline-offset-2 hover:text-text-primary">
+          Terms of Service
+        </Link>{' '}
+        and{' '}
+        <Link href="/privacy" className="underline underline-offset-2 hover:text-text-primary">
+          Privacy Policy
+        </Link>
+        .
       </p>
     </div>
   )

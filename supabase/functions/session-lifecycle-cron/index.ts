@@ -1,11 +1,23 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { callerIp, json, rateLimit, requireSecret } from '../_shared/security.ts'
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!
 const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
-serve(async (_req) => {
+/**
+ * Cron target: advances session statuses (active/full → ongoing → completed).
+ * Status math is idempotent, but the trigger is still locked behind
+ * CRON_SECRET so outsiders can't probe or hammer it.
+ */
+serve(async (req) => {
   try {
+    const denied = await requireSecret(req, 'x-cron-secret', 'CRON_SECRET')
+    if (denied) return denied
+
+    const limited = rateLimit(req, `lifecycle:${callerIp(req)}`, 4, 60 * 1000)
+    if (limited) return limited
+
     const supabase = createClient(supabaseUrl, serviceRoleKey)
     const now = new Date().toISOString()
 
@@ -24,9 +36,9 @@ serve(async (_req) => {
       .eq('status', 'ongoing')
       .lt('end_time', now)
 
-    return new Response('ok', { status: 200 })
+    return json(req, { ok: true })
   } catch (err) {
     console.error(err)
-    return new Response('error', { status: 500 })
+    return json(req, { error: 'internal_error' }, 500)
   }
 })

@@ -5,6 +5,13 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { OnboardingProgress } from '@/components/ui/OnboardingProgress'
 import { SUBJECT_CATEGORIES, YEAR_LABELS, type YearOfStudy } from '@studyspot/types'
+import {
+  AVATAR_MAX_BYTES,
+  AVATAR_TYPES,
+  friendlyDbError,
+  profileUpdateSchema,
+  validate,
+} from '@/lib/validation'
 
 export default function ProfileSetupPage() {
   const router = useRouter()
@@ -31,6 +38,17 @@ export default function ProfileSetupPage() {
   }
 
   async function handleFinish() {
+    // Schema validation + sanitization (lib/validation.ts).
+    const v = validate(profileUpdateSchema, {
+      college,
+      course,
+      ...(yearOfStudy ? { year_of_study: yearOfStudy } : {}),
+      subjects: selectedSubjects,
+    })
+    if (!v.ok) {
+      setError(v.error)
+      return
+    }
     setLoading(true)
     setError('')
 
@@ -54,17 +72,17 @@ export default function ProfileSetupPage() {
     const { error } = await supabase
       .from('profiles')
       .update({
-        college: college.trim() || null,
-        course: course.trim() || null,
-        year_of_study: yearOfStudy || null,
-        subjects: selectedSubjects,
+        college: v.data.college ?? null,
+        course: v.data.course ?? null,
+        year_of_study: v.data.year_of_study ?? null,
+        subjects: v.data.subjects ?? [],
         ...(avatar_url ? { avatar_url } : {}),
         onboarding_step: 5,
       })
       .eq('id', user.id)
 
     if (error) {
-      setError(error.message)
+      setError(friendlyDbError(error.message))
       setLoading(false)
       return
     }
@@ -100,7 +118,16 @@ export default function ProfileSetupPage() {
             <input
               type="file"
               accept="image/jpeg,image/png"
-              onChange={(e) => setAvatarFile(e.target.files?.[0] || null)}
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null
+                // Validate type + size before upload (5MB JPEG/PNG only).
+                if (file && (!AVATAR_TYPES.includes(file.type) || file.size > AVATAR_MAX_BYTES)) {
+                  setError('Photo must be a JPEG or PNG under 5MB.')
+                  return
+                }
+                setError('')
+                setAvatarFile(file)
+              }}
               className="hidden"
             />
           </label>

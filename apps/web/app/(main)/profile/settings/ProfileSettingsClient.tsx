@@ -7,6 +7,13 @@ import { Avatar } from '@/components/profile/Avatar'
 import { SUBJECT_CATEGORIES, YEAR_LABELS, type YearOfStudy } from '@studyspot/types'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import {
+  AVATAR_MAX_BYTES,
+  AVATAR_TYPES,
+  friendlyDbError,
+  profileUpdateSchema,
+  validate,
+} from '@/lib/validation'
 
 export function ProfileSettingsClient({ profile }: { profile: any }) {
   const supabase = createClient()
@@ -21,6 +28,22 @@ export function ProfileSettingsClient({ profile }: { profile: any }) {
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState('')
+
+  function pickAvatar(file: File | null) {
+    if (!file) return setAvatarFile(null)
+    // Validate before upload: type + size (5MB) — never trust the picker alone.
+    if (!AVATAR_TYPES.includes(file.type)) {
+      setError('Avatar must be a JPEG or PNG image.')
+      return
+    }
+    if (file.size > AVATAR_MAX_BYTES) {
+      setError('Avatar must be under 5MB.')
+      return
+    }
+    setError('')
+    setAvatarFile(file)
+  }
 
   // Location (so users who move can update where they study)
   const allCountries = Country.getAllCountries()
@@ -35,7 +58,27 @@ export function ProfileSettingsClient({ profile }: { profile: any }) {
   }
 
   async function handleSave() {
+    // Schema validation + sanitization of all text fields (lib/validation.ts).
+    // Empty optional fields are omitted from validation and saved as null.
+    const v = validate(profileUpdateSchema, {
+      ...(fullName.trim() ? { full_name: fullName } : {}),
+      college,
+      course,
+      ...(yearOfStudy ? { year_of_study: yearOfStudy } : {}),
+      subjects,
+      bio,
+      ...(countryCode ? { country: countryCode } : {}),
+      country_name: countryName,
+      state_region: stateName,
+      city,
+    })
+    if (!v.ok) {
+      setError(v.error)
+      return
+    }
+
     setLoading(true)
+    setError('')
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 
@@ -52,19 +95,26 @@ export function ProfileSettingsClient({ profile }: { profile: any }) {
       }
     }
 
-    await supabase.from('profiles').update({
-      full_name: fullName.trim() || null,
-      college: college.trim() || null,
-      course: course.trim() || null,
-      year_of_study: yearOfStudy || null,
-      subjects,
-      bio: bio.trim() || null,
-      country: countryCode || null,
-      country_name: countryName || null,
-      state_region: stateName || null,
-      city: city.trim() || null,
+    const p = v.data
+    const { error: saveError } = await supabase.from('profiles').update({
+      full_name: p.full_name ?? null,
+      college: p.college ?? null,
+      course: p.course ?? null,
+      year_of_study: p.year_of_study ?? null,
+      subjects: p.subjects ?? [],
+      bio: p.bio ?? null,
+      country: p.country ?? null,
+      country_name: p.country_name ?? null,
+      state_region: p.state_region ?? null,
+      city: p.city ?? null,
       ...(avatar_url !== profile?.avatar_url ? { avatar_url } : {}),
     }).eq('id', user.id)
+
+    if (saveError) {
+      setError(friendlyDbError(saveError.message))
+      setLoading(false)
+      return
+    }
 
     setSaved(true)
     setLoading(false)
@@ -91,9 +141,11 @@ export function ProfileSettingsClient({ profile }: { profile: any }) {
         />
         <label className="cursor-pointer text-accent-primary text-sm hover:underline">
           Change photo
-          <input type="file" accept="image/jpeg,image/png" onChange={(e) => setAvatarFile(e.target.files?.[0] || null)} className="hidden" />
+          <input type="file" accept="image/jpeg,image/png" onChange={(e) => pickAvatar(e.target.files?.[0] || null)} className="hidden" />
         </label>
       </div>
+
+      {error && <p className="text-accent-red text-sm">{error}</p>}
 
       <div className="space-y-4">
         <div className="space-y-1">

@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import { FadeIn, Stagger, StaggerItem } from '@/components/motion/Motion'
 import { Avatar } from '@/components/profile/Avatar'
+import { SiteHeader } from '@/components/marketing/SiteHeader'
+import { SiteFooter } from '@/components/marketing/SiteFooter'
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -13,38 +14,8 @@ export default async function HomePage() {
 
   return (
     <main className="relative min-h-[100dvh] overflow-x-hidden bg-bg-base text-text-primary">
-      {/* Floating glass pill nav */}
-      <header className="fixed inset-x-0 top-3 z-50 px-4 sm:top-5">
-        <nav className="glass-strong glass-sheen mx-auto flex h-14 max-w-3xl items-center justify-between rounded-full pl-5 pr-2">
-          <Link href="/" className="font-display text-[17px] font-bold tracking-tight">
-            Study<span className="text-text-tertiary">Spot</span>
-          </Link>
-          <div className="hidden items-center gap-1 sm:flex">
-            <NavLink href="#features">Features</NavLink>
-            <NavLink href="#how">How it works</NavLink>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <ThemeToggle />
-            {isAuthed ? (
-              <Link href="/feed" className="btn-accent">
-                Open app
-              </Link>
-            ) : (
-              <>
-                <Link
-                  href="/auth/login"
-                  className="hidden h-9 items-center rounded-full px-3 text-sm text-text-secondary transition-colors hover:text-text-primary sm:inline-flex"
-                >
-                  Log in
-                </Link>
-                <Link href="/auth/signup" className="btn-accent">
-                  Sign up
-                </Link>
-              </>
-            )}
-          </div>
-        </nav>
-      </header>
+      {/* Floating glass pill nav (shared with all marketing pages) */}
+      <SiteHeader isAuthed={isAuthed} />
 
       {/* Hero */}
       <section className="ambient grain relative overflow-hidden">
@@ -202,20 +173,8 @@ export default async function HomePage() {
         </FadeIn>
       </section>
 
-      <Footer />
+      <SiteFooter />
     </main>
-  )
-}
-
-/* ============================== Nav ============================== */
-function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <Link
-      href={href}
-      className="rounded-full px-3.5 py-2 text-sm text-text-secondary transition-colors hover:text-text-primary"
-    >
-      {children}
-    </Link>
   )
 }
 
@@ -281,9 +240,13 @@ function SessionRow({
       </div>
       <div className="shrink-0 text-right">
         {join ? (
-          <span className="inline-flex h-8 items-center rounded-full bg-accent-primary px-4 text-xs font-semibold text-accent-fg">
+          // Product-preview card, but the CTA is real: it starts signup.
+          <Link
+            href="/auth/signup"
+            className="inline-flex h-8 items-center rounded-full bg-accent-primary px-4 text-xs font-semibold text-accent-fg transition-all hover:bg-accent-hover"
+          >
             Join
-          </span>
+          </Link>
         ) : (
           <span className="text-xs font-semibold text-text-secondary">{status}</span>
         )}
@@ -367,56 +330,6 @@ function FeatureCard({ icon, title, body }: { icon: React.ReactNode; title: stri
   )
 }
 
-/* ============================ Footer =========================== */
-function Footer() {
-  return (
-    <footer className="border-t border-border-subtle">
-      <div className="mx-auto max-w-6xl px-5 py-16">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
-          <div className="lg:col-span-2">
-            <span className="font-display text-lg font-bold tracking-tight">
-              Study<span className="text-text-tertiary">Spot</span>
-            </span>
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-text-secondary">
-              The place students find their crew, pick a vibe, and finally get focused — together.
-            </p>
-            <div className="mt-5 flex gap-2">
-              {[IconX, IconInstagram, IconGithub].map((Ico, i) => (
-                <span
-                  key={i}
-                  className="glass flex h-9 w-9 items-center justify-center rounded-full text-text-secondary transition-colors hover:text-text-primary"
-                >
-                  <Ico />
-                </span>
-              ))}
-            </div>
-          </div>
-          {FOOTER_COLS.map((col) => (
-            <div key={col.title}>
-              <div className="text-xs font-bold uppercase tracking-[0.16em] text-text-tertiary">
-                {col.title}
-              </div>
-              <ul className="mt-4 space-y-3">
-                {col.links.map((l) => (
-                  <li key={l.label}>
-                    <Link href={l.href} className="text-sm text-text-secondary transition-colors hover:text-text-primary">
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-border-subtle pt-6 text-xs text-text-tertiary sm:flex-row">
-          <span>© {new Date().getFullYear()} StudySpot. Made for students.</span>
-          <span>Free for students · Verified profiles · No spam</span>
-        </div>
-      </div>
-    </footer>
-  )
-}
-
 /* ============================== Data =========================== */
 const SESSIONS = [
   {
@@ -455,36 +368,6 @@ const SESSIONS = [
       { id: 'Ivy', name: 'Ivy' },
       { id: 'Kai', name: 'Kai' },
       { id: 'Bo', name: 'Bo' },
-    ],
-  },
-]
-
-const FOOTER_COLS = [
-  {
-    title: 'Product',
-    links: [
-      { label: 'Features', href: '#features' },
-      { label: 'How it works', href: '#how' },
-      { label: 'Sign up', href: '/auth/signup' },
-      { label: 'Log in', href: '/auth/login' },
-    ],
-  },
-  {
-    title: 'Company',
-    links: [
-      { label: 'About', href: '#' },
-      { label: 'Careers', href: '#' },
-      { label: 'Blog', href: '#' },
-      { label: 'Contact', href: '#' },
-    ],
-  },
-  {
-    title: 'Legal',
-    links: [
-      { label: 'Privacy', href: '#' },
-      { label: 'Terms', href: '#' },
-      { label: 'Safety', href: '#' },
-      { label: 'Cookies', href: '#' },
     ],
   },
 ]
@@ -542,24 +425,6 @@ const IconSearch = () => (
     <path d="m21 21-4.3-4.3" />
   </svg>
 )
-const IconX = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M18.9 2H22l-7.3 8.3L23 22h-6.8l-5.3-6.9L4.8 22H1.6l7.8-8.9L1 2h6.9l4.8 6.3zM17.8 20h1.7L7.3 4H5.5z" />
-  </svg>
-)
-const IconInstagram = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-    <rect x="3" y="3" width="18" height="18" rx="5" />
-    <circle cx="12" cy="12" r="4" />
-    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-  </svg>
-)
-const IconGithub = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.3-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .3.3.6.9.6 1.8v2.7c0 .3.2.6.7.5A10 10 0 0 0 12 2z" />
-  </svg>
-)
-
 const STEPS = [
   {
     title: 'Create your profile',

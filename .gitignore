@@ -15,4 +15,6 @@ ios
 screenshots/
 screenshots-v2/
 screenshots-v3/
+screenshots-v4/
 test-results/
+supabase/.temp/

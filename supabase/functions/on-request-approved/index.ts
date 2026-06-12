@@ -1,16 +1,34 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { callerIp, isUuid, json, rateLimit, requireSecret } from '../_shared/security.ts'
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!
 const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
+/**
+ * Database-webhook target: fires when a session request flips to `approved`.
+ * Same trust model as on-message-insert: the caller must present the shared
+ * WEBHOOK_SECRET header, otherwise anyone could forge "you're in!" pushes
+ * and system messages into arbitrary sessions.
+ */
 serve(async (req) => {
   try {
-    const payload = await req.json()
-    const record = payload.record
+    const denied = await requireSecret(req, 'x-webhook-secret', 'WEBHOOK_SECRET')
+    if (denied) return denied
 
-    if (!record || record.status !== 'approved') {
-      return new Response('ok', { status: 200 })
+    const limited = rateLimit(req, `approve-webhook:${callerIp(req)}`, 120, 60 * 1000)
+    if (limited) return limited
+
+    const payload = await req.json().catch(() => null)
+    const record = payload?.record
+
+    if (
+      !record ||
+      record.status !== 'approved' ||
+      !isUuid(record.requester_id) ||
+      !isUuid(record.session_id)
+    ) {
+      return json(req, { ok: true, skipped: true })
     }
 
     const supabase = createClient(supabaseUrl, serviceRoleKey)
@@ -56,9 +74,9 @@ serve(async (req) => {
       data: { session_id: record.session_id },
     })
 
-    return new Response('ok', { status: 200 })
+    return json(req, { ok: true })
   } catch (err) {
     console.error(err)
-    return new Response('error', { status: 500 })
+    return json(req, { error: 'internal_error' }, 500)
   }
 })

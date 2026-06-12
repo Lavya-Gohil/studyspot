@@ -1,8 +1,16 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-// Routes accessible without authentication (marketing / landing).
-const PUBLIC_ROUTES = ['/']
+// Routes accessible without authentication (marketing / landing / legal).
+const PUBLIC_ROUTES = ['/', '/about', '/privacy', '/terms', '/safety', '/cookies']
+const PUBLIC_PREFIXES = ['/blog']
+
+function isPublicRoute(pathname: string) {
+  return (
+    PUBLIC_ROUTES.includes(pathname) ||
+    PUBLIC_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`))
+  )
+}
 
 const ONBOARDING_ROUTES = [
   '/auth/onboarding/basic-info',
@@ -48,7 +56,7 @@ export async function updateSession(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Unauthenticated: redirect to login unless on a public or auth page
-  if (!user && !pathname.startsWith('/auth') && !PUBLIC_ROUTES.includes(pathname)) {
+  if (!user && !pathname.startsWith('/auth') && !isPublicRoute(pathname)) {
     return NextResponse.redirect(new URL('/auth/login', request.url))
   }
 
@@ -57,8 +65,9 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(new URL('/feed', request.url))
   }
 
-  // Check onboarding progress
-  if (user && !pathname.startsWith('/auth') && !pathname.startsWith('/admin')) {
+  // Check onboarding progress (public marketing/legal pages stay reachable
+  // mid-onboarding — users must be able to read Privacy/Terms at any time)
+  if (user && !pathname.startsWith('/auth') && !pathname.startsWith('/admin') && !isPublicRoute(pathname)) {
     const { data: profile } = await supabase
       .from('profiles')
       .select('onboarding_step, is_banned')

@@ -1,11 +1,26 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { callerIp, json, rateLimit, requireSecret } from '../_shared/security.ts'
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!
 const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
-serve(async (_req) => {
+/**
+ * Cron target (every minute): pushes "starts in 30 minutes" reminders.
+ * Locked behind CRON_SECRET — an open trigger would let anyone replay it
+ * and spam duplicate reminders to every member of upcoming sessions.
+ *
+ * Scheduler setup (pg_cron/external): send header `x-cron-secret: <CRON_SECRET>`.
+ */
+serve(async (req) => {
   try {
+    const denied = await requireSecret(req, 'x-cron-secret', 'CRON_SECRET')
+    if (denied) return denied
+
+    // The scheduler fires once a minute; anything past that is a replay.
+    const limited = rateLimit(req, `reminders:${callerIp(req)}`, 4, 60 * 1000)
+    if (limited) return limited
+
     const supabase = createClient(supabaseUrl, serviceRoleKey)
     const now = new Date()
     const thirtyMinsFromNow = new Date(now.getTime() + 30 * 60 * 1000)
@@ -18,7 +33,7 @@ serve(async (_req) => {
       .gte('start_time', thirtyMinsFromNow.toISOString())
       .lt('start_time', thirtyOneMinsFromNow.toISOString())
 
-    if (!sessions || sessions.length === 0) return new Response('ok', { status: 200 })
+    if (!sessions || sessions.length === 0) return json(req, { ok: true, sessions: 0 })
 
     for (const session of sessions) {
       const { data: members } = await supabase
@@ -54,9 +69,9 @@ serve(async (_req) => {
       })
     }
 
-    return new Response('ok', { status: 200 })
+    return json(req, { ok: true, sessions: sessions.length })
   } catch (err) {
     console.error(err)
-    return new Response('error', { status: 500 })
+    return json(req, { error: 'internal_error' }, 500)
   }
 })

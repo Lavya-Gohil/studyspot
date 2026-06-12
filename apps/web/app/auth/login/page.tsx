@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { emailSchema, validate } from '@/lib/validation'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -16,10 +17,17 @@ export default function LoginPage() {
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
+    // Validate the email shape only — password rules must never gate login
+    // (older accounts may predate the current policy).
+    const v = validate(emailSchema, email)
+    if (!v.ok) {
+      setError(v.error)
+      return
+    }
     setLoading(true)
     setError('')
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { error } = await supabase.auth.signInWithPassword({ email: v.data, password })
     if (error) {
       setError('Invalid email or password.')
       setLoading(false)
