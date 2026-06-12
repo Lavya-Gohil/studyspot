@@ -1,4 +1,5 @@
 import { FadeIn } from '@/components/motion/Motion'
+import { CONTACT_EMAIL } from '@/lib/site'
 
 export type LegalSection = {
   heading: string
@@ -60,12 +61,12 @@ export function LegalPage({
           ))}
         </div>
 
-        <div className="glass mt-14 rounded-2xl p-5 text-sm text-text-secondary">
-          Questions about this document? Email{' '}
-          <a href="mailto:hello@studyspot.app" className="font-semibold text-text-primary underline-offset-2 hover:underline">
-            hello@studyspot.app
+        <div className="glass mt-14 flex flex-wrap items-center justify-between gap-3 rounded-2xl p-5 text-sm text-text-secondary">
+          <span>Questions about this document?</span>
+          {/* Address lives only in the href — not shown as text. */}
+          <a href={`mailto:${CONTACT_EMAIL}`} className="btn-accent">
+            Email us →
           </a>
-          .
         </div>
       </FadeIn>
     </div>

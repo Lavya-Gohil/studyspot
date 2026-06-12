@@ -61,7 +61,7 @@ export default function PrivacyPage() {
           bullets: [
             'Edit or remove profile fields anytime in Profile → Settings.',
             'Block any user — they can no longer see or contact you.',
-            'Delete your account: email hello@studyspot.app and we erase your profile and content within 30 days, except records we must keep for safety or legal reasons.',
+            'Delete your account: contact us with the "Email us" button at the bottom of this page and we erase your profile and content within 30 days, except records we must keep for safety or legal reasons.',
             'Export: ask us for a copy of your data and we will provide it in a portable format.',
           ],
         },

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { CONTACT_EMAIL, INSTAGRAM_URL } from '@/lib/site'
 
 const FOOTER_COLS = [
   {
@@ -28,7 +29,6 @@ const FOOTER_COLS = [
   },
 ]
 
-/** Shared marketing footer. Social icons return once the accounts exist. */
 export function SiteFooter() {
   return (
     <footer className="border-t border-border-subtle">
@@ -41,6 +41,24 @@ export function SiteFooter() {
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-text-secondary">
               The place students find their crew, pick a vibe, and finally get focused — together.
             </p>
+            <div className="mt-5 flex gap-2">
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="StudySpot on Instagram"
+                className="glass flex h-9 w-9 items-center justify-center rounded-full text-text-secondary transition-colors hover:text-text-primary"
+              >
+                <IconInstagram />
+              </a>
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                aria-label="Email StudySpot"
+                className="glass flex h-9 w-9 items-center justify-center rounded-full text-text-secondary transition-colors hover:text-text-primary"
+              >
+                <IconMail />
+              </a>
+            </div>
           </div>
           {FOOTER_COLS.map((col) => (
             <div key={col.title}>
@@ -70,3 +88,18 @@ export function SiteFooter() {
     </footer>
   )
 }
+
+const IconInstagram = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <rect x="3" y="3" width="18" height="18" rx="5" />
+    <circle cx="12" cy="12" r="4" />
+    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+  </svg>
+)
+
+const IconMail = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="5" width="18" height="14" rx="3" />
+    <path d="m4 7 8 6 8-6" />
+  </svg>
+)

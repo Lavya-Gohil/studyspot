@@ -46,7 +46,7 @@ export default function SafetyPage() {
         {
           heading: 'If something goes wrong',
           paragraphs: [
-            'Use the Report button on any profile or session, or email hello@studyspot.app — a human reviews every report. If you are in immediate danger, contact local emergency services first.',
+            'Use the Report button on any profile or session, or reach us with the "Email us" button at the bottom of this page — a human reviews every report. If you are in immediate danger, contact local emergency services first.',
             'Reports are confidential: the reported user is not told who reported them.',
           ],
         },

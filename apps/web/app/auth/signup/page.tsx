@@ -12,13 +12,19 @@ export default function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  // Terms consent is opt-in: unchecked by default, required to sign up.
+  const [agreed, setAgreed] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const isValid = email.includes('@') && password.length >= 8
+  const isValid = email.includes('@') && password.length >= 8 && agreed
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault()
+    if (!agreed) {
+      setError('Please agree to the Terms of Service and Privacy Policy first.')
+      return
+    }
     // Schema validation: proper email format, 8–72 char password.
     const v = validate(signupSchema, { email, password })
     if (!v.ok) {
@@ -38,6 +44,12 @@ export default function SignupPage() {
   }
 
   async function handleGoogle() {
+    // Google signup also creates an account — same consent gate applies.
+    if (!agreed) {
+      setError('Please agree to the Terms of Service and Privacy Policy first.')
+      return
+    }
+    setError('')
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: `${window.location.origin}/auth/callback` },
@@ -89,6 +101,26 @@ export default function SignupPage() {
           </div>
         </div>
 
+        <label className="flex items-start gap-2.5 text-xs text-text-secondary leading-relaxed cursor-pointer">
+          <input
+            type="checkbox"
+            checked={agreed}
+            onChange={(e) => setAgreed(e.target.checked)}
+            className="mt-0.5 h-4 w-4 shrink-0 accent-accent-primary cursor-pointer"
+          />
+          <span>
+            I agree to the{' '}
+            <Link href="/terms" className="text-text-primary underline underline-offset-2 hover:opacity-80">
+              Terms of Service
+            </Link>{' '}
+            and{' '}
+            <Link href="/privacy" className="text-text-primary underline underline-offset-2 hover:opacity-80">
+              Privacy Policy
+            </Link>
+            .
+          </span>
+        </label>
+
         {error && <p className="text-accent-red text-sm">{error}</p>}
 
         <button
@@ -124,18 +156,6 @@ export default function SignupPage() {
         <Link href="/auth/login" className="text-accent-primary hover:underline">
           Log in
         </Link>
-      </p>
-
-      <p className="text-center text-text-tertiary text-xs">
-        By signing up you agree to our{' '}
-        <Link href="/terms" className="underline underline-offset-2 hover:text-text-primary">
-          Terms of Service
-        </Link>{' '}
-        and{' '}
-        <Link href="/privacy" className="underline underline-offset-2 hover:text-text-primary">
-          Privacy Policy
-        </Link>
-        .
       </p>
     </div>
   )

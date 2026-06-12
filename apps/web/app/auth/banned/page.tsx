@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { CONTACT_EMAIL } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Account suspended — StudySpot',
@@ -52,9 +53,9 @@ export default async function BannedPage() {
       </div>
 
       <p className="text-sm text-text-secondary">
-        Think this is a mistake? Email{' '}
-        <a href="mailto:hello@studyspot.app" className="font-semibold text-text-primary underline-offset-2 hover:underline">
-          hello@studyspot.app
+        Think this is a mistake?{' '}
+        <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-text-primary underline underline-offset-2">
+          Email us
         </a>{' '}
         to appeal.
       </p>
