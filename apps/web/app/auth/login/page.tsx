@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
@@ -14,6 +14,18 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  // Set when login fails because the email was never confirmed — shows a
+  // resend button instead of the misleading "invalid password" message.
+  const [unconfirmed, setUnconfirmed] = useState(false)
+  const [resendIn, setResendIn] = useState(0)
+  const [info, setInfo] = useState('')
+
+  // Tick the resend cooldown down once per second.
+  useEffect(() => {
+    if (resendIn <= 0) return
+    const t = setInterval(() => setResendIn((s) => s - 1), 1000)
+    return () => clearInterval(t)
+  }, [resendIn])
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
@@ -26,15 +38,44 @@ export default function LoginPage() {
     }
     setLoading(true)
     setError('')
+    setInfo('')
 
     const { error } = await supabase.auth.signInWithPassword({ email: v.data, password })
     if (error) {
-      setError('Invalid email or password.')
+      if (/not confirmed/i.test(error.message)) {
+        setUnconfirmed(true)
+        setError("Your email isn't confirmed yet — click the link we sent you, or resend it below.")
+      } else {
+        setUnconfirmed(false)
+        setError('Invalid email or password.')
+      }
       setLoading(false)
       return
     }
     router.push('/feed')
     router.refresh()
+  }
+
+  async function handleResend() {
+    const v = validate(emailSchema, email)
+    if (!v.ok || resendIn > 0) return
+    setInfo('')
+    setError('')
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: v.data,
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+    })
+    if (error) {
+      setError(
+        /rate|too many/i.test(error.message)
+          ? 'Too many emails — wait a minute and try again.'
+          : error.message
+      )
+      return
+    }
+    setInfo('Confirmation email sent — give it a minute, and check spam too.')
+    setResendIn(60)
   }
 
   async function handleGoogle() {
@@ -90,6 +131,18 @@ export default function LoginPage() {
         </div>
 
         {error && <p className="text-accent-red text-sm">{error}</p>}
+        {info && <p className="text-accent-green text-sm">{info}</p>}
+
+        {unconfirmed && (
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={resendIn > 0}
+            className="w-full h-11 rounded-md bg-bg-elevated border border-border-default hover:bg-bg-subtle text-text-primary font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {resendIn > 0 ? `Resend confirmation email (${resendIn}s)` : 'Resend confirmation email'}
+          </button>
+        )}
 
         <button
           type="submit"
