@@ -43,9 +43,60 @@ order:
 supabase/migrations/001_schema.sql
 supabase/migrations/002_rls.sql
 supabase/migrations/003_online_sessions.sql
+supabase/migrations/004_reputation.sql
+supabase/migrations/005_circles_and_goals.sql
+supabase/migrations/006_security_hardening.sql
 ```
 
 Create two Storage buckets: `avatars` (public) and `verification-docs` (private).
+
+## Security
+
+The app follows OWASP best practices across three layers — see the inline comments
+in each file for the reasoning:
+
+- **HTTP layer** (`apps/web/middleware.ts`, `next.config.js`): per-IP **and**
+  per-user rate limiting with graceful `429 + Retry-After` responses (tight budget
+  on `/auth/*`, generous elsewhere), plus CSP, HSTS, `X-Frame-Options`,
+  `X-Content-Type-Options`, `Referrer-Policy`, and `Permissions-Policy` headers.
+  The `/auth/callback` route validates the `next` param against open redirects.
+- **Input layer** (`apps/web/lib/validation.ts`): every form runs its payload
+  through a strict zod schema (unexpected fields rejected, control characters
+  stripped, length limits mirroring the DB constraints) before anything is sent
+  to Supabase.
+- **Database layer** (`006_security_hardening.sql`): the browser talks to
+  Supabase directly, so the unbypassable rate limits live in Postgres — per-user
+  insert throttles on messages/sessions/requests/posts/goals/reports/ratings, a
+  brute-force cap + format check on `join_circle_by_code`, and `NOT VALID` CHECK
+  constraints for field lengths. RLS (002/004/005) remains the authorization
+  source of truth.
+- **Edge Functions** (`supabase/functions/_shared/security.ts`): webhook + cron
+  functions **require shared secrets** (`WEBHOOK_SECRET` via `x-webhook-secret`,
+  `CRON_SECRET` via `x-cron-secret`) and fail closed; user-facing functions get
+  CORS origin allow-listing, strict body validation, and per-user rate limits.
+
+### Secrets & key handling
+
+- No keys are committed — everything comes from env vars (`.env.local` is
+  gitignored; see `.env.example` for the template and rotation instructions).
+- Only `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` reach the
+  browser; the anon key is safe to expose **only because RLS gates every table**.
+  The service-role key and shared secrets are server-only — never prefix them
+  with `NEXT_PUBLIC_`/`EXPO_PUBLIC_`.
+- **Before deploying the Edge Functions**, set their secrets or webhook/cron
+  calls will be rejected (fail closed):
+
+  ```bash
+  supabase secrets set WEBHOOK_SECRET=$(openssl rand -base64 32)
+  supabase secrets set CRON_SECRET=$(openssl rand -base64 32)
+  supabase functions deploy
+  ```
+
+  Then add `x-webhook-secret: <WEBHOOK_SECRET>` as an HTTP header on the
+  Database Webhooks (Dashboard → Database → Webhooks) and `x-cron-secret:
+  <CRON_SECRET>` on whatever scheduler triggers the cron functions.
+- To rotate a leaked key: Supabase Dashboard → Settings → API → Reset, then
+  update Vercel env vars and function secrets.
 
 ## Deploy (Vercel)
 

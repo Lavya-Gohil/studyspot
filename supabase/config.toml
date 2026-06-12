@@ -26,11 +26,9 @@ file_size_limit = "50MiB"
 
 [auth]
 enabled = true
-port = 54321
 site_url = "http://localhost:3000"
 additional_redirect_urls = ["https://localhost:3000", "exp://localhost:8081"]
 jwt_expiry = 3600
-enable_email_signup = true
 enable_anonymous_sign_ins = false
 
 [auth.email]
@@ -38,6 +36,10 @@ enable_signup = true
 double_confirm_changes = true
 enable_confirmations = false
 
+# verify_jwt=false on the webhook/cron functions is intentional: they
+# authenticate callers with their own shared secrets instead
+# (x-webhook-secret / x-cron-secret — see functions/_shared/security.ts).
+# Scheduling is NOT done here; cron jobs are configured in the Dashboard.
 [functions.on-request-approved]
 verify_jwt = false
 
@@ -45,7 +47,6 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.session-lifecycle-cron]
-schedule = "*/5 * * * *"
 verify_jwt = false
 
 [functions.verify-upload-url]
@@ -55,9 +56,4 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.send-session-reminders]
-schedule = "* * * * *"
-verify_jwt = false
-
-[functions.streak-calculator-cron]
-schedule = "0 0 * * *"
 verify_jwt = false

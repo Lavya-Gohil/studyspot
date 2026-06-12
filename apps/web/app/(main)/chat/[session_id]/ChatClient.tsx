@@ -7,6 +7,7 @@ import { VerifiedBadge } from '@/components/ui/Badge'
 import { formatRelativeTime, formatCountdown } from '@studyspot/utils'
 import type { Message } from '@studyspot/types'
 import Link from 'next/link'
+import { friendlyDbError, messageSchema, validate } from '@/lib/validation'
 
 interface Props {
   sessionId: string
@@ -75,10 +76,19 @@ export function ChatClient({ sessionId, session, currentUser }: Props) {
   async function sendMessage(e: React.FormEvent) {
     e.preventDefault()
     if (!input.trim() || sending || !currentUser) return
+    // Sanitize + length-check via schema before the message leaves the browser.
+    const v = validate(messageSchema, { content: input })
+    if (!v.ok) return
     setSending(true)
-    const content = input.trim()
     setInput('')
-    await supabase.from('messages').insert({ session_id: sessionId, sender_id: currentUser.id, content, type: 'text' })
+    const { error } = await supabase
+      .from('messages')
+      .insert({ session_id: sessionId, sender_id: currentUser.id, content: v.data.content, type: 'text' })
+    if (error) {
+      // Put the text back so a rate-limited message isn't lost.
+      setInput(v.data.content)
+      alert(friendlyDbError(error.message))
+    }
     setSending(false)
   }
 

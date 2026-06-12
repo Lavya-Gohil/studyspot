@@ -8,6 +8,7 @@ import { VibePill } from '@/components/ui/Badge'
 import { formatRelativeTime } from '@studyspot/utils'
 import type { Message, SessionVibe } from '@studyspot/types'
 import type { RealtimeChannel } from '@supabase/supabase-js'
+import { friendlyDbError, messageSchema, validate } from '@/lib/validation'
 
 interface SessionInfo {
   id: string
@@ -241,12 +242,17 @@ export function RoomClient({
 
   async function sendMessage(e: React.FormEvent) {
     e.preventDefault()
-    const content = input.trim()
-    if (!content) return
+    // Sanitize + length-check via schema before insert (lib/validation.ts).
+    const v = validate(messageSchema, { content: input })
+    if (!v.ok) return
     setInput('')
-    await supabase
+    const { error } = await supabase
       .from('messages')
-      .insert({ session_id: session.id, sender_id: currentUser.id, content, type: 'text' })
+      .insert({ session_id: session.id, sender_id: currentUser.id, content: v.data.content, type: 'text' })
+    if (error) {
+      setInput(v.data.content) // restore a rate-limited draft
+      alert(friendlyDbError(error.message))
+    }
   }
 
   const left = secondsLeft()

@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import { VibeSelector } from './VibeSelector'
 import type { SessionVibe, SessionMode } from '@studyspot/types'
 import { SUBJECT_CATEGORIES } from '@studyspot/types'
+import { createSessionSchema, friendlyDbError, validate } from '@/lib/validation'
 
 export function CreateSessionForm({
   initialMode,
@@ -42,6 +43,26 @@ export function CreateSessionForm({
 
   async function handleSubmit() {
     if (!step2Valid) return
+
+    // Schema validation + sanitization of every user-typed field before
+    // anything is sent to the database (lib/validation.ts).
+    const v = validate(createSessionSchema, {
+      subject,
+      description,
+      vibe,
+      mode,
+      location_name: locationName,
+      location_address: mode === 'online' ? '' : locationAddress,
+      start_time: new Date(`${date}T${startTime}`),
+      end_time: new Date(`${date}T${endTime}`),
+      spots_total: spotsTotal,
+      subject_tags: subjectTags,
+    })
+    if (!v.ok) {
+      setError(v.error)
+      return
+    }
+
     setLoading(true)
     setError('')
 
@@ -54,43 +75,29 @@ export function CreateSessionForm({
       .eq('id', user.id)
       .single()
 
-    const startDt = new Date(`${date}T${startTime}`)
-    const endDt = new Date(`${date}T${endTime}`)
-
-    if (endDt <= startDt) {
-      setError('End time must be after start time.')
-      setLoading(false)
-      return
-    }
-    if ((endDt.getTime() - startDt.getTime()) > 8 * 3600000) {
-      setError('Sessions cannot be longer than 8 hours.')
-      setLoading(false)
-      return
-    }
-
+    const s = v.data
     const { data, error } = await supabase
       .from('sessions')
       .insert({
         host_id: user.id,
-        subject: subject.trim(),
-        subject_tags: subjectTags,
-        description: description.trim() || null,
-        vibe,
-        mode,
-        location_name:
-          mode === 'online' ? (locationName.trim() || null) : locationName.trim(),
-        location_address: mode === 'online' ? null : locationAddress.trim() || null,
+        subject: s.subject,
+        subject_tags: s.subject_tags ?? [],
+        description: s.description ?? null,
+        vibe: s.vibe,
+        mode: s.mode,
+        location_name: s.location_name ?? null,
+        location_address: s.mode === 'online' ? null : s.location_address ?? null,
         location_country: profile?.country || null,
         location_state: profile?.state_region || null,
-        start_time: startDt.toISOString(),
-        end_time: endDt.toISOString(),
-        spots_total: spotsTotal,
+        start_time: s.start_time.toISOString(),
+        end_time: s.end_time.toISOString(),
+        spots_total: s.spots_total,
       })
       .select()
       .single()
 
     if (error) {
-      setError(error.message)
+      setError(friendlyDbError(error.message))
       setLoading(false)
       return
     }

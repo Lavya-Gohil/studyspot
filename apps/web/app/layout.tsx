@@ -1,11 +1,29 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://web-livid-two-79.vercel.app'
+
 export const metadata: Metadata = {
-  title: 'StudySpot — Find your study crew',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'StudySpot — Find your study crew',
+    template: '%s',
+  },
   description: 'Create and join real-world study sessions at cafés, libraries, and campuses.',
   manifest: '/manifest.json',
   appleWebApp: { capable: true, statusBarStyle: 'black-translucent' },
+  openGraph: {
+    type: 'website',
+    siteName: 'StudySpot',
+    title: 'StudySpot — Find your study crew',
+    description: 'Create and join real-world study sessions at cafés, libraries, and campuses.',
+    url: '/',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'StudySpot — Find your study crew',
+    description: 'Create and join real-world study sessions at cafés, libraries, and campuses.',
+  },
 }
 
 export const viewport: Viewport = {

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import type { Circle } from '@studyspot/types'
+import { createCircleSchema, friendlyDbError, joinCodeSchema, validate } from '@/lib/validation'
 
 const EMOJIS = ['📚', '🧪', '💻', '⚖️', '🩺', '🎨', '🗣️', '🧮', '🌍', '🎯']
 
@@ -29,36 +30,56 @@ export function CirclesClient({ mine, discover, userId }: Props) {
   const [error, setError] = useState('')
 
   async function createCircle() {
-    if (name.trim().length < 2) return
+    // Schema validation + sanitization (lib/validation.ts) before insert.
+    const v = validate(createCircleSchema, {
+      name,
+      topic,
+      description,
+      emoji,
+      is_private: isPrivate,
+    })
+    if (!v.ok) {
+      setError(v.error)
+      return
+    }
     setCreating(true)
     setError('')
     const { data, error } = await supabase
       .from('circles')
       .insert({
         owner_id: userId,
-        name: name.trim(),
-        topic: topic.trim() || null,
-        description: description.trim() || null,
-        emoji,
-        is_private: isPrivate,
+        name: v.data.name,
+        topic: v.data.topic ?? null,
+        description: v.data.description ?? null,
+        emoji: v.data.emoji ?? '📚',
+        is_private: v.data.is_private,
       })
       .select('id')
       .single()
     setCreating(false)
     if (error) {
-      setError(error.message)
+      setError(friendlyDbError(error.message))
       return
     }
     router.push(`/circles/${data.id}`)
   }
 
   async function joinByCode() {
-    const code = joinCode.trim()
-    if (!code) return
+    // Codes are exactly 6 alphanumerics — reject anything else locally
+    // (the RPC re-validates and rate-limits server-side).
+    const v = validate(joinCodeSchema, joinCode)
+    if (!v.ok) {
+      setError(v.error)
+      return
+    }
     setError('')
-    const { data, error } = await supabase.rpc('join_circle_by_code', { p_code: code })
+    const { data, error } = await supabase.rpc('join_circle_by_code', { p_code: v.data })
     if (error) {
-      setError('No circle found for that code.')
+      setError(
+        error.message.includes('rate_limit_exceeded')
+          ? 'Too many attempts — wait a minute and try again.'
+          : 'No circle found for that code.'
+      )
       return
     }
     router.push(`/circles/${data}`)

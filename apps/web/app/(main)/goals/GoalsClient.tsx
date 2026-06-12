@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { goalProgress, goalTypeLabel } from '@studyspot/utils'
 import type { Goal, GoalType } from '@studyspot/types'
+import { createGoalSchema, friendlyDbError, validate } from '@/lib/validation'
 
 interface Props {
   initialGoals: Goal[]
@@ -30,27 +31,42 @@ export function GoalsClient({ initialGoals, stats, userId }: Props) {
   }
 
   async function createGoal() {
-    const t = parseFloat(target)
-    if (title.trim().length < 2 || !t || t <= 0) return
+    // Schema validation + sanitization (lib/validation.ts) before insert.
+    const v = validate(createGoalSchema, {
+      title,
+      description,
+      type,
+      target,
+      unit: type === 'hours' ? 'hours' : type === 'sessions' ? 'sessions' : unit || 'units',
+      deadline,
+      is_public: isPublic,
+    })
+    if (!v.ok) {
+      alert(v.error)
+      return
+    }
     setCreating(true)
     const baseline = type === 'hours' ? stats.verified_hours : type === 'sessions' ? stats.verified_sessions : 0
-    const resolvedUnit = type === 'hours' ? 'hours' : type === 'sessions' ? 'sessions' : unit.trim() || 'units'
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('goals')
       .insert({
         user_id: userId,
-        title: title.trim(),
-        description: description.trim() || null,
-        type,
-        target: t,
+        title: v.data.title,
+        description: v.data.description ?? null,
+        type: v.data.type,
+        target: v.data.target,
         baseline,
-        unit: resolvedUnit,
-        deadline: deadline || null,
-        is_public: isPublic,
+        unit: v.data.unit ?? 'units',
+        deadline: v.data.deadline ?? null,
+        is_public: v.data.is_public ?? true,
       })
       .select('*')
       .single()
     setCreating(false)
+    if (error) {
+      alert(friendlyDbError(error.message))
+      return
+    }
     if (data) {
       setGoals((prev) => [data as Goal, ...prev])
       setShowCreate(false)

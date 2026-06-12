@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Avatar } from '@/components/profile/Avatar'
 import { formatRelativeTime } from '@studyspot/utils'
 import type { CirclePost } from '@studyspot/types'
+import { circlePostSchema, friendlyDbError, validate } from '@/lib/validation'
 
 interface Props {
   circleId: string
@@ -54,14 +55,21 @@ export function CircleDetailClient({
 
   async function post(e: React.FormEvent) {
     e.preventDefault()
-    const content = input.trim()
-    if (!content) return
+    // Sanitize + length-check via schema before insert (lib/validation.ts).
+    const v = validate(circlePostSchema, { content: input })
+    if (!v.ok) return
     setInput('')
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('circle_posts')
-      .insert({ circle_id: circleId, author_id: userId, content })
+      .insert({ circle_id: circleId, author_id: userId, content: v.data.content })
       .select('*, author:profiles!author_id(id, full_name, avatar_url)')
       .single()
+    if (error) {
+      // Restore the draft so a rate-limited post isn't lost.
+      setInput(v.data.content)
+      alert(friendlyDbError(error.message))
+      return
+    }
     if (data) setPosts((prev) => [data as CirclePost, ...prev])
   }
 

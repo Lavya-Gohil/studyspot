@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { SessionRequest } from '@studyspot/types'
+import { friendlyDbError, joinRequestSchema, validate } from '@/lib/validation'
 
 export function InterestButton({
   sessionId,
@@ -20,17 +21,24 @@ export function InterestButton({
   const [loading, setLoading] = useState(false)
 
   async function sendRequest() {
+    // Sanitize + cap the optional host note at 140 chars (mirrors the DB CHECK).
+    const v = validate(joinRequestSchema, { message })
+    if (!v.ok) return
     setLoading(true)
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 
     const { data, error } = await supabase
       .from('session_requests')
-      .insert({ session_id: sessionId, requester_id: user.id, message: message || null })
+      .insert({ session_id: sessionId, requester_id: user.id, message: v.data.message ?? null })
       .select()
       .single()
 
-    if (!error && data) setRequest(data as SessionRequest)
+    if (error) {
+      alert(friendlyDbError(error.message))
+    } else if (data) {
+      setRequest(data as SessionRequest)
+    }
     setShowMessage(false)
     setLoading(false)
   }

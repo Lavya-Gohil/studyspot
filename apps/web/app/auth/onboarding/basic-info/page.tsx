@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { OnboardingProgress } from '@/components/ui/OnboardingProgress'
+import { basicInfoSchema, friendlyDbError, validate } from '@/lib/validation'
 
 export default function BasicInfoPage() {
   const router = useRouter()
@@ -19,6 +20,12 @@ export default function BasicInfoPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!isValid) return
+    // Schema validation + sanitization (lib/validation.ts).
+    const v = validate(basicInfoSchema, { full_name: fullName, age })
+    if (!v.ok) {
+      setError(v.error)
+      return
+    }
     setLoading(true)
     setError('')
 
@@ -28,15 +35,15 @@ export default function BasicInfoPage() {
     const { error } = await supabase
       .from('profiles')
       .update({
-        full_name: fullName.trim(),
-        age: ageNum,
-        is_minor: ageNum < 18,
+        full_name: v.data.full_name,
+        age: v.data.age,
+        is_minor: v.data.age < 18,
         onboarding_step: 2,
       })
       .eq('id', user.id)
 
     if (error) {
-      setError(error.message)
+      setError(friendlyDbError(error.message))
       setLoading(false)
       return
     }

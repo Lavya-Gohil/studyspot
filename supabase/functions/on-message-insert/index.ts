@@ -1,16 +1,40 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { callerIp, isUuid, json, rateLimit, requireSecret } from '../_shared/security.ts'
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!
 const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
+/**
+ * Database-webhook target: fires on `messages` INSERT and fans out push
+ * notifications. Before this hardening, ANYONE with the function URL could
+ * post a fake payload and push-spam every member of any session — so the
+ * webhook now has to present the shared WEBHOOK_SECRET header.
+ *
+ * Supabase setup: Database → Webhooks → this function → add HTTP header
+ *   x-webhook-secret: <value of WEBHOOK_SECRET>
+ */
 serve(async (req) => {
   try {
-    const payload = await req.json()
-    const message = payload.record
+    const denied = await requireSecret(req, 'x-webhook-secret', 'WEBHOOK_SECRET')
+    if (denied) return denied
 
-    if (!message || message.type !== 'text' || !message.sender_id) {
-      return new Response('ok', { status: 200 })
+    // Belt-and-braces: even a leaked secret can't drive unlimited fan-out.
+    const limited = rateLimit(req, `msg-webhook:${callerIp(req)}`, 240, 60 * 1000)
+    if (limited) return limited
+
+    const payload = await req.json().catch(() => null)
+    const message = payload?.record
+
+    // Validate the webhook record shape before using any of it.
+    if (
+      !message ||
+      message.type !== 'text' ||
+      !isUuid(message.sender_id) ||
+      !isUuid(message.session_id) ||
+      typeof message.content !== 'string'
+    ) {
+      return json(req, { ok: true, skipped: true })
     }
 
     const supabase = createClient(supabaseUrl, serviceRoleKey)
@@ -24,13 +48,13 @@ serve(async (req) => {
         .eq('status', 'approved'),
     ])
 
-    if (!approvedMembers) return new Response('ok', { status: 200 })
+    if (!approvedMembers) return json(req, { ok: true })
 
     const tokens = (approvedMembers as any[])
       .filter((m) => m.requester_id !== message.sender_id && m.profiles?.expo_push_token)
       .map((m) => m.profiles.expo_push_token)
 
-    if (tokens.length === 0) return new Response('ok', { status: 200 })
+    if (tokens.length === 0) return json(req, { ok: true })
 
     const truncatedContent =
       message.content.length > 80 ? message.content.slice(0, 80) + '...' : message.content
@@ -49,9 +73,9 @@ serve(async (req) => {
       ),
     })
 
-    return new Response('ok', { status: 200 })
+    return json(req, { ok: true })
   } catch (err) {
     console.error(err)
-    return new Response('error', { status: 500 })
+    return json(req, { error: 'internal_error' }, 500)
   }
 })
