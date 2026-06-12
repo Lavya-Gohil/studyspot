@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
@@ -16,8 +16,19 @@ export default function SignupPage() {
   const [agreed, setAgreed] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  // When set, the form is replaced by the "check your inbox" panel.
+  const [sentTo, setSentTo] = useState<string | null>(null)
+  const [resendIn, setResendIn] = useState(0)
+  const [info, setInfo] = useState('')
 
   const isValid = email.includes('@') && password.length >= 8 && agreed
+
+  // Tick the resend cooldown down once per second.
+  useEffect(() => {
+    if (resendIn <= 0) return
+    const t = setInterval(() => setResendIn((s) => s - 1), 1000)
+    return () => clearInterval(t)
+  }, [resendIn])
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault()
@@ -34,13 +45,61 @@ export default function SignupPage() {
     setLoading(true)
     setError('')
 
-    const { error } = await supabase.auth.signUp(v.data)
+    const { data, error } = await supabase.auth.signUp({
+      ...v.data,
+      // The confirmation link must land on /auth/callback: it exchanges the
+      // code for a session, then the middleware drops the user straight into
+      // onboarding. Without this the link would dead-end on the homepage.
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+    })
+    setLoading(false)
+
     if (error) {
-      setError(error.message)
-      setLoading(false)
+      if (/already registered/i.test(error.message)) {
+        setError('You already have an account — log in instead.')
+      } else if (/rate limit/i.test(error.message)) {
+        setError('Our mail service is briefly at capacity — please try again in a few minutes.')
+      } else {
+        setError(error.message)
+      }
       return
     }
-    router.push('/auth/onboarding/basic-info')
+    // Supabase obfuscates duplicate signups: an existing confirmed email
+    // comes back as a user with an empty identities array (no email is sent).
+    if (data.user && data.user.identities && data.user.identities.length === 0) {
+      setError('You already have an account — log in instead.')
+      return
+    }
+    if (data.session) {
+      // Email confirmation is disabled in this project: already signed in.
+      router.push('/auth/onboarding/basic-info')
+      router.refresh()
+      return
+    }
+    // Confirmation required: swap the form for the check-your-inbox panel.
+    setSentTo(v.data.email)
+    setResendIn(60)
+  }
+
+  async function handleResend() {
+    if (!sentTo || resendIn > 0) return
+    setInfo('')
+    setError('')
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: sentTo,
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+    })
+    if (error) {
+      setError(
+        /rate|too many/i.test(error.message)
+          ? 'Too many emails — wait a minute and try again.'
+          : error.message
+      )
+      return
+    }
+    setInfo('Sent again! Give it a minute, and check your spam folder too.')
+    setResendIn(60)
   }
 
   async function handleGoogle() {
@@ -56,6 +115,66 @@ export default function SignupPage() {
     })
   }
 
+  /* ------------------- "Check your inbox" panel ------------------- */
+  if (sentTo) {
+    return (
+      <div className="space-y-6 text-center">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent-primary/10 text-accent-primary">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="5" width="18" height="14" rx="3" />
+            <path d="m4 7 8 6 8-6" />
+          </svg>
+        </div>
+
+        <div className="space-y-2">
+          <h1 className="font-display text-2xl font-bold tracking-tight">Check your inbox</h1>
+          <p className="text-sm leading-relaxed text-text-secondary">
+            We sent a confirmation link to{' '}
+            <span className="font-semibold text-text-primary">{sentTo}</span>.
+            <br />
+            Click it to activate your account and continue.
+          </p>
+        </div>
+
+        {info && <p className="text-sm text-accent-green">{info}</p>}
+        {error && <p className="text-sm text-accent-red">{error}</p>}
+
+        <button
+          onClick={handleResend}
+          disabled={resendIn > 0}
+          className="w-full h-11 rounded-md bg-bg-elevated border border-border-default hover:bg-bg-subtle text-text-primary font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {resendIn > 0 ? `Resend email (${resendIn}s)` : 'Resend email'}
+        </button>
+
+        <div className="space-y-2 text-sm text-text-secondary">
+          <p>
+            Wrong email?{' '}
+            <button
+              onClick={() => {
+                setSentTo(null)
+                setInfo('')
+                setError('')
+                setPassword('')
+                setAgreed(false)
+              }}
+              className="text-accent-primary hover:underline"
+            >
+              Sign up again
+            </button>
+          </p>
+          <p>
+            Already confirmed?{' '}
+            <Link href="/auth/login" className="text-accent-primary hover:underline">
+              Log in
+            </Link>
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  /* --------------------------- Signup form ------------------------ */
   return (
     <div className="space-y-8">
       <div className="text-center space-y-2">
