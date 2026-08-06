@@ -560,6 +560,20 @@ a {
   from { opacity: 0; transform: scale(0.94); }
 }
 
+/* Command palette. The scrim fades and the panel arrives from slightly
+   above and behind — a modal that appears at its final position reads as
+   a screenshot, and one that springs reads as a toy. Both are cheap:
+   opacity and transform only, so neither touches layout. */
+.palette-scrim {
+  animation: enter var(--dur-2) var(--ease-out);
+}
+.palette-panel {
+  animation: palette-in var(--dur-3) var(--ease-out);
+}
+@keyframes palette-in {
+  from { opacity: 0; transform: translate3d(0, -8px, 0) scale(0.98); }
+}
+
 /* Stagger without a JS orchestrator. Set --i on each child. */
 .stagger > * {
   animation: enter-up var(--dur-3) var(--ease-out) backwards;

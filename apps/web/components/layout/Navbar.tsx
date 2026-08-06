@@ -11,6 +11,7 @@ import {
   LogOut,
   Menu,
   Plus,
+  Search,
   Settings,
   Sparkles,
   Target,
@@ -24,6 +25,8 @@ import type { LucideIcon } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import { Icon, LogoMark } from '@/components/ui/Icon'
+import { Kbd } from '@/components/ui/Kbd'
+import { openCommandPalette } from '@/components/ui/CommandPalette'
 
 /**
  * The persistent shell.
@@ -57,6 +60,14 @@ export function Navbar() {
   const [unread, setUnread] = useState(0)
   const [streak, setStreak] = useState(0)
   const menuRef = useRef<HTMLDivElement>(null)
+  // Resolved after mount, never during render: the server has no idea what
+  // platform it is rendering for, and guessing produces a hydration mismatch
+  // on exactly the users whose modifier key we got wrong.
+  const [modKey, setModKey] = useState('Ctrl ')
+
+  useEffect(() => {
+    if (/Mac|iPhone|iPad/i.test(navigator.platform || navigator.userAgent)) setModKey('⌘')
+  }, [])
 
   useEffect(() => {
     setMobileOpen(false)
@@ -186,6 +197,19 @@ export function Navbar() {
         </div>
 
         <div className="ml-auto flex items-center gap-1">
+          {/* The palette is keyboard-first, but a shortcut with no visible
+              affordance is a feature only its author knows about. This is the
+              affordance, and it teaches the shortcut at the same time. */}
+          <button
+            onClick={openCommandPalette}
+            aria-label="Search and jump to"
+            className="press mr-1 hidden h-9 items-center gap-2 rounded-full border border-border-default pl-3 pr-2 text-sm text-text-tertiary transition-colors duration-fast ease-out hover:border-border-strong hover:text-text-secondary lg:inline-flex"
+          >
+            <Icon as={Search} size="sm" />
+            <span>Search</span>
+            <Kbd>{modKey}K</Kbd>
+          </button>
+
           {streak > 0 ? (
             <Link
               href="/stats"

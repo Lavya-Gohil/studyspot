@@ -3,7 +3,7 @@ import { VolumeX } from 'lucide-react'
 import type { Session } from '@studyspot/types'
 import { Card } from '@/components/ui/Card'
 import { VibePill } from '@/components/ui/Badge'
-import { FlameIcon, Icon } from '@/components/ui/Icon'
+import { Icon } from '@/components/ui/Icon'
 import { StudyingNow } from '@/components/layout/StudyingNow'
 
 /**
@@ -69,13 +69,11 @@ function NextSessionCard({ session }: { session: Session }) {
 export function FeedHeader({
   userFullName,
   userCountryName,
-  studyStreak,
   todayCount,
   nextSession,
 }: {
   userFullName: string | null
   userCountryName: string | null
-  studyStreak: number
   /** Sessions starting today in the user's scope — 0 hides the line. */
   todayCount: number
   nextSession: Session | null
@@ -104,15 +102,9 @@ export function FeedHeader({
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
-          {studyStreak > 0 ? (
-            <span
-              className="brand-tint inline-flex h-9 items-center gap-1.5 rounded-md px-2.5 text-sm font-semibold"
-              title={`${studyStreak}-day study streak`}
-            >
-              <FlameIcon size="sm" />
-              <span className="tnum">{studyStreak}</span>
-            </span>
-          ) : null}
+          {/* The streak lives in <TodayPanel> directly below, at the centre of
+              the week ring. Repeating it here put the same number on screen
+              twice, eight pixels apart. */}
           <Link
             href="/sessions/create?mode=online&vibe=silent"
             className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md border border-border-default bg-bg-elevated px-3 text-sm font-medium text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
