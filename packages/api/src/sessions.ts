@@ -63,6 +63,95 @@ export async function fetchFeedSessions(
   return (data || []) as Session[]
 }
 
+/**
+ * How many sessions start today within the user's scope. Drives the "N
+ * sessions today" line in the feed header.
+ *
+ * Reuses the same country guard as fetchFeedSessions — see ./filters.ts for
+ * why a raw interpolation into `.or()` is unsafe.
+ */
+export async function countSessionsToday(
+  client: SupabaseClient,
+  country?: string
+): Promise<number> {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const tomorrow = new Date(today)
+  tomorrow.setDate(tomorrow.getDate() + 1)
+
+  let query = client
+    .from('session_feed')
+    .select('id', { count: 'exact', head: true })
+    .in('status', ['active', 'full', 'ongoing'])
+    .gte('start_time', today.toISOString())
+    .lt('start_time', tomorrow.toISOString())
+
+  if (isCountryCode(country)) {
+    query = query.or(`mode.eq.online,location_country.eq.${country}`)
+  } else if (country) {
+    query = query.eq('mode', 'online')
+  }
+
+  const { count, error } = await query
+  if (error) throw error
+  return count ?? 0
+}
+
+/**
+ * The soonest session the user is actually committed to — one they host, or
+ * one their join request was approved for. Drives the "you're in one soon"
+ * banner at the top of the feed.
+ *
+ * Two queries rather than one: the user's relationship to a session lives in
+ * two different places (sessions.host_id and session_requests.requester_id),
+ * and session_feed carries no per-viewer membership column to filter on.
+ */
+export async function fetchMyNextSession(
+  client: SupabaseClient,
+  userId: string
+): Promise<Session | null> {
+  const now = new Date().toISOString()
+
+  const hosting = client
+    .from('session_feed')
+    .select('*')
+    .eq('host_id', userId)
+    .gt('end_time', now)
+    .order('start_time', { ascending: true })
+    .limit(1)
+
+  const approved = client
+    .from('session_requests')
+    .select('session_id')
+    .eq('requester_id', userId)
+    .eq('status', 'approved')
+
+  const [hostingResult, approvedResult] = await Promise.all([hosting, approved])
+  if (hostingResult.error) throw hostingResult.error
+  if (approvedResult.error) throw approvedResult.error
+
+  const candidates: Session[] = (hostingResult.data as Session[] | null) ?? []
+
+  const joinedIds = (approvedResult.data ?? []).map(
+    (r: { session_id: string }) => r.session_id
+  )
+  if (joinedIds.length > 0) {
+    const { data, error } = await client
+      .from('session_feed')
+      .select('*')
+      .in('id', joinedIds)
+      .gt('end_time', now)
+      .order('start_time', { ascending: true })
+      .limit(1)
+    if (error) throw error
+    candidates.push(...((data as Session[] | null) ?? []))
+  }
+
+  if (candidates.length === 0) return null
+  candidates.sort((a, b) => a.start_time.localeCompare(b.start_time))
+  return candidates[0] ?? null
+}
+
 export async function fetchSessionById(client: SupabaseClient, id: string): Promise<Session> {
   const { data, error } = await client
     .from('session_feed')

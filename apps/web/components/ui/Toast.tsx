@@ -1,6 +1,5 @@
 'use client'
 
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import {
   createContext,
   useCallback,
@@ -13,15 +12,14 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 
-const EASE = [0.16, 1, 0.3, 1] as const
-
 type ToastVariant = 'success' | 'error' | 'info'
 
 interface Toast {
   id: number
   message: ReactNode
   variant: ToastVariant
-  duration: number
+  /** Set while the exit transition plays, just before removal. */
+  leaving?: boolean
 }
 
 interface ToastContextValue {
@@ -34,25 +32,46 @@ interface ToastContextValue {
 
 const ToastContext = createContext<ToastContextValue | null>(null)
 
+/** Matches the transition duration applied below; keep the two in sync. */
+const EXIT_MS = 200
+
 /**
  * Transient feedback for actions that succeed or fail without navigating.
  *
  * Mount <ToastProvider> once, high in the tree (app/layout.tsx), then call
  * useToast() anywhere below. Errors default to a longer duration because they
  * usually carry something the user needs to read.
+ *
+ * Animated with CSS rather than framer-motion, deliberately: this provider is
+ * mounted in the root layout and useToast() is called from most screens, so a
+ * motion-library dependency here would be paid on nearly every route — it
+ * measured ~39kB on /feed alone. The enter uses the `slide-up` keyframe
+ * already defined in tailwind.config.ts; the exit is a plain transition.
+ * Both are disabled by the prefers-reduced-motion rule in globals.css.
  */
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([])
   const nextId = useRef(0)
-  const timers = useRef(new Map<number, ReturnType<typeof setTimeout>>())
+  const timers = useRef(new Map<string, ReturnType<typeof setTimeout>>())
 
   const dismiss = useCallback((id: number) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id))
-    const timer = timers.current.get(id)
-    if (timer) {
-      clearTimeout(timer)
-      timers.current.delete(id)
+    const pending = timers.current
+    const auto = pending.get(`auto:${id}`)
+    if (auto) {
+      clearTimeout(auto)
+      pending.delete(`auto:${id}`)
     }
+    if (pending.has(`exit:${id}`)) return // already leaving
+
+    // Mark as leaving so the exit transition can play, then drop it.
+    setToasts((prev) => prev.map((t) => (t.id === id ? { ...t, leaving: true } : t)))
+    pending.set(
+      `exit:${id}`,
+      setTimeout(() => {
+        setToasts((prev) => prev.filter((t) => t.id !== id))
+        pending.delete(`exit:${id}`)
+      }, EXIT_MS)
+    )
   }, [])
 
   const toast = useCallback<ToastContextValue['toast']>(
@@ -61,9 +80,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       const duration = opts?.duration ?? (variant === 'error' ? 6000 : 4000)
       const id = nextId.current++
 
-      setToasts((prev) => [...prev, { id, message, variant, duration }])
+      setToasts((prev) => [...prev, { id, message, variant }])
       timers.current.set(
-        id,
+        `auto:${id}`,
         setTimeout(() => dismiss(id), duration)
       )
     },
@@ -104,9 +123,15 @@ export function useToast(): ToastContextValue {
 }
 
 const variantStyles: Record<ToastVariant, string> = {
-  success: 'border-accent-green/30 text-accent-green',
-  error: 'border-accent-red/30 text-accent-red',
-  info: 'border-border-default text-text-primary',
+  success: 'border-accent-green/30',
+  error: 'border-accent-red/30',
+  info: 'border-border-default',
+}
+
+const iconColors: Record<ToastVariant, string> = {
+  success: 'text-accent-green',
+  error: 'text-accent-red',
+  info: 'text-text-tertiary',
 }
 
 const icons: Record<ToastVariant, ReactNode> = {
@@ -116,7 +141,6 @@ const icons: Record<ToastVariant, ReactNode> = {
 }
 
 function ToastViewport({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: number) => void }) {
-  const reduce = useReducedMotion()
   const [mounted, setMounted] = useState(false)
 
   // Portal target only exists client-side.
@@ -130,33 +154,36 @@ function ToastViewport({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id:
       aria-atomic="false"
       className="pointer-events-none fixed inset-x-0 bottom-0 z-[60] flex flex-col items-center gap-2 p-4 sm:items-end"
     >
-      <AnimatePresence initial={false}>
-        {toasts.map((t) => (
-          <motion.div
-            key={t.id}
-            layout
-            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 16, scale: 0.97 }}
-            animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
-            exit={reduce ? { opacity: 0 } : { opacity: 0, y: 8, scale: 0.97 }}
-            transition={{ duration: 0.25, ease: EASE }}
-            className={`pointer-events-auto flex w-full max-w-sm items-start gap-2.5 rounded-lg border bg-bg-elevated p-3 shadow-lift ${variantStyles[t.variant]}`}
+      {toasts.map((t) => (
+        <div
+          key={t.id}
+          style={{ transitionDuration: `${EXIT_MS}ms` }}
+          className={`pointer-events-auto flex w-full max-w-sm items-start gap-2.5 rounded-lg border bg-bg-elevated p-3 shadow-lift transition-all ease-out ${
+            t.leaving ? 'translate-y-2 opacity-0' : 'animate-slide-up'
+          } ${variantStyles[t.variant]}`}
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            className={`mt-0.5 shrink-0 ${iconColors[t.variant]}`}
+            aria-hidden="true"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="mt-0.5 shrink-0" aria-hidden="true">
-              {icons[t.variant]}
+            {icons[t.variant]}
+          </svg>
+          <p className="min-w-0 flex-1 text-sm text-text-primary">{t.message}</p>
+          <button
+            onClick={() => onDismiss(t.id)}
+            aria-label="Dismiss"
+            className="shrink-0 rounded p-0.5 text-text-tertiary transition-colors hover:text-text-primary"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             </svg>
-            <p className="min-w-0 flex-1 text-sm text-text-primary">{t.message}</p>
-            <button
-              onClick={() => onDismiss(t.id)}
-              aria-label="Dismiss"
-              className="shrink-0 rounded p-0.5 text-text-tertiary transition-colors hover:text-text-primary"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-            </button>
-          </motion.div>
-        ))}
-      </AnimatePresence>
+          </button>
+        </div>
+      ))}
     </div>,
     document.body
   )

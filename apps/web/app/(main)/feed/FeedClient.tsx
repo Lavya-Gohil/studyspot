@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 // Deep import, not the '@studyspot/api' barrel: the barrel re-exports
 // ./client, which calls createClient() at module scope — pulling a second
@@ -9,19 +10,17 @@ import { createClient } from '@/lib/supabase/client'
 import { fetchFeedSessions } from '@studyspot/api/sessions'
 import { SessionCard } from '@/components/session/SessionCard'
 // Deep imports rather than the '@/components/ui' barrel — the barrel also
-// re-exports Modal and Toast, which pull framer-motion into any client bundle
-// that touches it (+40kB on this route for components the feed never renders).
+// re-exports Modal and Tooltip, which pull framer-motion into any client
+// bundle that touches it for components this route never renders.
 import { SessionCardSkeleton } from '@/components/ui/Skeleton'
 import { EmptyState, ErrorState } from '@/components/ui/EmptyState'
 import { Button } from '@/components/ui/Button'
+import { useToast } from '@/components/ui/Toast'
 import { friendlyDbError } from '@/lib/db-errors'
 import type { Session, FeedFilters, SessionVibe } from '@studyspot/types'
-import Link from 'next/link'
 
 interface Props {
   userCountry: string | null
-  userCountryName: string | null
-  userFullName: string | null
 }
 
 const VIBES: { value: SessionVibe; label: string }[] = [
@@ -33,90 +32,160 @@ const VIBES: { value: SessionVibe; label: string }[] = [
   { value: 'casual', label: 'Casual' },
 ]
 
-export function FeedClient({ userCountry, userCountryName, userFullName }: Props) {
+const LIMIT = 20
+
+const chipClasses = (active: boolean) =>
+  `shrink-0 px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+    active
+      ? 'bg-accent-primary/15 text-accent-primary border-accent-primary/30'
+      : 'bg-bg-elevated border-border-default text-text-secondary hover:border-border-strong'
+  }`
+
+export function FeedClient({ userCountry }: Props) {
   const supabase = createClient()
+  const toast = useToast()
+
   const [sessions, setSessions] = useState<Session[]>([])
-  const [loading, setLoading] = useState(true)
-  const [loadingMore, setLoadingMore] = useState(false)
-  const [hasMore, setHasMore] = useState(true)
   const [filters, setFilters] = useState<FeedFilters>({})
   const [error, setError] = useState<string | null>(null)
+  const [hasMore, setHasMore] = useState(true)
+  // Three distinct states, because they mean different things to the user:
+  // `initial` shows skeletons, `refreshing` dims the existing list rather than
+  // blanking it, and `loadingMore` only disables the button at the bottom.
+  const [initial, setInitial] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
+  const [loadingMore, setLoadingMore] = useState(false)
+
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set())
   const [requestStatuses, setRequestStatuses] = useState<Record<string, string>>({})
+
   const offset = useRef(0)
+  // Toggling filters quickly fires overlapping requests, and they can resolve
+  // out of order — without this guard a slow early response overwrites a fast
+  // later one and the list stops matching the selected chips.
+  const requestSeq = useRef(0)
 
-  const LIMIT = 20
+  const loadSessions = useCallback(
+    async (reset: boolean, activeFilters: FeedFilters) => {
+      const seq = ++requestSeq.current
+      const currentOffset = reset ? 0 : offset.current
+      setError(null)
 
-  // The query itself lives in @studyspot/api so web and mobile stay in sync —
-  // it also carries the country-code guard around the PostgREST `.or()` filter.
-  async function loadSessions(reset = false) {
-    const currentOffset = reset ? 0 : offset.current
-    if (reset) { setSessions([]); setHasMore(true) }
-    setError(null)
+      try {
+        const results = await fetchFeedSessions(supabase, {
+          country: userCountry ?? undefined,
+          filters: activeFilters,
+          offset: currentOffset,
+          limit: LIMIT,
+        })
 
-    try {
-      const results = await fetchFeedSessions(supabase, {
-        country: userCountry ?? undefined,
-        filters,
-        offset: currentOffset,
-        limit: LIMIT,
-      })
+        if (seq !== requestSeq.current) return // superseded
 
-      if (reset) {
-        setSessions(results)
-        offset.current = results.length
-      } else {
-        setSessions((prev) => [...prev, ...results])
-        offset.current += results.length
+        if (reset) {
+          setSessions(results)
+          offset.current = results.length
+        } else {
+          setSessions((prev) => [...prev, ...results])
+          offset.current += results.length
+        }
+        setHasMore(results.length === LIMIT)
+      } catch (err) {
+        if (seq !== requestSeq.current) return
+        // Previously this error was dropped and the feed rendered empty, which
+        // is indistinguishable from genuinely having no sessions nearby.
+        setError(friendlyDbError(err instanceof Error ? err.message : null))
+      } finally {
+        if (seq === requestSeq.current) {
+          setInitial(false)
+          setRefreshing(false)
+          setLoadingMore(false)
+        }
       }
-      setHasMore(results.length === LIMIT)
-    } catch (err) {
-      // Previously the error was dropped and the feed just rendered empty,
-      // which is indistinguishable from "no sessions near you".
-      setError(friendlyDbError(err instanceof Error ? err.message : null))
-    } finally {
-      setLoading(false)
-      setLoadingMore(false)
-    }
-  }
+    },
+    [supabase, userCountry]
+  )
 
   useEffect(() => {
-    setLoading(true)
-    loadSessions(true)
-  }, [filters])
+    // Keep the current results on screen while refetching — a filter toggle
+    // that blanks the list to skeletons reads as though everything vanished.
+    setRefreshing(true)
+    loadSessions(true, filters)
+  }, [filters, loadSessions])
 
   useEffect(() => {
     async function loadUserData() {
-      const { data: { user } } = await supabase.auth.getUser()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
       if (!user) return
-      const { data: saved } = await supabase.from('saved_sessions').select('session_id').eq('user_id', user.id)
-      if (saved) setSavedIds(new Set(saved.map((s: any) => s.session_id)))
-      const { data: reqs } = await supabase.from('session_requests').select('session_id, status').eq('requester_id', user.id)
+
+      const [{ data: saved }, { data: reqs }] = await Promise.all([
+        supabase.from('saved_sessions').select('session_id').eq('user_id', user.id),
+        supabase.from('session_requests').select('session_id, status').eq('requester_id', user.id),
+      ])
+
+      if (saved) setSavedIds(new Set(saved.map((s: { session_id: string }) => s.session_id)))
       if (reqs) {
         const map: Record<string, string> = {}
-        reqs.forEach((r: any) => { map[r.session_id] = r.status })
+        reqs.forEach((r: { session_id: string; status: string }) => {
+          map[r.session_id] = r.status
+        })
         setRequestStatuses(map)
       }
     }
     loadUserData()
-  }, [])
+  }, [supabase])
 
   async function handleInterest(sessionId: string) {
-    const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
     if (!user) return
-    const { error } = await supabase.from('session_requests').insert({ session_id: sessionId, requester_id: user.id })
-    if (!error) setRequestStatuses((prev) => ({ ...prev, [sessionId]: 'pending' }))
+
+    const { error } = await supabase
+      .from('session_requests')
+      .insert({ session_id: sessionId, requester_id: user.id })
+
+    // These failures were silent before, so a request blocked by the database
+    // rate-limit trigger looked exactly like a button that did nothing.
+    if (error) {
+      toast.error(friendlyDbError(error.message))
+      return
+    }
+    setRequestStatuses((prev) => ({ ...prev, [sessionId]: 'pending' }))
+    toast.success('Request sent — the host will get back to you.')
   }
 
   async function handleSave(sessionId: string, saved: boolean) {
-    const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
     if (!user) return
-    if (saved) {
-      await supabase.from('saved_sessions').insert({ user_id: user.id, session_id: sessionId })
-      setSavedIds((prev) => new Set(prev).add(sessionId))
-    } else {
-      await supabase.from('saved_sessions').delete().eq('user_id', user.id).eq('session_id', sessionId)
-      setSavedIds((prev) => { const s = new Set(prev); s.delete(sessionId); return s })
+
+    // Optimistic: the toggle should feel instant. Reverted below if it fails.
+    setSavedIds((prev) => {
+      const next = new Set(prev)
+      if (saved) next.add(sessionId)
+      else next.delete(sessionId)
+      return next
+    })
+
+    const { error } = saved
+      ? await supabase.from('saved_sessions').insert({ user_id: user.id, session_id: sessionId })
+      : await supabase
+          .from('saved_sessions')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('session_id', sessionId)
+
+    if (error) {
+      setSavedIds((prev) => {
+        const next = new Set(prev)
+        if (saved) next.delete(sessionId)
+        else next.add(sessionId)
+        return next
+      })
+      toast.error(friendlyDbError(error.message))
     }
   }
 
@@ -128,35 +197,17 @@ export function FeedClient({ userCountry, userCountryName, userFullName }: Props
     })
   }
 
-  return (
-    <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl font-semibold text-text-primary">
-            {userFullName ? `Hey, ${userFullName.split(' ')[0]}` : 'Feed'}
-          </h1>
-          {userCountryName && (
-            <p className="text-text-secondary text-sm">Sessions in {userCountryName}</p>
-          )}
-        </div>
-        <Link
-          href="/sessions/create?mode=online&vibe=silent"
-          className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md border border-border-default bg-bg-elevated px-3 text-sm font-medium text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
-        >
-          🔇 Silent study
-        </Link>
-      </div>
+  const hasFilters = Boolean(filters.date || filters.vibe?.length)
 
-      {/* Filter chips */}
+  return (
+    <div className="space-y-4">
       <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
         <button
-          onClick={() => setFilters((prev) => ({ ...prev, date: prev.date === 'today' ? undefined : 'today' }))}
-          className={`shrink-0 px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-            filters.date === 'today'
-              ? 'bg-accent-primary/15 text-accent-primary border-accent-primary/30'
-              : 'bg-bg-elevated border-border-default text-text-secondary hover:border-border-strong'
-          }`}
+          onClick={() =>
+            setFilters((prev) => ({ ...prev, date: prev.date === 'today' ? undefined : 'today' }))
+          }
+          aria-pressed={filters.date === 'today'}
+          className={chipClasses(filters.date === 'today')}
         >
           Today
         </button>
@@ -164,66 +215,83 @@ export function FeedClient({ userCountry, userCountryName, userFullName }: Props
           <button
             key={v.value}
             onClick={() => toggleVibe(v.value)}
-            className={`shrink-0 px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-              filters.vibe?.includes(v.value)
-                ? 'bg-accent-primary/15 text-accent-primary border-accent-primary/30'
-                : 'bg-bg-elevated border-border-default text-text-secondary hover:border-border-strong'
-            }`}
+            aria-pressed={Boolean(filters.vibe?.includes(v.value))}
+            className={chipClasses(Boolean(filters.vibe?.includes(v.value)))}
           >
             {v.label}
           </button>
         ))}
       </div>
 
-      {/* Sessions */}
-      {loading ? (
+      {initial ? (
         <div className="space-y-4">
-          {[1, 2, 3].map((i) => <SessionCardSkeleton key={i} />)}
+          {[1, 2, 3].map((i) => (
+            <SessionCardSkeleton key={i} />
+          ))}
         </div>
       ) : error ? (
         <ErrorState
           description={error}
           onRetry={() => {
-            setLoading(true)
-            loadSessions(true)
+            setRefreshing(true)
+            loadSessions(true, filters)
           }}
         />
       ) : sessions.length === 0 ? (
-        <EmptyState
-          icon={<span className="text-2xl">📚</span>}
-          title="No sessions near you yet"
-          description="Be the first to create one — study sessions show up here as soon as someone posts them."
-          action={
-            <Link href="/sessions/create">
-              <Button size="lg">Create a session</Button>
-            </Link>
-          }
-        />
+        hasFilters ? (
+          <EmptyState
+            icon={<span className="text-2xl">🔍</span>}
+            title="Nothing matches those filters"
+            description="Try widening your search — or create the session you were looking for."
+            action={
+              <Button variant="secondary" size="lg" onClick={() => setFilters({})}>
+                Clear filters
+              </Button>
+            }
+          />
+        ) : (
+          <EmptyState
+            icon={<span className="text-2xl">📚</span>}
+            title="No sessions near you yet"
+            description="Be the first to create one — study sessions show up here as soon as someone posts them."
+            action={
+              <Link href="/sessions/create">
+                <Button size="lg">Create a session</Button>
+              </Link>
+            }
+          />
+        )
       ) : (
-        <div className="space-y-4">
+        <div
+          // Dim rather than blank while a filter change is in flight.
+          className={`space-y-4 transition-opacity ${refreshing ? 'opacity-50' : 'opacity-100'}`}
+          aria-busy={refreshing}
+        >
           {sessions.map((session) => (
             <SessionCard
               key={session.id}
               session={session}
               onInterest={handleInterest}
-              requestStatus={(requestStatuses[session.id] as any) || null}
+              requestStatus={(requestStatuses[session.id] as never) || null}
               isSaved={savedIds.has(session.id)}
               onSave={handleSave}
             />
           ))}
 
-          {hasMore && (
-            <button
+          {hasMore ? (
+            <Button
+              variant="secondary"
+              className="w-full"
+              loading={loadingMore}
+              disabled={loadingMore}
               onClick={() => {
                 setLoadingMore(true)
-                loadSessions(false)
+                loadSessions(false, filters)
               }}
-              disabled={loadingMore}
-              className="w-full h-11 rounded-md bg-bg-elevated border border-border-default text-text-secondary hover:text-text-primary text-sm transition-colors disabled:opacity-50"
             >
-              {loadingMore ? 'Loading...' : 'Load more'}
-            </button>
-          )}
+              {loadingMore ? 'Loading' : 'Load more'}
+            </Button>
+          ) : null}
         </div>
       )}
     </div>

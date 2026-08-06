@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
-import { ToastProvider } from '@/components/ui'
+import { ToastProvider } from '@/components/ui/Toast'
 import './globals.css'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://web-livid-two-79.vercel.app'
