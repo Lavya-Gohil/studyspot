@@ -1,6 +1,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { callerIp, json, rateLimit, requireSecret } from '../_shared/security.ts'
+import { notifyUsers, sessionMemberIds } from '../_shared/push.ts'
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!
 const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
@@ -36,31 +37,17 @@ serve(async (req) => {
     if (!sessions || sessions.length === 0) return json(req, { ok: true, sessions: 0 })
 
     for (const session of sessions) {
-      const { data: members } = await supabase
-        .from('session_requests')
-        .select('requester_id, profiles!requester_id(expo_push_token)')
-        .eq('session_id', session.id)
-        .eq('status', 'approved')
+      // Includes the host: they are the one person certain to need the
+      // reminder, and they have no session_requests row to be found in.
+      const members = await sessionMemberIds(supabase, session.id)
 
-      const tokens = ((members as any[]) || [])
-        .filter((m) => m.profiles?.expo_push_token)
-        .map((m) => m.profiles.expo_push_token)
-
-      if (tokens.length > 0) {
-        await fetch('https://exp.host/--/api/v2/push/send', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(
-            tokens.map((token: string) => ({
-              to: token,
-              title: '📍 Session starting soon',
-              body: `"${session.subject}" at ${session.location_name} starts in 30 minutes.`,
-              data: { sessionId: session.id, type: 'session_reminder' },
-              sound: 'default',
-            }))
-          ),
-        })
-      }
+      await notifyUsers(supabase, members, {
+        title: '📍 Session starting soon',
+        body: `"${session.subject}" at ${session.location_name} starts in 30 minutes.`,
+        url: `/sessions/${session.id}`,
+        type: 'session_reminder',
+        sessionId: session.id,
+      })
 
       await supabase.from('messages').insert({
         session_id: session.id,

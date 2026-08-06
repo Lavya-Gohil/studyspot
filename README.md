@@ -32,6 +32,7 @@ pnpm dev --filter=@studyspot/mobile   # Expo
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | yes | Supabase anon key |
 | `SUPABASE_SERVICE_ROLE_KEY` | yes | Server-side admin actions |
 | `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | optional | Maps / location |
+| `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | optional | Web Push — omit and the browser can't subscribe |
 | `RESEND_API_KEY`, `NEXT_PUBLIC_POSTHOG_KEY`, … | optional | Email / analytics |
 
 ## Database setup
@@ -46,6 +47,8 @@ supabase/migrations/003_online_sessions.sql
 supabase/migrations/004_reputation.sql
 supabase/migrations/005_circles_and_goals.sql
 supabase/migrations/006_security_hardening.sql
+supabase/migrations/007_country_constraint.sql
+supabase/migrations/008_push_subscriptions.sql
 ```
 
 Create two Storage buckets: `avatars` (public) and `verification-docs` (private).
@@ -74,6 +77,12 @@ in each file for the reasoning:
   functions **require shared secrets** (`WEBHOOK_SECRET` via `x-webhook-secret`,
   `CRON_SECRET` via `x-cron-secret`) and fail closed; user-facing functions get
   CORS origin allow-listing, strict body validation, and per-user rate limits.
+- **Push notifications** (`supabase/functions/_shared/push.ts`): web payloads are
+  end-to-end encrypted per subscription (RFC 8291 `aes128gcm`) and signed with
+  VAPID (RFC 8292), so the push service relays bytes it cannot read and cannot
+  be impersonated. Subscriptions live in `push_subscriptions` (008) under RLS —
+  a user may only read, create, or revoke their own — and endpoints the push
+  service reports as gone are deleted on the next send.
 
 ### Secrets & key handling
 
@@ -91,6 +100,21 @@ in each file for the reasoning:
   supabase secrets set CRON_SECRET=$(openssl rand -base64 32)
   supabase functions deploy
   ```
+
+- **For Web Push**, generate a VAPID keypair once (`npx web-push
+  generate-vapid-keys`) and give both halves to the functions, the public half
+  to the browser:
+
+  ```bash
+  supabase secrets set VAPID_PUBLIC_KEY=... VAPID_PRIVATE_KEY=... \
+    VAPID_SUBJECT=mailto:admin@studyspot.app
+  ```
+
+  Then add `NEXT_PUBLIC_VAPID_PUBLIC_KEY` (the same public key) to Vercel. The
+  public key only identifies the sender, so exposing it is safe; the private
+  key signs every push and is server-only. Without these the functions still
+  deliver to Expo and simply log that web push is unconfigured — push must
+  never fail closed the way the shared secrets do.
 
   Then add `x-webhook-secret: <WEBHOOK_SECRET>` as an HTTP header on the
   Database Webhooks (Dashboard → Database → Webhooks) and `x-cron-secret:

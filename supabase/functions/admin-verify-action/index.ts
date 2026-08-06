@@ -1,6 +1,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { cleanString, corsHeaders, isUuid, json, rateLimit, readJsonBody } from '../_shared/security.ts'
+import { notifyUsers } from '../_shared/push.ts'
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!
 const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
@@ -59,33 +60,19 @@ serve(async (req) => {
       })
       .eq('id', targetUserId)
 
-    const { data: targetProfile } = await adminClient
-      .from('profiles')
-      .select('expo_push_token, full_name')
-      .eq('id', targetUserId)
-      .single()
-
     const notifTitle = action === 'approve' ? '✓ Verified!' : 'Verification update'
     const notifBody =
       action === 'approve'
         ? 'Your student verification was approved. Your Verified Student badge is now live.'
         : `Your verification was not approved: ${reason || 'Please try uploading again.'}`
 
-    if (targetProfile?.expo_push_token) {
-      await fetch('https://exp.host/--/api/v2/push/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          to: targetProfile.expo_push_token,
-          title: notifTitle,
-          body: notifBody,
-          data: {
-            type: action === 'approve' ? 'verification_approved' : 'verification_rejected',
-          },
-          sound: 'default',
-        }),
-      })
-    }
+    await notifyUsers(adminClient, [targetUserId], {
+      title: notifTitle,
+      body: notifBody,
+      // Verification lives on the profile, so that's where the click lands.
+      url: '/profile',
+      type: action === 'approve' ? 'verification_approved' : 'verification_rejected',
+    })
 
     await adminClient.from('notifications').insert({
       user_id: targetUserId,

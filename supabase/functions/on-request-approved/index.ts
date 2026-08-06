@@ -1,6 +1,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { callerIp, isUuid, json, rateLimit, requireSecret } from '../_shared/security.ts'
+import { notifyUsers } from '../_shared/push.ts'
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!
 const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
@@ -31,14 +32,19 @@ serve(async (req) => {
       return json(req, { ok: true, skipped: true })
     }
 
+    // Only the pending → approved transition is an event. The webhook fires on
+    // every UPDATE of the row and later ones (check-in, most obviously) leave
+    // status='approved', which would re-push "You're in!" and re-post the join
+    // message each time. Same guard the DB trigger uses (handle_request_status
+    // _change in 001_schema.sql).
+    if (payload?.old_record?.status === 'approved') {
+      return json(req, { ok: true, skipped: true })
+    }
+
     const supabase = createClient(supabaseUrl, serviceRoleKey)
 
     const [{ data: profile }, { data: session }] = await Promise.all([
-      supabase
-        .from('profiles')
-        .select('expo_push_token, full_name')
-        .eq('id', record.requester_id)
-        .single(),
+      supabase.from('profiles').select('full_name').eq('id', record.requester_id).single(),
       supabase
         .from('sessions')
         .select('subject, location_name')
@@ -46,19 +52,17 @@ serve(async (req) => {
         .single(),
     ])
 
-    if (profile?.expo_push_token) {
-      await fetch('https://exp.host/--/api/v2/push/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          to: profile.expo_push_token,
-          title: "You're in! 🎉",
-          body: `Your request for "${session?.subject}" at ${session?.location_name} was approved.`,
-          data: { sessionId: record.session_id, type: 'request_approved' },
-          sound: 'default',
-        }),
-      })
-    }
+    const approvalBody = `Your request for "${session?.subject}" at ${session?.location_name} was approved.`
+
+    // Only the requester is notified: the host is the one who just pressed
+    // approve, and the rest of the session gets the system message below.
+    await notifyUsers(supabase, [record.requester_id], {
+      title: "You're in! 🎉",
+      body: approvalBody,
+      url: `/sessions/${record.session_id}`,
+      type: 'request_approved',
+      sessionId: record.session_id,
+    })
 
     await supabase.from('messages').insert({
       session_id: record.session_id,
@@ -70,7 +74,7 @@ serve(async (req) => {
       user_id: record.requester_id,
       type: 'request_approved',
       title: "You're in! 🎉",
-      body: `Your request for "${session?.subject}" at ${session?.location_name} was approved.`,
+      body: approvalBody,
       data: { session_id: record.session_id },
     })
 
