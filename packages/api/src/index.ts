@@ -1,4 +1,5 @@
 export * from './sessions'
+export * from './filters'
 export * from './profiles'
 export * from './requests'
 export * from './messages'

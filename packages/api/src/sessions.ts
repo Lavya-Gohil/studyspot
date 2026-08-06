@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { Session, FeedFilters } from '@studyspot/types'
+import { isCountryCode } from './filters'
 
 export async function fetchFeedSessions(
   client: SupabaseClient,
@@ -45,8 +46,16 @@ export async function fetchFeedSessions(
 
   // In-person sessions are scoped to the user's country; online sessions are
   // location-independent and shown globally.
-  if (country) {
+  //
+  // `country` originates from profiles.country, which the browser writes
+  // directly — it is untrusted here and must never be interpolated into
+  // `.or()` raw. See ./filters.ts for what a crafted value does to the tree.
+  if (isCountryCode(country)) {
     query = query.or(`mode.eq.online,location_country.eq.${country}`)
+  } else if (country) {
+    // Present but malformed: fall back to location-independent sessions rather
+    // than trusting the value or silently widening the feed to every country.
+    query = query.eq('mode', 'online')
   }
 
   const { data, error } = await query

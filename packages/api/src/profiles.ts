@@ -9,6 +9,21 @@ const PUBLIC_PROFILE_COLUMNS = [
   'total_sessions_attended', 'is_admin', 'created_at', 'updated_at',
 ].join(', ')
 
+/**
+ * supabase-js infers the row shape by parsing the `.select()` argument at the
+ * type level. That only works on a string *literal* — because the column list
+ * above is assembled with .join() its type is plain `string`, so the inference
+ * falls back to GenericStringError and a direct `as Profile` is rejected.
+ *
+ * The runtime shape is correct (those columns are exactly Profile's), so the
+ * cast is sound; TypeScript just can't see it. Going through `unknown` is the
+ * documented escape hatch. If the column list is ever inlined as a literal,
+ * this helper can go away.
+ */
+function asProfile(data: unknown): Profile {
+  return data as Profile
+}
+
 export async function fetchProfile(client: SupabaseClient, userId: string): Promise<Profile> {
   const { data, error } = await client
     .from('profiles')
@@ -16,7 +31,7 @@ export async function fetchProfile(client: SupabaseClient, userId: string): Prom
     .eq('id', userId)
     .single()
   if (error) throw error
-  return data as Profile
+  return asProfile(data)
 }
 
 export async function fetchCurrentProfile(client: SupabaseClient): Promise<Profile> {
@@ -50,7 +65,7 @@ export async function updateProfile(
     .select(PUBLIC_PROFILE_COLUMNS)
     .single()
   if (error) throw error
-  return data as Profile
+  return asProfile(data)
 }
 
 export async function blockUser(

@@ -214,19 +214,12 @@ export const reportSchema = z
 /* ------------------------------ helper -------------------------------- */
 
 /**
- * Translate raw Supabase/Postgres errors into user-readable messages.
- * In particular the rate-limit triggers (006_security_hardening.sql) raise
- * 'rate_limit_exceeded' — surface that gracefully instead of a DB error dump.
+ * Re-exported for existing call sites. The implementation moved to
+ * lib/db-errors.ts so components needing error formatting but not schema
+ * validation don't pull zod into their bundle — client components should
+ * import it from there directly.
  */
-export function friendlyDbError(message: string | undefined | null): string {
-  if (!message) return 'Something went wrong. Please try again.'
-  if (message.includes('rate_limit_exceeded')) {
-    return "You're doing that too fast — take a short break and try again."
-  }
-  if (message.includes('duplicate key')) return 'That already exists.'
-  if (message.includes('violates check constraint')) return 'One of the fields is invalid.'
-  return message
-}
+export { friendlyDbError } from './db-errors'
 
 export type Validated<T> = { ok: true; data: T } | { ok: false; error: string }
 

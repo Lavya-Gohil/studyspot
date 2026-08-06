@@ -1,9 +1,20 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
+// Deep import, not the '@studyspot/api' barrel: the barrel re-exports
+// ./client, which calls createClient() at module scope — pulling a second
+// Supabase client into this bundle that the web app never uses (it has its
+// own in @/lib/supabase/client).
+import { fetchFeedSessions } from '@studyspot/api/sessions'
 import { SessionCard } from '@/components/session/SessionCard'
+// Deep imports rather than the '@/components/ui' barrel — the barrel also
+// re-exports Modal and Toast, which pull framer-motion into any client bundle
+// that touches it (+40kB on this route for components the feed never renders).
 import { SessionCardSkeleton } from '@/components/ui/Skeleton'
+import { EmptyState, ErrorState } from '@/components/ui/EmptyState'
+import { Button } from '@/components/ui/Button'
+import { friendlyDbError } from '@/lib/db-errors'
 import type { Session, FeedFilters, SessionVibe } from '@studyspot/types'
 import Link from 'next/link'
 
@@ -29,51 +40,44 @@ export function FeedClient({ userCountry, userCountryName, userFullName }: Props
   const [loadingMore, setLoadingMore] = useState(false)
   const [hasMore, setHasMore] = useState(true)
   const [filters, setFilters] = useState<FeedFilters>({})
+  const [error, setError] = useState<string | null>(null)
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set())
   const [requestStatuses, setRequestStatuses] = useState<Record<string, string>>({})
   const offset = useRef(0)
 
+  const LIMIT = 20
+
+  // The query itself lives in @studyspot/api so web and mobile stay in sync —
+  // it also carries the country-code guard around the PostgREST `.or()` filter.
   async function loadSessions(reset = false) {
     const currentOffset = reset ? 0 : offset.current
     if (reset) { setSessions([]); setHasMore(true) }
+    setError(null)
 
-    const limit = 20
-    let query = supabase
-      .from('session_feed')
-      .select('*')
-      .in('status', ['active', 'full', 'ongoing'])
-      // Keep sessions visible until they actually end (not just until they start),
-      // so in-progress sessions still show up.
-      .gt('end_time', new Date().toISOString())
-      .order('start_time', { ascending: true })
-      .range(currentOffset, currentOffset + limit - 1)
+    try {
+      const results = await fetchFeedSessions(supabase, {
+        country: userCountry ?? undefined,
+        filters,
+        offset: currentOffset,
+        limit: LIMIT,
+      })
 
-    if (filters.vibe && filters.vibe.length > 0) query = query.in('vibe', filters.vibe)
-    if (filters.date === 'today') {
-      const today = new Date(); today.setHours(0, 0, 0, 0)
-      const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate() + 1)
-      query = query.gte('start_time', today.toISOString()).lt('start_time', tomorrow.toISOString())
+      if (reset) {
+        setSessions(results)
+        offset.current = results.length
+      } else {
+        setSessions((prev) => [...prev, ...results])
+        offset.current += results.length
+      }
+      setHasMore(results.length === LIMIT)
+    } catch (err) {
+      // Previously the error was dropped and the feed just rendered empty,
+      // which is indistinguishable from "no sessions near you".
+      setError(friendlyDbError(err instanceof Error ? err.message : null))
+    } finally {
+      setLoading(false)
+      setLoadingMore(false)
     }
-    // Scope in-person sessions to the user's country, but online sessions
-    // are location-independent, so show them globally.
-    if (userCountry) {
-      query = query.or(`mode.eq.online,location_country.eq.${userCountry}`)
-    }
-
-    const { data } = await query
-    const results = (data || []) as Session[]
-
-    if (reset) {
-      setSessions(results)
-      offset.current = results.length
-    } else {
-      setSessions((prev) => [...prev, ...results])
-      offset.current += results.length
-    }
-
-    setHasMore(results.length === limit)
-    setLoading(false)
-    setLoadingMore(false)
   }
 
   useEffect(() => {
@@ -176,18 +180,25 @@ export function FeedClient({ userCountry, userCountryName, userFullName }: Props
         <div className="space-y-4">
           {[1, 2, 3].map((i) => <SessionCardSkeleton key={i} />)}
         </div>
+      ) : error ? (
+        <ErrorState
+          description={error}
+          onRetry={() => {
+            setLoading(true)
+            loadSessions(true)
+          }}
+        />
       ) : sessions.length === 0 ? (
-        <div className="py-16 flex flex-col items-center gap-4 text-center">
-          <div className="text-5xl">📚</div>
-          <h3 className="text-lg font-semibold text-text-primary">No sessions near you yet</h3>
-          <p className="text-text-secondary text-sm">Be the first to create one.</p>
-          <Link
-            href="/sessions/create"
-            className="inline-flex h-10 items-center justify-center rounded-md bg-accent-primary px-6 text-sm font-medium text-accent-fg transition-colors hover:bg-accent-hover"
-          >
-            Create a session
-          </Link>
-        </div>
+        <EmptyState
+          icon={<span className="text-2xl">📚</span>}
+          title="No sessions near you yet"
+          description="Be the first to create one — study sessions show up here as soon as someone posts them."
+          action={
+            <Link href="/sessions/create">
+              <Button size="lg">Create a session</Button>
+            </Link>
+          }
+        />
       ) : (
         <div className="space-y-4">
           {sessions.map((session) => (
