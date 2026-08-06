@@ -1,170 +1,174 @@
 import Link from 'next/link'
+import { ArrowRight, CalendarCheck, MessagesSquare, ShieldCheck, Users } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { FadeIn, Stagger, StaggerItem } from '@/components/motion/Motion'
-import { Avatar } from '@/components/profile/Avatar'
 import { SiteHeader } from '@/components/marketing/SiteHeader'
 import { SiteFooter } from '@/components/marketing/SiteFooter'
+import { FlameIcon, FocusIcon, Icon, LogoMark, PulseIcon } from '@/components/ui/Icon'
+
+/**
+ * The landing page.
+ *
+ * Rewritten away from the template it used to be: pill badge, giant headline
+ * with one highlighted word, two CTAs, a fabricated product mockup, a bento
+ * grid of feature cards, "three steps to X", centred CTA card. That shape is
+ * so common now that it reads as machine-made regardless of what it says.
+ *
+ * Two rules replace it.
+ *
+ * NO INVENTED DATA. The old page shipped a SESSIONS array of imaginary
+ * students at imaginary cafés. Everything numeric here comes from
+ * public_stats() (migration 014) — four aggregate counts, no PII — and when a
+ * number is zero the page says something true instead of showing a zero or
+ * inventing a bigger one. A brand new product looks new; that is fine, and it
+ * is better than looking fake.
+ *
+ * NO FRAMER-MOTION. Entrances use the CSS classes from globals.css, so this
+ * route ships no animation library at all. The old version pulled framer in
+ * for three fades.
+ */
 
 export default async function HomePage() {
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  const isAuthed = !!user
+
+  const [{ data: auth }, { data: statsRows }] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.rpc('public_stats'),
+  ])
+
+  const isAuthed = !!auth?.user
+  const stats = (Array.isArray(statsRows) ? statsRows[0] : statsRows) as
+    | { active_sessions: number; studying_now: number; students: number; hours_focused: number }
+    | undefined
+
+  const live = stats?.studying_now ?? 0
+  const open = stats?.active_sessions ?? 0
 
   return (
     <main className="relative min-h-[100dvh] overflow-x-hidden bg-bg-base text-text-primary">
-      {/* Floating glass pill nav (shared with all marketing pages) */}
       <SiteHeader isAuthed={isAuthed} />
 
-      {/* Hero */}
+      {/* ---------------------------------------------------------- Hero */}
       <section className="grain relative overflow-hidden">
-        <FadeIn className="relative z-10 mx-auto max-w-4xl px-5 pt-36 text-center sm:pt-44">
-          <span className="glass mb-7 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs text-text-secondary">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent-primary" />
-            Study with people who actually show up
-          </span>
-
-          <h1 className="text-balance text-[clamp(2.9rem,8vw,5.75rem)] font-bold leading-[0.95] tracking-[-0.04em]">
-            Stop studying
-            <br />
-            <span className="hl">alone.</span>
-          </h1>
-
-          <p className="mx-auto mt-7 max-w-xl text-pretty text-base leading-relaxed text-text-secondary sm:text-lg">
-            StudySpot connects students for real study sessions — find a crew near you,
-            pick a vibe, set a goal, and finally get focused. Together.
-          </p>
-
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            {isAuthed ? (
-              <Link href="/feed" className="btn-accent-lg w-full sm:w-auto">
-                Open StudySpot →
-              </Link>
+        <div className="relative z-10 mx-auto max-w-5xl px-5 pt-32 sm:pt-40">
+          <div className="enter-up">
+            {/* Only claims something is happening when something is. */}
+            {live > 0 ? (
+              <span className="inline-flex items-center gap-2.5 rounded-full border border-brand-primary/25 bg-brand-primary/[0.07] px-3.5 py-1.5 text-xs font-medium text-brand-text">
+                <span className="live-dot" />
+                {live} {live === 1 ? 'session' : 'sessions'} running right now
+              </span>
             ) : (
-              <>
-                <Link href="/auth/signup" className="btn-accent-lg w-full sm:w-auto">
-                  Get started, free →
-                </Link>
-                <Link href="/auth/login" className="btn-glass-lg w-full sm:w-auto">
-                  I have an account
-                </Link>
-              </>
+              <span className="eyebrow">Study together, on purpose</span>
             )}
           </div>
-          <p className="mt-5 text-xs text-text-tertiary">
-            Free for students · Verified profiles · No spam
+
+          <h1
+            className="enter-up mt-7 text-[clamp(3rem,9vw,6.5rem)] font-bold leading-[0.92] tracking-[-0.045em]"
+            style={{ animationDelay: '60ms' }}
+          >
+            Studying alone
+            <br />
+            is <span className="hl">the hard way.</span>
+          </h1>
+
+          <p
+            className="enter-up mt-8 max-w-xl text-pretty text-base leading-relaxed text-text-secondary sm:text-lg"
+            style={{ animationDelay: '120ms' }}
+          >
+            StudySpot puts you in a room with people doing the same work at the same time — a
+            café down the road, or a live virtual desk with a shared timer. Turn up, lock in,
+            leave having actually done it.
           </p>
-        </FadeIn>
 
-        {/* Live map + sessions panel */}
-        <FadeIn delay={0.1} className="relative z-10 mx-auto mt-16 max-w-4xl px-5 pb-24">
-          <MapPanel />
-        </FadeIn>
-      </section>
-
-      {/* Features — bento grid */}
-      <section id="features" className="mx-auto max-w-6xl px-5 py-24 sm:py-32">
-        <FadeIn className="max-w-2xl">
-          <span className="eyebrow">Everything you need</span>
-          <h2 className="mt-4 text-[clamp(2rem,4.5vw,3.25rem)] font-bold leading-[1.0] tracking-[-0.03em]">
-            Built for studying <span className="hl">together.</span>
-          </h2>
-          <p className="mt-4 max-w-md text-text-secondary">
-            Find your people, lock in a vibe, and hold each other to it.
-          </p>
-        </FadeIn>
-
-        <Stagger className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-6">
-          {/* Large feature with mini map */}
-          <StaggerItem className="sm:col-span-4 sm:row-span-2">
-            <article className="glass glass-sheen group relative flex h-full flex-col overflow-hidden rounded-3xl p-7 transition-transform duration-300 hover:-translate-y-1">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-primary/10 text-accent-primary">
-                <IconPin />
-              </div>
-              <h3 className="mt-5 font-display text-xl font-bold tracking-tight">Sessions near you</h3>
-              <p className="mt-2 max-w-md text-sm leading-relaxed text-text-secondary">
-                Browse real study sessions at cafés, libraries, and campuses around you — or host
-                your own and set the time, place, and vibe.
-              </p>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {['Central Library', 'Bean & Brew', 'CS Building', 'Quad Lawn', 'Co-work Loft'].map((p) => (
-                  <span key={p} className="glass rounded-full px-3.5 py-1.5 text-xs text-text-secondary">
-                    {p}
-                  </span>
-                ))}
-              </div>
-              <div className="map-grid relative mt-6 grow overflow-hidden rounded-2xl border border-border-subtle bg-bg-base/40">
-                <MapRoads />
-                <Pin className="left-[22%] top-[34%]" />
-                <Pin className="left-[58%] top-[58%]" dot />
-                <Pin className="left-[72%] top-[28%]" />
-                <Pin className="left-[42%] top-[70%]" />
-              </div>
-            </article>
-          </StaggerItem>
-
-          <StaggerItem className="sm:col-span-2">
-            <FeatureCard icon={<IconSpark />} title="Pick your vibe" body="Silent, Pomodoro, discussion, coding, exam prep, or casual." />
-          </StaggerItem>
-          <StaggerItem className="sm:col-span-2">
-            <FeatureCard icon={<IconTarget />} title="Stay accountable" body="Set goals, join circles, and keep your study streak alive." />
-          </StaggerItem>
-          <StaggerItem className="sm:col-span-3">
-            <FeatureCard icon={<IconShield />} title="Verified students" body="Profiles are verified so you study with real students. Block and report keep it safe." />
-          </StaggerItem>
-          <StaggerItem className="sm:col-span-3">
-            <FeatureCard icon={<IconChat />} title="Built-in chat" body="Coordinate with your group before and during a session in real time." />
-          </StaggerItem>
-        </Stagger>
-      </section>
-
-      {/* How it works */}
-      <section id="how" className="mx-auto max-w-5xl px-5 py-24 sm:py-32">
-        <FadeIn>
-          <span className="eyebrow">How it works</span>
-          <h2 className="mt-4 text-[clamp(2rem,4.5vw,3rem)] font-bold tracking-[-0.03em]">
-            Three steps to <span className="hl">focus.</span>
-          </h2>
-        </FadeIn>
-        <Stagger className="mt-14 grid gap-4 sm:grid-cols-3">
-          {STEPS.map((step, i) => (
-            <StaggerItem key={step.title}>
-              <div className="glass glass-sheen h-full rounded-2xl p-6">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-primary/10 font-mono text-sm font-semibold text-accent-primary tnum">
-                  {i + 1}
-                </div>
-                <h3 className="mt-5 font-display text-lg font-bold tracking-tight">{step.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-text-secondary">{step.body}</p>
-              </div>
-            </StaggerItem>
-          ))}
-        </Stagger>
-      </section>
-
-      {/* CTA */}
-      <section className="mx-auto max-w-5xl px-5 pb-28">
-        <FadeIn>
-          <div className="grain glass-strong glass-sheen relative overflow-hidden rounded-[2rem] px-6 py-16 text-center sm:py-24">
-            <div className="relative z-10">
-              <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[1.0] tracking-[-0.03em]">
-                Ready to find your <span className="hl">crew?</span>
-              </h2>
-              <p className="mx-auto mt-4 max-w-md text-text-secondary">
-                Join StudySpot and study with people who actually show up.
-              </p>
-              <Link
-                href={isAuthed ? '/feed' : '/auth/signup'}
-                className="btn-accent-lg mt-9 inline-flex"
-              >
-                {isAuthed ? 'Open StudySpot →' : 'Create your free account →'}
+          <div
+            className="enter-up mt-10 flex flex-col gap-3 sm:flex-row sm:items-center"
+            style={{ animationDelay: '180ms' }}
+          >
+            <Link
+              href={isAuthed ? '/feed' : '/auth/signup'}
+              className="btn-brand-lg press w-full sm:w-auto"
+            >
+              {isAuthed ? 'Open StudySpot' : 'Start studying together'}
+              <Icon as={ArrowRight} size="sm" className="ml-2" />
+            </Link>
+            {!isAuthed ? (
+              <Link href="/auth/login" className="btn-glass-lg press w-full sm:w-auto">
+                I have an account
               </Link>
-              <p className="mt-6 text-xs text-text-tertiary">
-                Free for students · No credit card · Verified profiles
-              </p>
-            </div>
+            ) : null}
           </div>
-        </FadeIn>
+
+          <p
+            className="enter-up mt-5 text-xs text-text-tertiary"
+            style={{ animationDelay: '240ms' }}
+          >
+            Free for students · Verified profiles · No credit card
+          </p>
+        </div>
+
+        {/* The room, drawn from the real design system rather than a
+            screenshot — same tokens, same type, same live dot the app uses. */}
+        <div className="relative z-10 mx-auto mt-20 max-w-5xl px-5 pb-24">
+          <RoomPreview live={live} open={open} />
+        </div>
+      </section>
+
+      {/* ------------------------------------------------- What you get */}
+      <section id="features" className="mx-auto max-w-5xl px-5 py-24 sm:py-28">
+        <h2 className="max-w-2xl text-[clamp(1.9rem,4vw,2.9rem)] font-bold leading-[1.05] tracking-[-0.03em]">
+          Accountability that <span className="hl">isn&apos;t willpower.</span>
+        </h2>
+
+        <div className="stagger mt-14 grid gap-x-10 gap-y-12 sm:grid-cols-2">
+          <Feature
+            i={0}
+            icon={<FocusIcon size="lg" />}
+            title="A timer everyone can see"
+            body="The focus timer in a virtual room is shared. When someone starts it, it starts for the whole room — and every finished stretch is recorded against your name."
+          />
+          <Feature
+            i={1}
+            icon={<FlameIcon size="lg" />}
+            title="Streaks that survive real life"
+            body="Show up, the streak grows. Streaks count your local days, not a server's, and a freeze covers the day you were ill — because one bad week shouldn't erase three good months."
+          />
+          <Feature
+            i={2}
+            icon={<Icon as={Users} size="lg" />}
+            title="Circles, not followers"
+            body="Small private groups with a join code. A shared wall, shared goals, and a board that only ranks the people in it."
+          />
+          <Feature
+            i={3}
+            icon={<Icon as={ShieldCheck} size="lg" />}
+            title="Verified students only"
+            body="Profiles are checked against a student ID before they can be trusted. Blocking is real: block someone and they leave your feed, your matches and your leaderboards."
+          />
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------- Closing */}
+      <section className="mx-auto max-w-5xl px-5 pb-28">
+        <div className="grain glass-strong glass-sheen relative overflow-hidden rounded-[2rem] px-6 py-16 sm:py-20">
+          <div className="relative z-10 mx-auto max-w-xl text-center">
+            <LogoMark size="xl" className="mx-auto text-brand-text" />
+            <h2 className="mt-6 text-[clamp(1.9rem,4.5vw,3rem)] font-bold leading-[1.05] tracking-[-0.03em]">
+              Your next session is <span className="hl">tonight.</span>
+            </h2>
+            <p className="mx-auto mt-4 text-text-secondary">
+              {open > 0
+                ? `${open} open ${open === 1 ? 'session' : 'sessions'} to join right now.`
+                : 'Create the first one and people will find it.'}
+            </p>
+            <Link
+              href={isAuthed ? '/feed' : '/auth/signup'}
+              className="btn-brand-lg press mt-9 inline-flex"
+            >
+              {isAuthed ? 'Open StudySpot' : 'Create your free account'}
+              <Icon as={ArrowRight} size="sm" className="ml-2" />
+            </Link>
+          </div>
+        </div>
       </section>
 
       <SiteFooter />
@@ -172,264 +176,96 @@ export default async function HomePage() {
   )
 }
 
-/* ========================= Map + sessions ======================= */
-function MapPanel() {
-  return (
-    <div className="glass-strong glass-sheen overflow-hidden rounded-[1.75rem] p-2 shadow-glass">
-      {/* toolbar */}
-      <div className="flex items-center justify-between gap-3 px-3 py-2.5">
-        <div className="glass flex items-center gap-2 rounded-full px-3.5 py-2 text-sm text-text-tertiary">
-          <IconSearch />
-          <span>Sessions near downtown</span>
-        </div>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-primary/10 px-3 py-1.5 text-xs font-semibold text-accent-primary">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent-primary" />
-          Near you
-        </span>
-      </div>
+/* ------------------------------------------------------------------ */
 
-      {/* map canvas */}
-      <div className="map-grid relative h-56 overflow-hidden rounded-2xl border border-border-subtle bg-bg-base/40 sm:h-72">
-        <MapRoads />
-        <Pin className="left-[28%] top-[38%]" label="Calc II" />
-        <Pin className="left-[47%] top-[62%]" dot />
-        <Pin className="left-[64%] top-[28%]" label="CS lock-in" />
-        <Pin className="left-[55%] top-[72%]" />
-      </div>
-
-      {/* session rows */}
-      <div className="mt-2 space-y-2 p-1">
-        {SESSIONS.map((s) => (
-          <SessionRow key={s.title} {...s} />
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function SessionRow({
+function Feature({
+  i,
+  icon,
   title,
-  when,
-  place,
-  vibe,
-  crew,
-  status,
-  join,
-}: (typeof SESSIONS)[number]) {
-  return (
-    <div className="glass flex items-center justify-between gap-4 rounded-2xl px-4 py-3.5 transition-colors hover:border-[var(--border-strong)]">
-      <div className="min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="truncate font-display text-[15px] font-bold tracking-tight">{title}</span>
-          <span className="shrink-0 rounded-full border border-border-default px-2 py-0.5 text-[11px] text-text-secondary">
-            {vibe}
-          </span>
-        </div>
-        <div className="mt-0.5 truncate text-xs text-text-tertiary">
-          {when} · {place}
-        </div>
-        <div className="mt-2">
-          <AvatarStack people={crew} size="xs" />
-        </div>
-      </div>
-      <div className="shrink-0 text-right">
-        {join ? (
-          // Product-preview card, but the CTA is real: it starts signup.
-          <Link
-            href="/auth/signup"
-            className="inline-flex h-8 items-center rounded-full bg-accent-primary px-4 text-xs font-semibold text-accent-fg transition-all hover:bg-accent-hover"
-          >
-            Join
-          </Link>
-        ) : (
-          <span className="text-xs font-semibold text-text-secondary">{status}</span>
-        )}
-      </div>
-    </div>
-  )
-}
-
-function MapRoads() {
-  return (
-    <svg className="absolute inset-0 h-full w-full text-[var(--border-default)]" preserveAspectRatio="none" viewBox="0 0 400 200" fill="none">
-      <path d="M-20 70 C 90 50, 150 130, 260 110 S 420 80, 440 95" stroke="currentColor" strokeWidth="2" />
-      <path d="M120 -10 C 130 60, 90 120, 140 210" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
-      <path d="M300 -10 C 290 70, 330 120, 300 210" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
-    </svg>
-  )
-}
-
-function Pin({ className = '', label, dot }: { className?: string; label?: string; dot?: boolean }) {
-  return (
-    <div className={`absolute ${className}`}>
-      <div className="relative flex flex-col items-center">
-        {label && (
-          <span className="glass-strong mb-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-semibold">
-            {label}
-          </span>
-        )}
-        <span className="relative flex h-3 w-3 items-center justify-center">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-primary/60" />
-          {dot ? (
-            <span className="relative h-2.5 w-2.5 rounded-full bg-accent-primary ring-2 ring-bg-base" />
-          ) : (
-            <span className="relative text-accent-primary">
-              <IconMapPin />
-            </span>
-          )}
-        </span>
-      </div>
-    </div>
-  )
-}
-
-/* ========================= Avatar stack ========================= */
-function AvatarStack({
-  people,
-  size = 'xs',
-  extra,
+  body,
 }: {
-  people: { id: string; name: string }[]
-  size?: 'xs' | 'sm'
-  extra?: string
+  i: number
+  icon: React.ReactNode
+  title: string
+  body: string
 }) {
   return (
-    <div className="flex items-center">
-      <div className="flex -space-x-2">
-        {people.map((p) => (
-          <span key={p.id} className="rounded-full ring-2 ring-bg-base">
-            <Avatar userId={p.id} name={p.name} avatarUrl={null} size={size} />
-          </span>
-        ))}
-      </div>
-      {extra && (
-        <span className="-ml-2 flex h-6 items-center rounded-full bg-bg-subtle px-2 text-[11px] font-semibold text-text-secondary ring-2 ring-bg-base">
-          {extra}
-        </span>
-      )}
+    <div style={{ ['--i' as string]: i }}>
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-text">
+        {icon}
+      </span>
+      <h3 className="mt-5 font-display text-lg font-bold tracking-tight">{title}</h3>
+      <p className="mt-2 max-w-md text-sm leading-relaxed text-text-secondary">{body}</p>
     </div>
   )
 }
 
-/* ============================ Cards ============================= */
-function FeatureCard({ icon, title, body }: { icon: React.ReactNode; title: string; body: string }) {
+/**
+ * A study room, built from the app's own tokens rather than mocked up.
+ * The seat labels are initials of nobody in particular and are presented as an
+ * illustration, not as people — no names, no fabricated profiles.
+ */
+function RoomPreview({ live, open }: { live: number; open: number }) {
+  const seats = [0, 1, 2, 3, 4, 5, 6, 7]
+
   return (
-    <article className="glass glass-sheen group h-full rounded-3xl p-7 transition-transform duration-300 hover:-translate-y-1">
-      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-primary/10 text-accent-primary">
-        {icon}
+    <div className="enter-up glass-strong glass-sheen overflow-hidden rounded-[1.75rem] p-2 shadow-glass" style={{ animationDelay: '300ms' }}>
+      {/* Room chrome */}
+      <div className="flex items-center justify-between gap-3 px-3 py-2.5">
+        <div className="flex items-center gap-2 text-sm">
+          <FocusIcon size="sm" className="text-brand-text" />
+          <span className="font-display font-semibold">Organic Chemistry — silent</span>
+        </div>
+        <span className="inline-flex items-center gap-2 rounded-full bg-brand-primary/10 px-3 py-1.5 text-xs font-semibold text-brand-text">
+          <span className="live-dot" />
+          Live
+        </span>
       </div>
-      <h3 className="mt-5 font-display text-lg font-bold tracking-tight">{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-text-secondary">{body}</p>
-    </article>
+
+      {/* Seats */}
+      <div className="grid grid-cols-4 gap-2 rounded-2xl border border-border-subtle bg-bg-base/40 p-3 sm:grid-cols-8">
+        {seats.map((s) => (
+          <div
+            key={s}
+            className={`flex aspect-square items-center justify-center rounded-xl border text-xs font-semibold ${
+              s < 5
+                ? 'border-brand-primary/25 bg-brand-primary/[0.08] text-brand-text'
+                : 'border-border-subtle bg-bg-subtle/40 text-text-tertiary'
+            }`}
+          >
+            {s < 5 ? <FocusIcon size="sm" /> : '·'}
+          </div>
+        ))}
+      </div>
+
+      {/* Timer bar */}
+      <div className="flex flex-wrap items-center justify-between gap-3 px-3 py-3">
+        <div className="flex items-baseline gap-3">
+          <span className="font-mono text-3xl font-semibold text-brand-text tnum">24:12</span>
+          <span className="text-xs text-text-tertiary">shared timer · 5 focusing</span>
+        </div>
+        <div className="flex items-center gap-2 text-xs text-text-tertiary">
+          <Icon as={MessagesSquare} size="xs" />
+          Chat
+          <span className="mx-1 text-border-strong">·</span>
+          <Icon as={CalendarCheck} size="xs" />
+          Check in
+        </div>
+      </div>
+
+      {/* Honest footer: real numbers when there are real numbers. */}
+      <div className="flex items-center gap-2 border-t border-border-subtle px-3 py-2.5 text-xs text-text-tertiary">
+        <PulseIcon size="xs" className="text-brand-text" />
+        {live > 0 || open > 0 ? (
+          <span>
+            {live > 0 ? `${live} running now` : null}
+            {live > 0 && open > 0 ? ' · ' : null}
+            {open > 0 ? `${open} open to join` : null}
+          </span>
+        ) : (
+          <span>An illustration of a virtual room — yours will have your crew in it.</span>
+        )}
+      </div>
+    </div>
   )
 }
-
-/* ============================== Data =========================== */
-const SESSIONS = [
-  {
-    title: 'Calc II grind',
-    when: 'Today 4:00 PM',
-    place: 'Bean & Brew',
-    vibe: 'Pomodoro',
-    status: '2 spots left',
-    join: false,
-    crew: [
-      { id: 'Mara', name: 'Mara' },
-      { id: 'Leo', name: 'Leo' },
-      { id: 'Nia', name: 'Nia' },
-    ],
-  },
-  {
-    title: 'CS finals lock-in',
-    when: 'Today 6:30 PM',
-    place: 'CS Building',
-    vibe: 'Silent',
-    status: 'Join',
-    join: true,
-    crew: [
-      { id: 'Priya', name: 'Priya' },
-      { id: 'Sam', name: 'Sam' },
-    ],
-  },
-  {
-    title: 'Essay co-write',
-    when: 'Tomorrow 10 AM',
-    place: 'Central Library',
-    vibe: 'Casual',
-    status: '4 spots left',
-    join: false,
-    crew: [
-      { id: 'Ivy', name: 'Ivy' },
-      { id: 'Kai', name: 'Kai' },
-      { id: 'Bo', name: 'Bo' },
-    ],
-  },
-]
-
-/* ============================== Icons ========================== */
-const ic = {
-  width: 20,
-  height: 20,
-  viewBox: '0 0 24 24',
-  fill: 'none',
-  stroke: 'currentColor',
-  strokeWidth: 1.8,
-  strokeLinecap: 'round' as const,
-  strokeLinejoin: 'round' as const,
-}
-
-const IconPin = () => (
-  <svg {...ic}>
-    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-    <circle cx="12" cy="10" r="3" />
-  </svg>
-)
-const IconMapPin = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z" />
-  </svg>
-)
-const IconSpark = () => (
-  <svg {...ic}>
-    <path d="M12 3v3M12 18v3M5 12H2M22 12h-3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2" />
-    <circle cx="12" cy="12" r="3" />
-  </svg>
-)
-const IconShield = () => (
-  <svg {...ic}>
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-    <path d="m9 12 2 2 4-4" />
-  </svg>
-)
-const IconChat = () => (
-  <svg {...ic}>
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-  </svg>
-)
-const IconTarget = () => (
-  <svg {...ic}>
-    <circle cx="12" cy="12" r="9" />
-    <circle cx="12" cy="12" r="5" />
-    <circle cx="12" cy="12" r="1" />
-  </svg>
-)
-const IconSearch = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <circle cx="11" cy="11" r="7" />
-    <path d="m21 21-4.3-4.3" />
-  </svg>
-)
-const STEPS = [
-  {
-    title: 'Create your profile',
-    body: 'Sign up, add your subjects and college, and get verified as a real student.',
-  },
-  {
-    title: 'Find or host a session',
-    body: 'Browse sessions near you, or start your own and set the vibe, time, and spots.',
-  },
-  {
-    title: 'Show up and study',
-    body: 'Meet at the spot, lock in a goal, and get focused together.',
-  },
-]

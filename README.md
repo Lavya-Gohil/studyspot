@@ -62,6 +62,8 @@ the connection fails with a misleading host error.
 010_realtime_publication.sql
 011_focus_sessions.sql
 012_session_feed_security.sql
+013_gamification.sql
+014_public_stats.sql
 ```
 
 **009 is not optional.** Without it, `handle_new_user()` resolves `profiles`
