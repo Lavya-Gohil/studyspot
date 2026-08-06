@@ -60,6 +60,8 @@ the connection fails with a misleading host error.
 008_push_subscriptions.sql
 009_definer_search_path.sql
 010_realtime_publication.sql
+011_focus_sessions.sql
+012_session_feed_security.sql
 ```
 
 **009 is not optional.** Without it, `handle_new_user()` resolves `profiles`
@@ -72,6 +74,17 @@ channel still opens and reports `SUBSCRIBED`, so there is no error anywhere —
 live chat messages simply never arrive. The room hides this best, because its
 seats and shared timer ride on presence and broadcast, which never needed the
 publication at all.
+
+**012 is a security fix.** A Postgres view runs with its *owner's* privileges
+unless created `WITH (security_invoker = true)`, so `session_feed` — the view
+behind all 11 feed / session / room read paths — bypassed RLS entirely.
+Blocking a user did not hide their sessions. 012 flips it and audits every
+other view we own.
+
+> **Rule for any new view:** always write
+> `CREATE VIEW … WITH (security_invoker = true)`. An unqualified `CREATE VIEW`
+> silently opts out of row-level security, and because the view still returns
+> data, nothing surfaces the problem until someone tests a policy through it.
 
 Create two Storage buckets:
 
