@@ -3,7 +3,9 @@
 import { useId, useMemo, useState, type ReactNode } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { GraduationCap, SearchX, Users } from 'lucide-react'
 import { Avatar } from '@/components/profile/Avatar'
+import { Icon } from '@/components/ui/Icon'
 // Deep imports rather than the '@/components/ui' barrel — the barrel also
 // re-exports Modal, which pulls framer-motion into any client bundle that
 // touches it for a component this route never renders.
@@ -393,7 +395,7 @@ function NoResults({
   if (filteredBy) {
     return (
       <EmptyState
-        icon={<span className="text-2xl">🔍</span>}
+        icon={<Icon as={SearchX} size="lg" />}
         title={`Nobody matched on ${filteredBy}`}
         description="That subject is quiet right now. Clear the filter to see everyone we found."
         action={
@@ -410,7 +412,7 @@ function NoResults({
   if (!hasSubjects) {
     return (
       <EmptyState
-        icon={<span className="text-2xl">📚</span>}
+        icon={<Icon as={GraduationCap} size="lg" />}
         title="Tell us what you study"
         description="Matching runs on your subjects, course, and year. Add them and this fills up straight away."
         action={
@@ -424,7 +426,7 @@ function NoResults({
 
   return (
     <EmptyState
-      icon={<span className="text-2xl">👋</span>}
+      icon={<Icon as={Users} size="lg" />}
       title={title}
       description={description}
       action={

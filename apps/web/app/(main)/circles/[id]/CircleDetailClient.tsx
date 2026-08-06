@@ -2,8 +2,10 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Check } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Avatar } from '@/components/profile/Avatar'
+import { Icon } from '@/components/ui/Icon'
 import { formatRelativeTime } from '@studyspot/utils'
 import type { CirclePost } from '@studyspot/types'
 import { circlePostSchema, friendlyDbError, validate } from '@/lib/validation'
@@ -110,7 +112,14 @@ export function CircleDetailClient({
             title="Share this code to invite people"
           >
             <span className="font-mono tracking-wider text-text-primary">{joinCode}</span>
-            {copied ? '✓ copied' : 'invite code'}
+            {copied ? (
+              <span className="inline-flex items-center gap-1 text-accent-green">
+                <Icon as={Check} size="xs" />
+                copied
+              </span>
+            ) : (
+              'invite code'
+            )}
           </button>
         )}
       </div>

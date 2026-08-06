@@ -83,7 +83,7 @@ export function RoomChat({
         className="min-h-0 flex-1 space-y-2 overflow-y-auto px-4 py-3"
       >
         {messages.length === 0 ? (
-          <p className="py-8 text-center text-xs text-text-tertiary">No messages yet. Say hi 👋</p>
+          <p className="py-8 text-center text-xs text-text-tertiary">No messages yet.</p>
         ) : null}
 
         {messages.map((msg) => {

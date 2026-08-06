@@ -18,13 +18,7 @@ export default async function HomePage() {
       <SiteHeader isAuthed={isAuthed} />
 
       {/* Hero */}
-      <section className="ambient grain relative overflow-hidden">
-        {/* Aurora backdrop blobs */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="aurora left-1/2 top-[-12%] h-[42rem] w-[42rem] -translate-x-1/2" />
-          <div className="aurora right-[-10%] top-[8%] h-[24rem] w-[24rem]" style={{ animationDelay: '-6s' }} />
-        </div>
-
+      <section className="grain relative overflow-hidden">
         <FadeIn className="relative z-10 mx-auto max-w-4xl px-5 pt-36 text-center sm:pt-44">
           <span className="glass mb-7 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs text-text-secondary">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent-primary" />
@@ -151,7 +145,7 @@ export default async function HomePage() {
       {/* CTA */}
       <section className="mx-auto max-w-5xl px-5 pb-28">
         <FadeIn>
-          <div className="ambient grain glass-strong glass-sheen relative overflow-hidden rounded-[2rem] px-6 py-16 text-center sm:py-24">
+          <div className="grain glass-strong glass-sheen relative overflow-hidden rounded-[2rem] px-6 py-16 text-center sm:py-24">
             <div className="relative z-10">
               <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[1.0] tracking-[-0.03em]">
                 Ready to find your <span className="hl">crew?</span>

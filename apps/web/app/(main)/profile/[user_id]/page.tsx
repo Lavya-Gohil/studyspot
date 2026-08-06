@@ -1,6 +1,8 @@
+import { ChevronRight, ShieldCheck } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { Avatar } from '@/components/profile/Avatar'
+import { FlameIcon, Icon } from '@/components/ui/Icon'
 import { ReputationCard } from '@/components/profile/ReputationCard'
 import { ProductivityDnaCard } from '@/components/profile/ProductivityDnaCard'
 import { computeProductivityDNA, type DnaSession } from '@/lib/dna'
@@ -117,8 +119,9 @@ export default async function UserProfilePage({ params }: { params: Promise<{ us
             <div className="text-xs text-text-tertiary">Hosted</div>
           </div>
           <div className="text-center">
-            <div className="text-xl font-semibold font-mono text-text-primary">
-              🔥 {profile.study_streak}
+            <div className="flex items-center justify-center gap-1.5 font-mono text-xl font-semibold text-text-primary">
+              <FlameIcon size="sm" className="text-brand-text" />
+              {profile.study_streak}
             </div>
             <div className="text-xs text-text-tertiary">Day streak</div>
           </div>
@@ -153,12 +156,15 @@ export default async function UserProfilePage({ params }: { params: Promise<{ us
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-text-primary text-sm">✦ Verify your student status</p>
+              <p className="flex items-center gap-2 text-sm font-medium text-text-primary">
+                <Icon as={ShieldCheck} size="sm" className="text-brand-text" />
+                Verify your student status
+              </p>
               <p className="text-text-secondary text-xs mt-0.5">
-                Verified users get 3x more approved requests. It only takes 2 minutes.
+                Verified users get 3x more approved requests. It takes about two minutes.
               </p>
             </div>
-            <span className="text-accent-primary text-sm shrink-0">→</span>
+            <Icon as={ChevronRight} size="sm" className="shrink-0 text-text-tertiary" />
           </div>
         </Link>
       )}

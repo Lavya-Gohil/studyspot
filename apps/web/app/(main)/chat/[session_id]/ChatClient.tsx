@@ -1,9 +1,11 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { BadgeCheck, Check } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Avatar } from '@/components/profile/Avatar'
 import { VerifiedBadge } from '@/components/ui/Badge'
+import { Icon } from '@/components/ui/Icon'
 import { formatRelativeTime, formatCountdown } from '@studyspot/utils'
 import type { Message } from '@studyspot/types'
 import Link from 'next/link'
@@ -121,9 +123,10 @@ export function ChatClient({ sessionId, session, currentUser }: Props) {
         {showCheckin && (
           <button
             onClick={checkIn}
-            className="h-8 px-4 rounded-md bg-accent-green/15 border border-accent-green/30 text-accent-green text-xs font-medium hover:bg-accent-green/25 transition-colors"
+            className="inline-flex h-8 items-center gap-1.5 rounded-md border border-accent-green/30 bg-accent-green/15 px-4 text-xs font-medium text-accent-green transition-colors hover:bg-accent-green/25"
           >
-            Check in ✓
+            <Icon as={Check} size="xs" />
+            Check in
           </button>
         )}
       </div>
@@ -165,7 +168,7 @@ export function ChatClient({ sessionId, session, currentUser }: Props) {
                   <span className="text-xs text-text-tertiary ml-1">
                     {msg.sender?.full_name}
                     {msg.sender?.verification_status === 'verified' && (
-                      <span className="ml-1 text-accent-green">✓</span>
+                      <Icon as={BadgeCheck} size="xs" className="ml-1 inline-block align-[-2px] text-accent-green" />
                     )}
                   </span>
                 )}

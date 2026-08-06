@@ -1,12 +1,15 @@
+import { Clipboard, Code2, Coffee, MessagesSquare, Timer, VolumeX } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import type { SessionVibe } from '@studyspot/types'
+import { Icon } from '@/components/ui/Icon'
 
-const VIBES: { value: SessionVibe; label: string; icon: string }[] = [
-  { value: 'silent', label: 'Silent Study', icon: '🔇' },
-  { value: 'pomodoro', label: 'Pomodoro', icon: '⏱' },
-  { value: 'discussion', label: 'Group Discussion', icon: '💬' },
-  { value: 'coding', label: 'Coding Session', icon: '💻' },
-  { value: 'exam_prep', label: 'Exam Prep', icon: '📝' },
-  { value: 'casual', label: 'Casual Study', icon: '☕' },
+const VIBES: { value: SessionVibe; label: string; icon: LucideIcon }[] = [
+  { value: 'silent', label: 'Silent study', icon: VolumeX },
+  { value: 'pomodoro', label: 'Pomodoro', icon: Timer },
+  { value: 'discussion', label: 'Group discussion', icon: MessagesSquare },
+  { value: 'coding', label: 'Coding session', icon: Code2 },
+  { value: 'exam_prep', label: 'Exam prep', icon: Clipboard },
+  { value: 'casual', label: 'Casual study', icon: Coffee },
 ]
 
 export function VibeSelector({
@@ -18,22 +21,29 @@ export function VibeSelector({
 }) {
   return (
     <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-      {VIBES.map((v) => (
-        <button
-          key={v.value}
-          type="button"
-          aria-pressed={value === v.value}
-          onClick={() => onChange(v.value)}
-          className={`flex items-center gap-2 px-3 py-2.5 rounded-md border text-sm font-medium transition-all ${
-            value === v.value
-              ? 'bg-accent-primary/15 border-accent-primary text-accent-primary scale-[1.02]'
-              : 'bg-transparent border-border-default text-text-secondary hover:border-border-strong'
-          }`}
-        >
-          <span>{v.icon}</span>
-          {v.label}
-        </button>
-      ))}
+      {VIBES.map((v) => {
+        const selected = value === v.value
+        return (
+          <button
+            key={v.value}
+            type="button"
+            aria-pressed={selected}
+            onClick={() => onChange(v.value)}
+            className={`flex items-center gap-2.5 rounded-md border px-3 py-2.5 text-sm font-medium transition-all ${
+              selected
+                ? 'border-brand-primary bg-brand-primary/10 text-text-primary'
+                : 'border-border-default bg-transparent text-text-secondary hover:border-border-strong hover:text-text-primary'
+            }`}
+          >
+            <Icon
+              as={v.icon}
+              size="sm"
+              className={selected ? 'text-brand-text' : 'text-text-tertiary'}
+            />
+            {v.label}
+          </button>
+        )
+      })}
     </div>
   )
 }

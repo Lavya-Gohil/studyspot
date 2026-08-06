@@ -8,7 +8,9 @@ import { createClient } from '@/lib/supabase/client'
 // Supabase client into this bundle that the web app never uses (it has its
 // own in @/lib/supabase/client).
 import { fetchFeedSessions } from '@studyspot/api/sessions'
+import { BookOpen, SearchX } from 'lucide-react'
 import { SessionCard } from '@/components/session/SessionCard'
+import { Icon } from '@/components/ui/Icon'
 // Deep imports rather than the '@/components/ui' barrel — the barrel also
 // re-exports Modal and Tooltip, which pull framer-motion into any client
 // bundle that touches it for components this route never renders.
@@ -240,7 +242,7 @@ export function FeedClient({ userCountry }: Props) {
       ) : sessions.length === 0 ? (
         hasFilters ? (
           <EmptyState
-            icon={<span className="text-2xl">🔍</span>}
+            icon={<Icon as={SearchX} size="lg" />}
             title="Nothing matches those filters"
             description="Try widening your search — or create the session you were looking for."
             action={
@@ -251,7 +253,7 @@ export function FeedClient({ userCountry }: Props) {
           />
         ) : (
           <EmptyState
-            icon={<span className="text-2xl">📚</span>}
+            icon={<Icon as={BookOpen} size="lg" />}
             title="No sessions near you yet"
             description="Be the first to create one — study sessions show up here as soon as someone posts them."
             action={

@@ -1,11 +1,13 @@
+import { Dna } from 'lucide-react'
 import type { ProductivityDNA } from '@/lib/dna'
+import { Icon } from '@/components/ui/Icon'
 
 export function ProductivityDnaCard({ dna }: { dna: ProductivityDNA }) {
   return (
-    <div className="ambient relative overflow-hidden rounded-2xl border border-border-subtle bg-bg-surface p-6">
+    <div className="relative overflow-hidden rounded-2xl border border-border-subtle bg-bg-surface p-6">
       <div className="relative z-10">
         <div className="flex items-center gap-2">
-          <span className="text-lg">🧬</span>
+          <Icon as={Dna} size="lg" className="text-brand-text" />
           <h2 className="font-display text-lg font-semibold">Productivity DNA</h2>
         </div>
 

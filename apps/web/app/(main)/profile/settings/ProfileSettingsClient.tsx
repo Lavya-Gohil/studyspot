@@ -1,8 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { Check, ShieldCheck } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Avatar } from '@/components/profile/Avatar'
+import { Icon } from '@/components/ui/Icon'
 import { LocationFields } from '@/components/profile/LocationFields'
 import type { CountryOption } from '@/lib/geo-data'
 import { SUBJECT_CATEGORIES, YEAR_LABELS, type YearOfStudy } from '@studyspot/types'
@@ -224,7 +226,10 @@ export function ProfileSettingsClient({
       {/* Verification status */}
       {profile?.verification_status === 'unverified' && (
         <Link href="/auth/onboarding/verify" className="block bg-accent-primary/[0.06] border border-accent-primary/20 rounded-lg p-4">
-          <p className="font-medium text-text-primary text-sm">✦ Verify your student status →</p>
+          <p className="flex items-center gap-2 text-sm font-medium text-text-primary">
+            <Icon as={ShieldCheck} size="sm" className="text-brand-text" />
+            Verify your student status
+          </p>
           <p className="text-text-secondary text-xs mt-0.5">Verified users get 3x more approved requests.</p>
         </Link>
       )}
@@ -242,7 +247,16 @@ export function ProfileSettingsClient({
       )}
 
       <button onClick={handleSave} disabled={loading} className="w-full h-11 rounded-md bg-accent-primary hover:bg-accent-hover text-accent-fg font-medium text-sm transition-colors disabled:opacity-50">
-        {saved ? 'Saved ✓' : loading ? 'Saving...' : 'Save changes'}
+        {saved ? (
+          <span className="inline-flex items-center gap-1.5">
+            <Icon as={Check} size="sm" />
+            Saved
+          </span>
+        ) : loading ? (
+          'Saving'
+        ) : (
+          'Save changes'
+        )}
       </button>
     </div>
   )

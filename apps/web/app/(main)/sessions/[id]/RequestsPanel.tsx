@@ -1,8 +1,10 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { Inbox } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Avatar } from '@/components/profile/Avatar'
+import { Icon } from '@/components/ui/Icon'
 import { VerifiedBadge, UnderAgeLabel } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -121,7 +123,7 @@ export function RequestsPanel({ sessionId }: { sessionId: string }) {
   if (requests.length === 0) {
     return (
       <EmptyState
-        icon={<span className="text-2xl">📬</span>}
+        icon={<Icon as={Inbox} size="lg" />}
         title="No requests yet"
         description="Share the session link and it'll start showing up in people's feeds."
       />

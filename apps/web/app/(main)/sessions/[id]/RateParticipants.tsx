@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { Star } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Avatar } from '@/components/profile/Avatar'
 import { Card } from '@/components/ui/Card'
+import { Icon } from '@/components/ui/Icon'
 import { useToast } from '@/components/ui/Toast'
 import { friendlyDbError } from '@/lib/db-errors'
 
@@ -95,11 +97,15 @@ export function RateParticipants({
                     onClick={() => rate(p.id, star)}
                     disabled={saving === p.id}
                     aria-label={`Rate ${p.full_name || 'student'} ${star} of 5`}
-                    className={`text-lg leading-none transition-transform hover:scale-110 active:scale-95 disabled:opacity-50 ${
+                    className={`leading-none transition-transform hover:scale-110 active:scale-95 disabled:opacity-50 ${
                       active ? 'text-accent-amber' : 'text-text-tertiary'
                     }`}
                   >
-                    {active ? '★' : '☆'}
+                    <Icon
+                      as={Star}
+                      size="lg"
+                      className={active ? 'fill-current' : undefined}
+                    />
                   </button>
                 )
               })}

@@ -1,7 +1,9 @@
 'use client'
 
+import { CalendarDays, Laptop, MapPin } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { SpotsBadge, VibePill } from '@/components/ui/Badge'
+import { Icon } from '@/components/ui/Icon'
 import { formatSessionTime } from '@studyspot/utils'
 import type { SessionDraft } from './useSessionDraft'
 
@@ -17,18 +19,20 @@ export function StepReview({ draft }: { draft: SessionDraft }) {
       <Card pad="lg" className="space-y-3">
         <h3 className="font-display text-base font-semibold text-text-primary">{draft.subject}</h3>
 
-        <p className="text-sm text-text-secondary">
+        <p className="flex items-center gap-2 text-sm text-text-secondary">
+          <Icon as={draft.mode === 'online' ? Laptop : MapPin} size="sm" className="shrink-0 text-text-tertiary" />
           {draft.mode === 'online'
-            ? `💻 Online room${draft.locationName.trim() ? ` · ${draft.locationName.trim()}` : ''}`
-            : `📍 ${draft.locationName}${
+            ? `Online room${draft.locationName.trim() ? ` · ${draft.locationName.trim()}` : ''}`
+            : `${draft.locationName}${
                 draft.locationAddress.trim() ? ` · ${draft.locationAddress.trim()}` : ''
               }`}
         </p>
 
         {/* Same formatter the feed and detail page use, so the preview reads
             exactly like the card it will become. */}
-        <p className="text-sm text-text-secondary">
-          📅 {formatSessionTime(start.toISOString(), end.toISOString())}
+        <p className="flex items-center gap-2 text-sm text-text-secondary">
+          <Icon as={CalendarDays} size="sm" className="shrink-0 text-text-tertiary" />
+          {formatSessionTime(start.toISOString(), end.toISOString())}
         </p>
 
         <div className="flex flex-wrap items-center gap-2">

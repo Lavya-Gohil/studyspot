@@ -2,10 +2,12 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import { Check } from 'lucide-react'
 import type { Session } from '@studyspot/types'
 import { formatSessionTime, truncate } from '@studyspot/utils'
 import { Avatar } from '@/components/profile/Avatar'
 import { VibePill, SpotsBadge, VerifiedBadge } from '@/components/ui/Badge'
+import { Icon } from '@/components/ui/Icon'
 
 interface SessionCardProps {
   session: Session
@@ -157,11 +159,12 @@ export function SessionCard({
             href={session.mode === 'online' ? `/room/${session.id}` : `/chat/${session.id}`}
             className="flex-1 h-10 rounded-md bg-accent-green/15 text-accent-green border border-accent-green/30 flex items-center justify-center text-sm font-medium hover:bg-accent-green/25 transition-colors"
           >
-            {session.mode === 'online' ? 'Enter room ✓' : 'Open chat ✓'}
+            {session.mode === 'online' ? 'Enter room' : 'Open chat'}
           </Link>
         ) : requestStatus === 'pending' ? (
-          <div className="flex-1 h-10 rounded-md bg-accent-green/10 border border-accent-green/30 flex items-center justify-center text-sm text-accent-green font-medium">
-            ✓ Request sent — awaiting host
+          <div className="flex h-10 flex-1 items-center justify-center gap-2 rounded-md border border-accent-green/30 bg-accent-green/10 text-sm font-medium text-accent-green">
+            <Icon as={Check} size="sm" />
+            Request sent — awaiting host
           </div>
         ) : requestStatus === 'declined' ? (
           <div className="flex-1 h-10 rounded-md bg-bg-elevated border border-border-default flex items-center justify-center text-sm text-text-tertiary">

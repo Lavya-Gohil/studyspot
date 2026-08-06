@@ -1,7 +1,9 @@
 import Link from 'next/link'
+import { VolumeX } from 'lucide-react'
 import type { Session } from '@studyspot/types'
 import { Card } from '@/components/ui/Card'
 import { VibePill } from '@/components/ui/Badge'
+import { FlameIcon, Icon } from '@/components/ui/Icon'
 
 /**
  * Above-the-fold section of the feed.
@@ -37,11 +39,8 @@ function NextSessionCard({ session }: { session: Session }) {
       <Card variant="elevated" interactive className="border-accent-primary/30">
         <div className="flex items-center gap-2 mb-2">
           {live ? (
-            <span className="flex items-center gap-1.5 text-xs font-semibold text-accent-green">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-green opacity-60" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-green" />
-              </span>
+            <span className="flex items-center gap-2 text-xs font-semibold text-brand-text">
+              <span className="live-dot" />
               Happening now
             </span>
           ) : (
@@ -99,17 +98,19 @@ export function FeedHeader({
         <div className="flex shrink-0 items-center gap-2">
           {studyStreak > 0 ? (
             <span
-              className="inline-flex h-9 items-center gap-1.5 rounded-md border border-accent-amber/30 bg-accent-amber/10 px-2.5 text-sm font-semibold text-accent-amber"
+              className="inline-flex h-9 items-center gap-1.5 rounded-md border border-brand-primary/30 bg-brand-primary/10 px-2.5 text-sm font-semibold text-brand-text"
               title={`${studyStreak}-day study streak`}
             >
-              🔥 <span className="tnum">{studyStreak}</span>
+              <FlameIcon size="sm" />
+              <span className="tnum">{studyStreak}</span>
             </span>
           ) : null}
           <Link
             href="/sessions/create?mode=online&vibe=silent"
             className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md border border-border-default bg-bg-elevated px-3 text-sm font-medium text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary"
           >
-            🔇 Silent study
+            <Icon as={VolumeX} size="sm" />
+            Silent study
           </Link>
         </div>
       </div>

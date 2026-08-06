@@ -41,7 +41,7 @@ export function FocusTimer({
     if (!timer.running || left > 0) return
     if (announced.current === timer.updatedAt) return
     announced.current = timer.updatedAt
-    toast.success("Time's up — take a break ☕")
+    toast.success("Time's up — take a break.")
     onPublish({ running: false, endsAt: null, remaining: 0, duration: timer.duration })
   }, [timer, left, toast, onPublish])
 

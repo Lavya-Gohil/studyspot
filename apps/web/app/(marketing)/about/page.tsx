@@ -81,7 +81,7 @@ export default function AboutPage() {
       </section>
 
       <FadeIn className="mt-16">
-        <div className="ambient grain glass-strong glass-sheen relative overflow-hidden rounded-[2rem] px-6 py-14 text-center">
+        <div className="grain glass-strong glass-sheen relative overflow-hidden rounded-[2rem] px-6 py-14 text-center">
           <div className="relative z-10">
             <h2 className="text-[clamp(1.8rem,4.5vw,2.8rem)] font-bold tracking-[-0.03em]">
               Ready to find your <span className="hl">crew?</span>

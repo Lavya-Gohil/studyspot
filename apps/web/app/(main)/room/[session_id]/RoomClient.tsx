@@ -1,6 +1,8 @@
 'use client'
 
 import { useMemo } from 'react'
+import { VolumeX } from 'lucide-react'
+import { Icon } from '@/components/ui/Icon'
 import { FocusTimer } from './FocusTimer'
 import { RoomChat } from './RoomChat'
 import { RoomHeader } from './RoomHeader'
@@ -58,8 +60,9 @@ export function RoomClient({
         />
 
         {session.vibe === 'silent' ? (
-          <div className="shrink-0 border-b border-border-subtle bg-accent-primary/5 px-4 py-2 text-center text-xs text-text-secondary">
-            🔇 Silent study — mics off, chat quiet. Just focus together and keep each other
+          <div className="flex shrink-0 items-center justify-center gap-2 border-b border-border-subtle bg-bg-subtle px-4 py-2 text-center text-xs text-text-secondary">
+            <Icon as={VolumeX} size="xs" className="shrink-0" />
+            Silent study — mics off, chat quiet. Just focus together and keep each other
             accountable.
           </div>
         ) : null}

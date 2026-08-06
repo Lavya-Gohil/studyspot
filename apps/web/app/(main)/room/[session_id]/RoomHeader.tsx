@@ -1,7 +1,9 @@
 'use client'
 
 import Link from 'next/link'
+import { Coffee } from 'lucide-react'
 import { VibePill } from '@/components/ui/Badge'
+import { Icon } from '@/components/ui/Icon'
 import type { MemberStatus, SessionInfo } from './types'
 
 export function RoomHeader({
@@ -48,7 +50,17 @@ export function RoomHeader({
             : 'border-accent-amber/30 bg-accent-amber/15 text-accent-amber'
         }`}
       >
-        {myStatus === 'focusing' ? '● Focusing' : '☕ On break'}
+        {myStatus === 'focusing' ? (
+          <span className="inline-flex items-center gap-1.5">
+            <span className="live-dot" />
+            Focusing
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1.5">
+            <Icon as={Coffee} size="xs" />
+            On break
+          </span>
+        )}
       </button>
     </div>
   )

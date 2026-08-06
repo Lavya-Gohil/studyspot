@@ -15,6 +15,8 @@ const config: Config = {
           elevated: 'rgb(var(--bg-elevated) / <alpha-value>)',
           subtle: 'rgb(var(--bg-subtle) / <alpha-value>)',
         },
+        // Neutral emphasis — white on dark, near-black on light.
+        // Most of the UI. Not the brand.
         accent: {
           primary: 'rgb(var(--accent-primary) / <alpha-value>)',
           hover: 'rgb(var(--accent-hover) / <alpha-value>)',
@@ -22,6 +24,15 @@ const config: Config = {
           green: 'rgb(var(--accent-green) / <alpha-value>)',
           amber: 'rgb(var(--accent-amber) / <alpha-value>)',
           red: 'rgb(var(--accent-red) / <alpha-value>)',
+        },
+        // The signature colour. `primary` is a FILL (pair with
+        // `brand-fg`); `text` is the readable-as-text variant and is
+        // a different value in light mode — see globals.css.
+        brand: {
+          primary: 'rgb(var(--brand-primary) / <alpha-value>)',
+          hover: 'rgb(var(--brand-hover) / <alpha-value>)',
+          fg: 'rgb(var(--brand-fg) / <alpha-value>)',
+          text: 'rgb(var(--brand-text) / <alpha-value>)',
         },
         text: {
           primary: 'rgb(var(--text-primary) / <alpha-value>)',
@@ -37,6 +48,7 @@ const config: Config = {
       backgroundImage: {
         royal: 'var(--gradient-royal)',
         'royal-soft': 'var(--gradient-royal-soft)',
+        brand: 'var(--gradient-brand)',
       },
       fontFamily: {
         sans: ['Outfit', 'system-ui', 'sans-serif'],

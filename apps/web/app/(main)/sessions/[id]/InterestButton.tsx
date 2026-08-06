@@ -1,8 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { Check } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
+import { Icon } from '@/components/ui/Icon'
 import { Textarea } from '@/components/ui/Input'
 import { useToast } from '@/components/ui/Toast'
 import { friendlyDbError } from '@/lib/db-errors'
@@ -73,8 +75,9 @@ export function InterestButton({
 
   if (request?.status === 'approved') {
     return (
-      <div className="flex h-11 items-center justify-center rounded-md border border-accent-green/30 bg-accent-green/15 text-sm font-medium text-accent-green">
-        ✓ You&apos;re in!
+      <div className="flex h-11 items-center justify-center gap-2 rounded-md border border-accent-green/30 bg-accent-green/15 text-sm font-medium text-accent-green">
+        <Icon as={Check} size="sm" />
+        You&apos;re in
       </div>
     )
   }
@@ -82,10 +85,12 @@ export function InterestButton({
   if (request?.status === 'pending') {
     return (
       <div className="space-y-1 rounded-md border border-accent-green/30 bg-accent-green/10 p-4 text-center">
-        <p className="text-sm font-semibold text-accent-green">✓ Request sent!</p>
+        <p className="flex items-center justify-center gap-2 text-sm font-semibold text-accent-green">
+          <Icon as={Check} size="sm" />
+          Request sent
+        </p>
         <p className="text-xs text-text-secondary">
-          The host has been notified and will review your request. You&apos;ll get a notification
-          once you&apos;re approved.
+          The host has been notified. You&apos;ll get a notification once they approve it.
         </p>
       </div>
     )

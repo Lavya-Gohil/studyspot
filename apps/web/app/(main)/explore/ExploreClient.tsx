@@ -3,7 +3,9 @@
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { BookOpen, SearchX } from 'lucide-react'
 import { SessionCard } from '@/components/session/SessionCard'
+import { Icon } from '@/components/ui/Icon'
 // Deep imports rather than the '@/components/ui' barrel — the barrel also
 // re-exports Modal, which pulls framer-motion into this bundle for a component
 // this route never renders.
@@ -85,7 +87,7 @@ export function ExploreClient({ sessions, mySubjects, error }: Props) {
       ) : filtered.length === 0 ? (
         trimmed ? (
           <EmptyState
-            icon={<span className="text-2xl">🔍</span>}
+            icon={<Icon as={SearchX} size="lg" />}
             title="Nothing matches that"
             description={`No open session mentions "${query.trim()}". Clear the search, or host the one you were looking for.`}
             action={
@@ -101,7 +103,7 @@ export function ExploreClient({ sessions, mySubjects, error }: Props) {
           />
         ) : (
           <EmptyState
-            icon={<span className="text-2xl">📚</span>}
+            icon={<Icon as={BookOpen} size="lg" />}
             title="No open sessions right now"
             description="Nothing is scheduled near you yet. Host one, or find people studying your subjects and start from there."
             action={

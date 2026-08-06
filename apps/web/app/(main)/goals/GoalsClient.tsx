@@ -1,7 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import { Target } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { Icon } from '@/components/ui/Icon'
 import { goalProgress, goalTypeLabel } from '@studyspot/utils'
 import type { Goal, GoalType } from '@studyspot/types'
 import { createGoalSchema, friendlyDbError, validate } from '@/lib/validation'
@@ -187,7 +189,7 @@ export function GoalsClient({ initialGoals, stats, userId }: Props) {
 
       {goals.length === 0 && !showCreate && (
         <div className="rounded-2xl border border-border-subtle bg-bg-surface p-10 text-center">
-          <div className="text-3xl">🎯</div>
+          <Icon as={Target} size="xl" className="mx-auto text-text-tertiary" />
           <p className="mt-3 text-sm text-text-secondary">
             No goals yet. Commit to one and hold yourself accountable.
           </p>
