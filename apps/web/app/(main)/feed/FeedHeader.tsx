@@ -4,6 +4,7 @@ import type { Session } from '@studyspot/types'
 import { Card } from '@/components/ui/Card'
 import { VibePill } from '@/components/ui/Badge'
 import { FlameIcon, Icon } from '@/components/ui/Icon'
+import { StudyingNow } from '@/components/layout/StudyingNow'
 
 /**
  * Above-the-fold section of the feed.
@@ -14,7 +15,9 @@ import { FlameIcon, Icon } from '@/components/ui/Icon'
  * much is happening today.
  *
  * Server component on purpose: all of this is already fetched in page.tsx, so
- * rendering it here keeps it out of the client bundle entirely.
+ * rendering it here keeps it out of the client bundle. The one exception is
+ * <StudyingNow>, which is live by nature — it is an isolated client island
+ * rather than a reason to make the whole header client-side.
  */
 
 function startsIn(startTime: string): string {
@@ -86,13 +89,18 @@ export function FeedHeader({
           <h1 className="font-display text-xl font-semibold text-text-primary">
             {firstName ? `Hey, ${firstName}` : 'Feed'}
           </h1>
-          <p className="text-sm text-text-secondary">
-            {todayCount > 0
-              ? `${todayCount} session${todayCount === 1 ? '' : 's'} today`
-              : userCountryName
-                ? `Sessions in ${userCountryName}`
-                : 'Find your study crew'}
-          </p>
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+            <p className="text-sm text-text-secondary">
+              {todayCount > 0
+                ? `${todayCount} session${todayCount === 1 ? '' : 's'} today`
+                : userCountryName
+                  ? `Sessions in ${userCountryName}`
+                  : 'Find your study crew'}
+            </p>
+            {/* Renders nothing until presence syncs, and nothing when you're
+                the only one here — see StudyingNow. */}
+            <StudyingNow />
+          </div>
         </div>
 
         <div className="flex shrink-0 items-center gap-2">

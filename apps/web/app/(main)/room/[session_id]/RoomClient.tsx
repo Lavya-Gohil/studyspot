@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react'
 import { VolumeX } from 'lucide-react'
+import { useGlobalPresence } from '@/lib/presence'
 import { Icon } from '@/components/ui/Icon'
 import { FocusTimer } from './FocusTimer'
 import { RoomChat } from './RoomChat'
@@ -46,6 +47,12 @@ export function RoomClient({
   } = useRoomChannel({ session, currentUser, seatCount })
 
   const focusingCount = members.filter((m) => m.status === 'focusing').length
+
+  // Report to the app-wide presence channel so the feed's "N focusing" is
+  // real. Separate from the room's own channel on purpose: this one carries a
+  // bare status and no room identity, so being in a room never leaks which
+  // room you are in to everyone signed in.
+  useGlobalPresence(myStatus === 'focusing' ? 'focusing' : 'browsing')
 
   return (
     <div className="flex h-[calc(100vh-56px)] flex-col lg:flex-row">
