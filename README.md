@@ -59,11 +59,19 @@ the connection fails with a misleading host error.
 007_country_constraint.sql
 008_push_subscriptions.sql
 009_definer_search_path.sql
+010_realtime_publication.sql
 ```
 
 **009 is not optional.** Without it, `handle_new_user()` resolves `profiles`
 against GoTrue's `search_path=auth`, the trigger raises, and *every signup*
 fails with `500 Database error creating new user`.
+
+**010 is not optional either.** A new project's `supabase_realtime` publication
+is empty, and `postgres_changes` only replays tables that belong to it. The
+channel still opens and reports `SUBSCRIBED`, so there is no error anywhere —
+live chat messages simply never arrive. The room hides this best, because its
+seats and shared timer ride on presence and broadcast, which never needed the
+publication at all.
 
 Create two Storage buckets:
 
