@@ -37,21 +37,43 @@ pnpm dev --filter=@studyspot/mobile   # Expo
 
 ## Database setup
 
-In your Supabase project: enable the PostGIS extension, then run the migrations in
-order:
+Apply every migration in order against your project:
 
-```
-supabase/migrations/001_schema.sql
-supabase/migrations/002_rls.sql
-supabase/migrations/003_online_sessions.sql
-supabase/migrations/004_reputation.sql
-supabase/migrations/005_circles_and_goals.sql
-supabase/migrations/006_security_hardening.sql
-supabase/migrations/007_country_constraint.sql
-supabase/migrations/008_push_subscriptions.sql
+```bash
+supabase db push --db-url "postgresql://postgres:<PASSWORD>@db.<REF>.supabase.co:5432/postgres"
 ```
 
-Create two Storage buckets: `avatars` (public) and `verification-docs` (private).
+Use the **direct connection or session pooler — port 5432**. The transaction
+pooler on 6543 cannot run this DDL. If the password contains `@`, percent-encode
+it (`@` → `%40`), or the URI parser reads it as the credentials separator and
+the connection fails with a misleading host error.
+
+```
+001_schema.sql              tables, enums, triggers (creates PostGIS itself —
+                            no manual extension step needed)
+002_rls.sql                 row-level security
+003_online_sessions.sql
+004_reputation.sql
+005_circles_and_goals.sql
+006_security_hardening.sql
+007_country_constraint.sql
+008_push_subscriptions.sql
+009_definer_search_path.sql
+```
+
+**009 is not optional.** Without it, `handle_new_user()` resolves `profiles`
+against GoTrue's `search_path=auth`, the trigger raises, and *every signup*
+fails with `500 Database error creating new user`.
+
+Create two Storage buckets:
+
+| Bucket | Access | Limit | Types |
+|---|---|---|---|
+| `avatars` | public | 5 MB | `image/jpeg`, `image/png` |
+| `verification-docs` | private | 10 MB | `image/jpeg`, `image/png`, `application/pdf` |
+
+Those limits mirror `AVATAR_*` in `apps/web/lib/validation.ts` and
+`ALLOWED_TYPES`/`MAX_FILE_SIZE` in `supabase/functions/verify-upload-url`.
 
 ## Security
 
