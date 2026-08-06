@@ -74,7 +74,12 @@ export function RoomClient({
           onClaimSeat={claimSeat}
         />
 
-        <FocusTimer timer={timer} onPublish={publishTimer} />
+        <FocusTimer
+          timer={timer}
+          onPublish={publishTimer}
+          sessionId={session.id}
+          subject={session.subject}
+        />
       </div>
 
       <RoomChat

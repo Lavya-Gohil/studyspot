@@ -125,6 +125,43 @@
   --shadow-tint: rgba(10, 10, 14, 0.14);
 }
 
+/* ============================================================
+   MOTION
+
+   This app is opened daily and sat in for hours, so motion has to
+   be felt rather than watched. Three rules the tokens encode:
+
+   1. FAST. Nothing routine runs longer than 260ms. Anything above
+      ~300ms reads as lag once you've seen it fifty times, and a
+      daily-use tool is seen ten thousand times.
+   2. ASYMMETRIC. Things enter with a decelerating curve and leave
+      quicker and sharper. Exits that linger feel like the UI is
+      arguing with you.
+   3. TRANSFORM AND OPACITY ONLY. Those two are the properties the
+      compositor animates without layout or paint, which is what
+      holds 60fps on a laptop that also has a lecture recording
+      open. Never animate width/height/top/left — animate scale
+      and translate instead.
+
+   Durations are named by weight, not by component, so a new
+   component inherits the system instead of inventing a number.
+   ============================================================ */
+:root {
+  --dur-1: 120ms;  /* micro — press, hover, colour */
+  --dur-2: 180ms;  /* small — tooltip, toast, chip */
+  --dur-3: 260ms;  /* medium — modal, sheet, panel */
+  --dur-4: 400ms;  /* large — route and hero reveals */
+
+  /* Crisp deceleration. The default for anything arriving. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Slight overshoot. Earned moments only: a badge, a level, a streak tick. */
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  /* Symmetric, for something moving from A to B rather than appearing. */
+  --ease-move: cubic-bezier(0.65, 0, 0.35, 1);
+  /* Accelerating. Exits, so they get out of the way. */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -344,6 +381,74 @@ a {
 
 @keyframes live-ping {
   75%, 100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* ============================================================
+   Interaction primitives.
+
+   Applied by class so behaviour is identical everywhere and can be
+   tuned in one place. All four animate transform/opacity only.
+   ============================================================ */
+
+/* Press. The scale is deliberately small — 0.97 reads as a button
+   acknowledging you; 0.90 reads as a toy. Pointer-only: touch already
+   has its own feedback and the delay makes it feel sluggish there. */
+@media (hover: hover) {
+  .press {
+    transition: transform var(--dur-1) var(--ease-out);
+  }
+  .press:active {
+    transform: scale(0.97);
+  }
+
+  /* Cards that lift toward the cursor. 1px, not 4 — the shadow does
+     the work, the movement just confirms it's interactive. */
+  .lift {
+    transition: transform var(--dur-2) var(--ease-out),
+                box-shadow var(--dur-2) var(--ease-out),
+                border-color var(--dur-2) var(--ease-out);
+  }
+  .lift:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* Entrances. `backwards` so the element is already at its start state
+   during any stagger delay, instead of flashing at full opacity first. */
+.enter {
+  animation: enter var(--dur-3) var(--ease-out) backwards;
+}
+.enter-up {
+  animation: enter-up var(--dur-3) var(--ease-out) backwards;
+}
+.enter-pop {
+  animation: enter-pop var(--dur-3) var(--ease-spring) backwards;
+}
+
+@keyframes enter {
+  from { opacity: 0; }
+}
+@keyframes enter-up {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+}
+@keyframes enter-pop {
+  from { opacity: 0; transform: scale(0.94); }
+}
+
+/* Stagger without a JS orchestrator. Set --i on each child. */
+.stagger > * {
+  animation: enter-up var(--dur-3) var(--ease-out) backwards;
+  animation-delay: calc(var(--i, 0) * 40ms);
+}
+
+/* Numbers that change in place. Pair with tabular figures so digits
+   don't jitter horizontally as they tick. */
+.tick {
+  animation: tick var(--dur-2) var(--ease-spring);
+}
+@keyframes tick {
+  0%   { transform: translate3d(0, 0.35em, 0); opacity: 0; }
+  100% { transform: none; opacity: 1; }
 }
 
 /* Scrollbar */

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/Button'
 import { useToast } from '@/components/ui/Toast'
+import { recordFocusSession } from '@/lib/focus'
 import { secondsLeft, type TimerState } from './types'
 
 const PRESETS = [
@@ -19,13 +20,32 @@ const PRESETS = [
 export function FocusTimer({
   timer,
   onPublish,
+  sessionId,
+  subject,
 }: {
   timer: TimerState
   onPublish: (next: Omit<TimerState, 'updatedAt'>) => void
+  /** Attributes the recorded run to this study session. */
+  sessionId?: string
+  subject?: string | null
 }) {
   const toast = useToast()
   const [now, setNow] = useState(() => Date.now())
   const announced = useRef<number | null>(null)
+
+  // When THIS client last saw the timer start running. The timer is shared, so
+  // this is not the same as `endsAt - duration`: someone who joined halfway
+  // through, or who was here across a pause, focused for less than the nominal
+  // duration and should be credited for what they actually sat through.
+  const runStart = useRef<number | null>(timer.running ? Date.now() : null)
+
+  useEffect(() => {
+    if (timer.running && runStart.current === null) {
+      runStart.current = Date.now()
+    } else if (!timer.running) {
+      runStart.current = null
+    }
+  }, [timer.running])
 
   // One shared tick drives the display; the countdown itself is derived from
   // endsAt, so a backgrounded tab catches up instead of drifting.
@@ -37,13 +57,34 @@ export function FocusTimer({
   const left = secondsLeft(timer, now)
 
   // Reaching zero used to do nothing at all — the number just sat at 00:00.
+  // Now it also banks the time, which is what makes /stats, streaks, XP and
+  // the leaderboards real rather than decorative.
   useEffect(() => {
     if (!timer.running || left > 0) return
     if (announced.current === timer.updatedAt) return
     announced.current = timer.updatedAt
-    toast.success("Time's up — take a break.")
+
+    const startedAt = runStart.current
+    runStart.current = null
     onPublish({ running: false, endsAt: null, remaining: 0, duration: timer.duration })
-  }, [timer, left, toast, onPublish])
+
+    if (startedAt === null) {
+      toast.success("Time's up — take a break.")
+      return
+    }
+
+    void recordFocusSession({ startedAt, endedAt: Date.now(), sessionId, subject }).then((r) => {
+      if (r.ok) {
+        const mins = Math.round(r.seconds / 60)
+        toast.success(`Time's up — ${mins} min banked.`)
+      } else if (r.reason === 'error') {
+        // Never lose the completion itself over a failed write.
+        toast.success("Time's up — take a break.")
+      } else {
+        toast.success("Time's up — take a break.")
+      }
+    })
+  }, [timer, left, toast, onPublish, sessionId, subject])
 
   function start() {
     const remaining = left > 0 ? left : timer.duration

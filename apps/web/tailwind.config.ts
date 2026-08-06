@@ -68,10 +68,25 @@ const config: Config = {
         lg: '14px',
         xl: '20px',
       },
+      // Durations and easings mirror the motion tokens in globals.css —
+      // reach for `duration-fast`/`ease-out` rather than an ad-hoc ms value,
+      // so a new component inherits the system instead of inventing a number.
+      transitionDuration: {
+        fast: 'var(--dur-1)',
+        DEFAULT: 'var(--dur-2)',
+        medium: 'var(--dur-3)',
+        slow: 'var(--dur-4)',
+      },
+      transitionTimingFunction: {
+        out: 'var(--ease-out)',
+        spring: 'var(--ease-spring)',
+        move: 'var(--ease-move)',
+        in: 'var(--ease-in)',
+      },
       animation: {
         'shimmer': 'shimmer 1.5s infinite',
-        'fade-in': 'fadeIn 250ms ease forwards',
-        'slide-up': 'slideUp 250ms ease forwards',
+        'fade-in': 'fadeIn var(--dur-3) var(--ease-out) forwards',
+        'slide-up': 'slideUp var(--dur-3) var(--ease-out) forwards',
       },
       keyframes: {
         shimmer: {
