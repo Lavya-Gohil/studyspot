@@ -13,6 +13,7 @@
  * authoritative enforcement layer, since the browser talks to Supabase directly.
  */
 import { z } from 'zod'
+import { YEARS_OF_STUDY } from '@studyspot/types'
 
 /* ----------------------------- sanitizers ----------------------------- */
 
@@ -80,9 +81,12 @@ export const profileUpdateSchema = z
     bio: optionalText(280), // mirrors profiles.bio CHECK (<= 280)
     college: optionalText(120),
     course: optionalText(120),
-    year_of_study: z
-      .enum(['high_school', 'year_1', 'year_2', 'year_3', 'year_4', 'masters', 'phd', 'other'])
-      .optional(),
+    // Built from the shared tuple rather than restated. The hand-written list
+    // here had drifted from year_of_study_enum: it rejected year_5,
+    // postgraduate and self_studying (all valid in Postgres) and accepted
+    // high_school, masters and other (none of which are), so picking "Year 5"
+    // failed with a bare "Invalid input."
+    year_of_study: z.enum(YEARS_OF_STUDY).optional(),
     subjects: z
       .array(text(40))
       .max(12, 'Pick at most 12 subjects.')
@@ -123,6 +127,23 @@ export const createSessionSchema = z
     mode: z.enum(['in_person', 'online']),
     location_name: optionalText(160),
     location_address: optionalText(240),
+    // Copied from the host's profile rather than typed into the form, but they
+    // still belong here: the schema is .strict(), so anything appended to the
+    // payload afterwards would either be rejected or — as it was — sneak into
+    // the insert unvalidated. location_country in particular is interpolated
+    // into a PostgREST .or() filter when building the feed and now carries a
+    // CHECK constraint (007_country_constraint.sql), so a malformed value is a
+    // hard insert failure. Validating here turns that into a message naming the
+    // one place the user can actually fix it. Mirrors profileUpdateSchema.country.
+    location_country: z
+      .string()
+      .trim()
+      .toUpperCase()
+      .regex(/^[A-Z]{2}$/, 'Your saved country looks wrong — update it in your location settings.')
+      .optional()
+      .or(z.literal('').transform(() => undefined)),
+    location_state: optionalText(80),
+    location_city: optionalText(80),
     start_time: z.coerce.date().refine(
       // Small grace window so "now" sessions aren't rejected by clock skew.
       (d) => d.getTime() > Date.now() - 5 * 60 * 1000,

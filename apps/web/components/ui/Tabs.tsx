@@ -12,21 +12,35 @@ export interface TabItem {
 /**
  * Controlled tab bar implementing the WAI-ARIA tabs pattern: arrow keys move
  * between tabs, Home/End jump to the ends, and only the active tab is in the
- * tab order. Panels are rendered by the caller — keep the active one under a
- * `role="tabpanel"` with `aria-labelledby` pointing at the tab id.
+ * tab order.
+ *
+ * Panels are rendered by the caller. To link them, generate one id and give it
+ * to both — otherwise `aria-controls` here and the panel's own id can never
+ * agree, since a `useId()` internal to this component isn't reachable outside:
+ *
+ *   const base = useId()
+ *   <Tabs idBase={base} items={items} value={tab} onChange={setTab} />
+ *   <TabPanel id={`${base}-${tab}`} active>…</TabPanel>
+ *
+ * `idBase` is optional only so a tab bar with no associated panels stays a
+ * one-liner; pass it whenever panels exist.
  */
 export function Tabs({
   items,
   value,
   onChange,
+  idBase,
   className = '',
 }: {
   items: TabItem[]
   value: string
   onChange: (value: string) => void
+  /** Shared id root linking each tab to its panel. See the example above. */
+  idBase?: string
   className?: string
 }) {
-  const baseId = useId()
+  const fallbackId = useId()
+  const baseId = idBase ?? fallbackId
   const refs = useRef(new Map<string, HTMLButtonElement>())
 
   function onKeyDown(e: React.KeyboardEvent) {

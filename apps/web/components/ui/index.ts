@@ -4,16 +4,23 @@
  * Everything here is built on the design tokens in tailwind.config.ts /
  * globals.css — no component ships its own colors.
  *
- *   import { Button, Input, Modal, useToast } from '@/components/ui'
+ * ALWAYS IMPORT THE SPECIFIC MODULE, NOT THIS BARREL:
  *
- * Bundle cost in client components: Modal, Toast and Tooltip depend on
- * framer-motion, and a barrel import pulls that whole graph in even when you
- * only wanted <Button> — measured at +40kB on /feed. Inside a `'use client'`
- * file, import the specific module instead:
+ *   import { Button } from '@/components/ui/Button'   // yes
+ *   import { Button } from '@/components/ui'          // no
  *
- *   import { Button } from '@/components/ui/Button'
+ * Modal depends on framer-motion, and this file re-exports it. Because Modal
+ * is a `'use client'` module, importing the barrel establishes a client
+ * boundary for everything it re-exports — so the route pays for framer-motion
+ * whether or not a Modal is ever rendered, and tree-shaking cannot remove it
+ * because the decision happens at the module-graph level, not at usage.
  *
- * Server components can use the barrel freely; nothing ships to the client.
+ * That applies to SERVER components too. This file previously claimed they
+ * could use the barrel freely; they can't. Five server components importing it
+ * for <OnboardingProgress> and <Card> cost ~43kB each on /sessions/[id] and
+ * all three onboarding steps, for components those routes never render.
+ *
+ * The barrel is kept only so this list documents what exists.
  */
 export { Button } from './Button'
 export { VibePill, SpotsBadge, VerifiedBadge, UnderAgeLabel } from './Badge'
