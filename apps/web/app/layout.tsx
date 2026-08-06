@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from 'next'
+import type { ReactNode } from 'react'
+import { ToastProvider } from '@/components/ui'
 import './globals.css'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://web-livid-two-79.vercel.app'
@@ -45,13 +47,15 @@ const themeScript = `
   }
 `
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" data-theme="dark" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="bg-bg-base text-text-primary">{children}</body>
+      <body className="bg-bg-base text-text-primary">
+        <ToastProvider>{children}</ToastProvider>
+      </body>
     </html>
   )
 }
