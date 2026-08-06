@@ -18,7 +18,7 @@ export function StudyingNow({ className = '' }: { className?: string }) {
   return (
     <Link
       href="/explore"
-      className={`enter inline-flex items-center gap-2 rounded-full border border-brand-primary/25 bg-brand-primary/[0.07] px-3 py-1.5 text-xs font-medium text-brand-text transition-colors duration-fast ease-out hover:bg-brand-primary/[0.12] ${className}`}
+      className={`brand-tint enter inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium transition-shadow duration-fast ease-out hover:shadow-glow-sm ${className}`}
     >
       <span className="live-dot" />
       <span className="tnum">{count}</span> online

@@ -25,10 +25,24 @@ const config: Config = {
           amber: 'rgb(var(--accent-amber) / <alpha-value>)',
           red: 'rgb(var(--accent-red) / <alpha-value>)',
         },
-        // The signature colour. `primary` is a FILL (pair with
-        // `brand-fg`); `text` is the readable-as-text variant and is
-        // a different value in light mode — see globals.css.
+        // The signature colour, as an eleven-step hue-shifted ramp.
+        // Reach for a numbered step when you need a specific tone
+        // (borders, tints, gradient stops) and for the named roles
+        // otherwise: `primary` is a FILL (pair with `brand-fg`),
+        // `text` is the readable-as-text variant and resolves to a
+        // different step per theme — see globals.css.
         brand: {
+          50: 'rgb(var(--brand-50) / <alpha-value>)',
+          100: 'rgb(var(--brand-100) / <alpha-value>)',
+          200: 'rgb(var(--brand-200) / <alpha-value>)',
+          300: 'rgb(var(--brand-300) / <alpha-value>)',
+          400: 'rgb(var(--brand-400) / <alpha-value>)',
+          500: 'rgb(var(--brand-500) / <alpha-value>)',
+          600: 'rgb(var(--brand-600) / <alpha-value>)',
+          700: 'rgb(var(--brand-700) / <alpha-value>)',
+          800: 'rgb(var(--brand-800) / <alpha-value>)',
+          900: 'rgb(var(--brand-900) / <alpha-value>)',
+          950: 'rgb(var(--brand-950) / <alpha-value>)',
           primary: 'rgb(var(--brand-primary) / <alpha-value>)',
           hover: 'rgb(var(--brand-hover) / <alpha-value>)',
           fg: 'rgb(var(--brand-fg) / <alpha-value>)',
@@ -61,6 +75,9 @@ const config: Config = {
         soft: '0 1px 2px rgba(0,0,0,0.12), 0 8px 24px -12px var(--shadow-tint)',
         lift: '0 2px 4px rgba(0,0,0,0.14), 0 24px 56px -16px var(--shadow-tint)',
         glass: '0 8px 40px -12px rgba(0,0,0,0.5)',
+        // Tinted, not black — see the note on --brand-glow.
+        glow: '0 8px 28px -8px var(--brand-glow), 0 2px 10px -3px var(--brand-glow-soft)',
+        'glow-sm': '0 0 16px -4px var(--brand-glow-soft)',
       },
       borderRadius: {
         sm: '6px',

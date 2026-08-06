@@ -39,19 +39,51 @@
   --accent-hover: 224 224 228;    /* zinc-200 */
   --accent-fg: 10 10 12;          /* near-black text on white accent */
 
-  /* Signature: signal lime. Sits far enough from the status hues
-     below to never be mistaken for them, and is the one colour a
-     generated palette never reaches for. */
-  --brand-primary: 207 243 60;    /* #CFF33C */
-  --brand-hover: 219 255 92;      /* #DBFF5C — brighter on hover, dark bg */
-  --brand-fg: 10 10 12;           /* near-black text ON the lime fill */
-  --brand-text: 199 237 56;       /* lime used AS text on the page bg */
-  --brand-glow: rgba(207, 243, 60, 0.22);
+  /* ---- Signature: turquoise, as a material rather than a value.
+     Eleven steps, and the HUE ROTATES as it travels: lighter steps
+     turn toward mint (h162), darker steps toward deep teal (h188).
+     A ramp built by changing lightness alone holds one hue at every
+     step and reads like a colour picker; rotating the hue is what
+     makes it behave like one material under a light source. That is
+     the whole difference between a flat fill and something with
+     character. */
+  --brand-50:  232 253 247;
+  --brand-100: 199 249 236;
+  --brand-200: 150 243 221;
+  --brand-300: 93 234 208;
+  --brand-400: 42 229 201;
+  --brand-500: 25 204 180;   /* #19CCB4 — the chosen turquoise */
+  --brand-600: 17 172 161;
+  --brand-700: 12 136 134;
+  --brand-800: 9 105 108;
+  --brand-900: 8 73 79;
+  --brand-950: 6 45 50;
 
-  /* Status. Green moved from emerald to teal so it reads as a
-     different thing from the lime brand at a glance — adjacent
-     yellow-greens are the one collision this palette can't afford. */
-  --accent-green: 45 212 191;
+  --brand-primary: var(--brand-500);
+  --brand-hover: var(--brand-400);   /* lifts toward the light on dark ground */
+  --brand-fg: 10 10 12;              /* 9.7:1 on the 500 fill */
+  --brand-text: var(--brand-400);    /* 12.5:1 on near-black */
+
+  /* Shadows under a turquoise element are TINTED, never black. A
+     black shadow makes a coloured surface look pasted on; a shadow
+     in its own hue makes it look like it is sitting there casting
+     light. That one substitution carries most of the "expensive". */
+  --brand-glow: rgba(25, 204, 180, 0.42);
+  --brand-glow-soft: rgba(25, 204, 180, 0.20);
+
+  /* Three stops, not two. The mid stop is what stops a gradient
+     looking like a CSS default. */
+  --gradient-brand: linear-gradient(
+    147deg,
+    rgb(var(--brand-300)) 0%,
+    rgb(var(--brand-500)) 46%,
+    rgb(var(--brand-600)) 100%
+  );
+
+  /* Status. Amber and red are unchanged; green moves further blue so
+     it can never be mistaken for the turquoise brand — adjacent
+     blue-greens are the one collision this palette can't afford. */
+  --accent-green: 74 222 128;
   --accent-amber: 251 191 36;
   --accent-red: 251 113 133;
 
@@ -88,20 +120,43 @@
   --accent-hover: 31 31 37;
   --accent-fg: 250 250 250;
 
-  /* The lime FILL is identical in both themes — a lime chip with
-     near-black text is striking on white and on near-black alike,
-     and keeping it constant is what makes the brand recognisable.
-     Only --brand-text changes: vivid lime as *text* on white is
-     roughly 1.3:1 and completely unreadable, so text usage drops
-     to a deep olive that clears AA. Fill and text are different
-     jobs and need different values; one token cannot do both. */
-  --brand-primary: 207 243 60;
-  --brand-hover: 190 228 42;
-  --brand-fg: 10 10 12;
-  --brand-text: 74 92 8;         /* #4A5C08 — ~7.5:1 on #FAFAFA */
-  --brand-glow: rgba(207, 243, 60, 0.35);
+  /* The ramp itself is shared — one material, lit differently.
+     Only the roles change. */
+  --brand-50:  232 253 247;
+  --brand-100: 199 249 236;
+  --brand-200: 150 243 221;
+  --brand-300: 93 234 208;
+  --brand-400: 42 229 201;
+  --brand-500: 25 204 180;
+  --brand-600: 17 172 161;
+  --brand-700: 12 136 134;
+  --brand-800: 9 105 108;
+  --brand-900: 8 73 79;
+  --brand-950: 6 45 50;
 
-  --accent-green: 13 148 136;
+  /* The FILL stays the 500 in both themes: a turquoise chip with
+     near-black text is strong on white and on near-black alike, and
+     holding it constant is what makes the brand recognisable.
+     Only the TEXT role moves. The 500 as text on white is 1.95:1 —
+     unreadable — and even the 700 only reaches 4.12:1, which fails.
+     So light-mode text is the 800 at 6.19:1. Fill and text are
+     different jobs; one value cannot do both. */
+  --brand-primary: var(--brand-500);
+  --brand-hover: var(--brand-600);   /* deepens on hover against paper */
+  --brand-fg: 10 10 12;
+  --brand-text: var(--brand-800);    /* 6.19:1 on #FAFAFA */
+
+  --brand-glow: rgba(17, 172, 161, 0.30);
+  --brand-glow-soft: rgba(17, 172, 161, 0.16);
+
+  --gradient-brand: linear-gradient(
+    147deg,
+    rgb(var(--brand-400)) 0%,
+    rgb(var(--brand-500)) 46%,
+    rgb(var(--brand-700)) 100%
+  );
+
+  --accent-green: 21 128 61;
   --accent-amber: 217 119 6;
   --accent-red: 220 38 38;
 
@@ -266,15 +321,59 @@ a {
     @apply inline-flex h-12 items-center justify-center rounded-full bg-accent-primary px-7 text-sm font-semibold text-accent-fg shadow-soft transition-all hover:-translate-y-0.5 hover:bg-accent-hover active:scale-[0.98];
   }
 
-  /* Brand — reserved for the single most important action on a
-     screen. If two of these are visible at once, one of them is
-     wrong. */
-  .btn-brand {
-    @apply inline-flex h-9 items-center justify-center rounded-full bg-brand-primary px-4 text-sm font-semibold text-brand-fg transition-all hover:bg-brand-hover active:scale-[0.98];
-  }
+  /* Brand — the full material treatment, and RATIONED.
+     Reserved for the single most important action on a screen. If
+     two of these are visible at once, one of them is wrong.
+     Everything else brand-coloured uses a flat 500 or a tint; if
+     every turquoise element glowed, the glow would stop meaning
+     anything and the app would read as a gaming peripheral. On a
+     screen someone stares at for three hours, that becomes tiring
+     rather than impressive. Restraint is what makes this look good. */
+  .btn-brand,
   .btn-brand-lg {
-    @apply inline-flex h-12 items-center justify-center rounded-full bg-brand-primary px-7 text-sm font-semibold text-brand-fg transition-all hover:-translate-y-0.5 hover:bg-brand-hover active:scale-[0.98];
-    box-shadow: 0 8px 32px -10px var(--brand-glow);
+    @apply relative inline-flex items-center justify-center rounded-full text-sm font-semibold text-brand-fg;
+    background: var(--gradient-brand);
+    box-shadow:
+      /* specular top edge — the cheapest thing that makes a surface
+         look lit rather than filled */
+      inset 0 1px 0 rgba(255, 255, 255, 0.36),
+      /* grounded bottom edge */
+      inset 0 -1px 0 rgba(0, 40, 36, 0.24),
+      0 1px 2px rgba(0, 0, 0, 0.26),
+      0 10px 26px -8px var(--brand-glow),
+      0 2px 10px -3px var(--brand-glow-soft);
+    transition:
+      transform var(--dur-1) var(--ease-out),
+      box-shadow var(--dur-1) var(--ease-out),
+      filter var(--dur-1) var(--ease-out);
+  }
+
+  .btn-brand { @apply h-9 px-4; }
+  .btn-brand-lg { @apply h-12 px-7; }
+
+  .btn-brand:hover,
+  .btn-brand-lg:hover {
+    transform: translateY(-1px);
+    filter: saturate(1.06) brightness(1.03);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.42),
+      inset 0 -1px 0 rgba(0, 40, 36, 0.24),
+      0 2px 3px rgba(0, 0, 0, 0.28),
+      0 16px 34px -8px var(--brand-glow),
+      0 3px 12px -3px var(--brand-glow-soft);
+  }
+
+  .btn-brand:active,
+  .btn-brand-lg:active {
+    transform: scale(0.985);
+    filter: none;
+  }
+
+  /* Touch has no hover state to preview the lift, and the transform
+     fights momentum scrolling. Press feedback only. */
+  @media (hover: none) {
+    .btn-brand:hover,
+    .btn-brand-lg:hover { transform: none; filter: none; }
   }
 
   .btn-glass-lg {
@@ -376,7 +475,29 @@ a {
   height: 100%;
   width: 100%;
   border-radius: 999px;
-  background: rgb(var(--brand-primary));
+  /* Lighter at the top than the bottom. At 8px this is almost
+     subliminal, which is the point — the dot reads as a bead with
+     light on it rather than a filled circle. */
+  background: linear-gradient(160deg, rgb(var(--brand-300)), rgb(var(--brand-600)));
+  box-shadow: 0 0 6px var(--brand-glow-soft);
+}
+
+/* ============================================================
+   Brand tint — the everyday treatment.
+
+   Used for streak chips, selected states, unread markers: anything
+   brand-coloured that is NOT the primary action. A tint plus a
+   hairline in the same hue, no gradient and no glow, so the one
+   element per screen that does glow keeps its meaning.
+   ============================================================ */
+.brand-tint {
+  background: linear-gradient(
+    140deg,
+    rgb(var(--brand-500) / 0.16),
+    rgb(var(--brand-700) / 0.09)
+  );
+  border: 1px solid rgb(var(--brand-500) / 0.30);
+  color: rgb(var(--brand-text));
 }
 
 @keyframes live-ping {

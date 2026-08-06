@@ -106,7 +106,7 @@ export function FeedHeader({
         <div className="flex shrink-0 items-center gap-2">
           {studyStreak > 0 ? (
             <span
-              className="inline-flex h-9 items-center gap-1.5 rounded-md border border-brand-primary/30 bg-brand-primary/10 px-2.5 text-sm font-semibold text-brand-text"
+              className="brand-tint inline-flex h-9 items-center gap-1.5 rounded-md px-2.5 text-sm font-semibold"
               title={`${studyStreak}-day study streak`}
             >
               <FlameIcon size="sm" />
