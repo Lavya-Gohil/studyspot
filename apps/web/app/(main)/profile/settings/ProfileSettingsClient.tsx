@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Check, ShieldCheck } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Avatar } from '@/components/profile/Avatar'
+import { NotificationToggle } from '@/components/profile/NotificationToggle'
 import { Icon } from '@/components/ui/Icon'
 import { LocationFields } from '@/components/profile/LocationFields'
 import type { CountryOption } from '@/lib/geo-data'
@@ -221,6 +222,12 @@ export function ProfileSettingsClient({
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Notifications. Per-device, not per-account — the subscription belongs
+          to this browser, so the switch reflects this browser only. */}
+      <div className="rounded-lg border border-border-subtle bg-bg-surface p-4">
+        <NotificationToggle />
       </div>
 
       {/* Verification status */}
