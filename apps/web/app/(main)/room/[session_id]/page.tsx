@@ -73,7 +73,6 @@ export default async function RoomPage({
             }
           : { id: user.id, full_name: null, avatar_url: null, verification_status: 'unverified' }
       }
-      isHost={isHost}
     />
   )
 }
