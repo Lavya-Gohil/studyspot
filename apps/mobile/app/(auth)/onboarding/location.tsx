@@ -48,7 +48,7 @@ export default function LocationScreen() {
             <View style={{ borderRadius: 6, backgroundColor: '#1C1C24', borderWidth: 1, borderColor: 'rgba(255,255,255,0.10)', overflow: 'hidden' }}>
               <Picker
                 selectedValue={countryCode}
-                onValueChange={(value) => {
+                onValueChange={(value: string) => {
                   const found = allCountries.find((c) => c.isoCode === value)
                   setCountryCode(value)
                   setCountryName(found?.name || '')

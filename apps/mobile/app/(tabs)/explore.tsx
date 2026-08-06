@@ -29,7 +29,12 @@ export default function ExploreScreen() {
   const filtered = sessions.filter((s) => {
     if (!query) return true
     const q = query.toLowerCase()
-    return s.subject.toLowerCase().includes(q) || s.location_name.toLowerCase().includes(q)
+    // location_name is null for online sessions, so an unguarded call here
+    // crashes the search the moment one is in the list.
+    return (
+      s.subject.toLowerCase().includes(q) ||
+      (s.location_name?.toLowerCase().includes(q) ?? false)
+    )
   })
 
   return (
