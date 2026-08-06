@@ -22,6 +22,7 @@ export function VibeSelector({
         <button
           key={v.value}
           type="button"
+          aria-pressed={value === v.value}
           onClick={() => onChange(v.value)}
           className={`flex items-center gap-2 px-3 py-2.5 rounded-md border text-sm font-medium transition-all ${
             value === v.value

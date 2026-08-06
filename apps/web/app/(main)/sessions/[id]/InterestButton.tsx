@@ -2,8 +2,14 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { Button } from '@/components/ui/Button'
+import { Textarea } from '@/components/ui/Input'
+import { useToast } from '@/components/ui/Toast'
+import { friendlyDbError } from '@/lib/db-errors'
+import { joinRequestSchema, validate } from '@/lib/validation'
 import type { SessionRequest } from '@studyspot/types'
-import { friendlyDbError, joinRequestSchema, validate } from '@/lib/validation'
+
+const MESSAGE_MAX = 140
 
 export function InterestButton({
   sessionId,
@@ -15,37 +21,59 @@ export function InterestButton({
   spotsRemaining: number
 }) {
   const supabase = createClient()
+  const toast = useToast()
+
   const [request, setRequest] = useState<SessionRequest | null>(initialRequest)
-  const [showMessage, setShowMessage] = useState(false)
+  const [composing, setComposing] = useState(false)
   const [message, setMessage] = useState('')
+  const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
   async function sendRequest() {
     // Sanitize + cap the optional host note at 140 chars (mirrors the DB CHECK).
     const v = validate(joinRequestSchema, { message })
-    if (!v.ok) return
-    setLoading(true)
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
+    if (!v.ok) {
+      setError(v.error)
+      return
+    }
 
-    const { data, error } = await supabase
+    setLoading(true)
+    setError(null)
+
+    // Every early return below has to clear `loading`; the previous version
+    // returned on a missing user without doing so, wedging the button forever.
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser()
+    if (authError || !user) {
+      toast.error('Sign in again to send a request.')
+      setLoading(false)
+      return
+    }
+
+    const { data, error: insertError } = await supabase
       .from('session_requests')
       .insert({ session_id: sessionId, requester_id: user.id, message: v.data.message ?? null })
       .select()
       .single()
 
-    if (error) {
-      alert(friendlyDbError(error.message))
-    } else if (data) {
-      setRequest(data as SessionRequest)
-    }
-    setShowMessage(false)
     setLoading(false)
+
+    if (insertError || !data) {
+      // Was an alert(), which blocks the page and loses the composed note.
+      toast.error(friendlyDbError(insertError?.message))
+      return
+    }
+
+    setRequest(data as SessionRequest)
+    setComposing(false)
+    toast.success('Request sent — the host will get back to you.')
   }
 
   if (request?.status === 'approved') {
     return (
-      <div className="h-11 rounded-md bg-accent-green/15 border border-accent-green/30 text-accent-green font-medium text-sm flex items-center justify-center">
+      <div className="flex h-11 items-center justify-center rounded-md border border-accent-green/30 bg-accent-green/15 text-sm font-medium text-accent-green">
         ✓ You&apos;re in!
       </div>
     )
@@ -53,11 +81,11 @@ export function InterestButton({
 
   if (request?.status === 'pending') {
     return (
-      <div className="rounded-md bg-accent-green/10 border border-accent-green/30 p-4 text-center space-y-1">
-        <p className="text-accent-green font-semibold text-sm">✓ Request sent!</p>
-        <p className="text-text-secondary text-xs">
-          The host has been notified and will review your request. You&apos;ll get a
-          notification once you&apos;re approved.
+      <div className="space-y-1 rounded-md border border-accent-green/30 bg-accent-green/10 p-4 text-center">
+        <p className="text-sm font-semibold text-accent-green">✓ Request sent!</p>
+        <p className="text-xs text-text-secondary">
+          The host has been notified and will review your request. You&apos;ll get a notification
+          once you&apos;re approved.
         </p>
       </div>
     )
@@ -65,49 +93,41 @@ export function InterestButton({
 
   if (request?.status === 'declined') {
     return (
-      <div className="h-11 rounded-md bg-bg-elevated border border-border-default text-text-tertiary font-medium text-sm flex items-center justify-center">
+      <div className="flex h-11 items-center justify-center rounded-md border border-border-default bg-bg-elevated text-sm font-medium text-text-tertiary">
         Not approved this time
       </div>
     )
   }
 
-  if (showMessage) {
+  if (composing) {
     return (
       <div className="space-y-3">
-        <textarea
+        <Textarea
+          label="Note for the host"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          maxLength={140}
-          placeholder="Add a note for the host (optional)"
+          maxLength={MESSAGE_MAX}
+          showCount
           rows={2}
-          className="w-full px-3.5 py-2.5 rounded-md bg-bg-elevated border border-border-default text-text-primary placeholder:text-text-tertiary text-sm focus:outline-none focus:border-accent-primary resize-none"
+          error={error}
+          hint="Optional — a line about what you're working on helps."
+          placeholder="e.g. Revising thermodynamics, happy to share notes"
         />
         <div className="flex gap-3">
-          <button
-            onClick={() => setShowMessage(false)}
-            className="h-10 px-4 rounded-md bg-bg-elevated border border-border-default text-text-secondary text-sm"
-          >
+          <Button variant="secondary" onClick={() => setComposing(false)} disabled={loading}>
             Cancel
-          </button>
-          <button
-            onClick={sendRequest}
-            disabled={loading}
-            className="flex-1 h-10 rounded-md bg-accent-primary hover:bg-accent-hover text-accent-fg font-medium text-sm transition-colors disabled:opacity-50"
-          >
-            {loading ? 'Sending...' : 'Send request'}
-          </button>
+          </Button>
+          <Button className="flex-1" onClick={sendRequest} loading={loading}>
+            {loading ? 'Sending' : 'Send request'}
+          </Button>
         </div>
       </div>
     )
   }
 
   return (
-    <button
-      onClick={() => setShowMessage(true)}
-      disabled={spotsRemaining === 0}
-      className="w-full h-11 rounded-md bg-accent-primary hover:bg-accent-hover text-accent-fg font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-    >
+    <Button className="w-full" onClick={() => setComposing(true)} disabled={spotsRemaining === 0}>
       {spotsRemaining === 0 ? 'Session full' : 'Interested'}
-    </button>
+    </Button>
   )
 }

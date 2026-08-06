@@ -3,6 +3,9 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Avatar } from '@/components/profile/Avatar'
+import { Card } from '@/components/ui/Card'
+import { useToast } from '@/components/ui/Toast'
+import { friendlyDbError } from '@/lib/db-errors'
 
 interface Participant {
   id: string
@@ -20,31 +23,58 @@ export function RateParticipants({
   initialRatings: Record<string, number>
 }) {
   const supabase = createClient()
+  const toast = useToast()
+
   const [ratings, setRatings] = useState<Record<string, number>>(initialRatings)
   const [saving, setSaving] = useState<string | null>(null)
 
   if (participants.length === 0) return null
 
   async function rate(rateeId: string, value: number) {
+    const previous = ratings[rateeId]
     setSaving(rateeId)
+    // Optimistic — the star should fill on press. Rolled back below if the
+    // write fails, which the old version never checked: the upsert's error was
+    // discarded, so a rejected rating stayed lit until the next page load.
     setRatings((prev) => ({ ...prev, [rateeId]: value }))
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) return
-      await supabase.from('session_ratings').upsert(
-        { session_id: sessionId, rater_id: user.id, ratee_id: rateeId, rating: value },
-        { onConflict: 'session_id,rater_id,ratee_id' }
-      )
-    } finally {
+
+    const revert = () =>
+      setRatings((prev) => {
+        const next = { ...prev }
+        if (previous === undefined) delete next[rateeId]
+        else next[rateeId] = previous
+        return next
+      })
+
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser()
+    if (authError || !user) {
+      revert()
       setSaving(null)
+      toast.error('Sign in again to rate.')
+      return
+    }
+
+    const { error } = await supabase.from('session_ratings').upsert(
+      { session_id: sessionId, rater_id: user.id, ratee_id: rateeId, rating: value },
+      { onConflict: 'session_id,rater_id,ratee_id' }
+    )
+
+    setSaving(null)
+
+    if (error) {
+      revert()
+      toast.error(friendlyDbError(error.message))
     }
   }
 
   return (
-    <div className="rounded-2xl border border-border-subtle bg-bg-surface p-5">
-      <h2 className="font-display text-base font-semibold">Rate your study partners</h2>
+    <Card pad="lg">
+      <h2 className="font-display text-base font-semibold text-text-primary">
+        Rate your study partners
+      </h2>
       <p className="mt-1 text-xs text-text-secondary">
         Ratings build everyone&apos;s reputation. Only people you studied with can see them in
         aggregate.
@@ -54,9 +84,7 @@ export function RateParticipants({
           <div key={p.id} className="flex items-center justify-between gap-3">
             <div className="flex min-w-0 items-center gap-2.5">
               <Avatar userId={p.id} name={p.full_name} avatarUrl={p.avatar_url} size="sm" />
-              <span className="truncate text-sm text-text-primary">
-                {p.full_name || 'Student'}
-              </span>
+              <span className="truncate text-sm text-text-primary">{p.full_name || 'Student'}</span>
             </div>
             <div className="flex items-center gap-0.5">
               {[1, 2, 3, 4, 5].map((star) => {
@@ -79,6 +107,6 @@ export function RateParticipants({
           </div>
         ))}
       </div>
-    </div>
+    </Card>
   )
 }

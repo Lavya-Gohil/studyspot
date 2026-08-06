@@ -22,17 +22,17 @@ export default function CreateSessionPage({
   const isSilent = initialVibe === 'silent'
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-semibold text-text-primary mb-1">
-        {isSilent ? 'Start a silent study session' : 'Create a study session'}
-      </h1>
-      {isSilent && (
-        <p className="mb-6 text-sm text-text-secondary">
-          Pure focus — no chat, just everyone studying side by side and holding each other
-          accountable.
+    <div className="mx-auto max-w-2xl px-4 py-8">
+      <header className="mb-6">
+        <h1 className="font-display text-2xl font-semibold text-text-primary">
+          {isSilent ? 'Start a silent study session' : 'Create a study session'}
+        </h1>
+        <p className="mt-1 text-sm text-text-secondary">
+          {isSilent
+            ? 'Pure focus — no chat, just everyone studying side by side and holding each other accountable.'
+            : 'Three steps: pick a format, fill in the details, then check it over.'}
         </p>
-      )}
-      {!isSilent && <div className="mb-6" />}
+      </header>
       <CreateSessionForm initialMode={initialMode} initialVibe={initialVibe} />
     </div>
   )
