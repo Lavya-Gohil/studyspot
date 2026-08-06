@@ -1,7 +1,14 @@
 import { ButtonHTMLAttributes, forwardRef } from 'react'
+import { Spinner } from './Spinner'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger'
+  /**
+   * `brand` is the signature-coloured fill and is reserved for the single most
+   * important action on a screen — if two are visible at once, one is wrong.
+   * `primary` remains the neutral emphasis fill and is unchanged, so existing
+   * call sites render exactly as before.
+   */
+  variant?: 'primary' | 'brand' | 'secondary' | 'ghost' | 'danger'
   size?: 'sm' | 'md' | 'lg'
   loading?: boolean
 }
@@ -12,6 +19,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variants = {
       primary: 'bg-accent-primary hover:bg-accent-hover text-accent-fg',
+      brand: 'bg-brand-primary hover:bg-brand-hover text-brand-fg',
       secondary: 'bg-transparent border border-border-default hover:bg-bg-subtle text-text-primary',
       ghost: 'bg-transparent text-text-secondary hover:text-text-primary',
       danger: 'bg-accent-red/10 border border-accent-red/30 text-accent-red hover:bg-accent-red/20',
@@ -32,10 +40,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {loading ? (
           <span className="flex items-center gap-2">
-            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-            </svg>
+            {/* Was a byte-identical copy of Spinner's arc. One spinner.
+                label='' because the button's own text already names the wait. */}
+            <Spinner size="sm" label="" />
             {children}
           </span>
         ) : children}

@@ -5,9 +5,16 @@ const sizes = {
 }
 
 /**
- * Indeterminate loading spinner. Same mark Button renders inline, extracted so
- * every surface spins identically. Prefer <Skeleton> when the shape of the
- * incoming content is known — a spinner is for waits with no known layout.
+ * Indeterminate loading spinner — the one mark every surface spins with,
+ * Button included.
+ *
+ * The arc is hand-drawn rather than lucide's Loader2 on purpose: this is a
+ * purpose-built rotating shape (a quarter-arc over a faint track), not an icon
+ * standing in for a noun. Swapping it for a stock glyph would be uniformity
+ * for its own sake.
+ *
+ * Prefer <Skeleton> when the shape of the incoming content is known — a
+ * spinner is for waits with no known layout.
  */
 export function Spinner({
   size = 'md',

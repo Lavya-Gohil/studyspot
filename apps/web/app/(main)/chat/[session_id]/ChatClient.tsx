@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { BadgeCheck, Check } from 'lucide-react'
+import { BadgeCheck, Check, Send } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Avatar } from '@/components/profile/Avatar'
 import { VerifiedBadge } from '@/components/ui/Badge'
@@ -205,9 +205,7 @@ export function ChatClient({ sessionId, session, currentUser }: Props) {
             disabled={!input.trim() || sending}
             className="w-10 h-10 rounded-full bg-accent-primary hover:bg-accent-hover text-accent-fg flex items-center justify-center disabled:opacity-50 shrink-0"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
-            </svg>
+            <Icon as={Send} size="sm" />
           </button>
         </form>
       )}

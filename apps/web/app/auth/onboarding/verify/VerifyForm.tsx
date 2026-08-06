@@ -2,8 +2,10 @@
 
 import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { File, FileText, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
+import { Icon } from '@/components/ui/Icon'
 import { useToast } from '@/components/ui/Toast'
 import { friendlyDbError } from '@/lib/db-errors'
 
@@ -153,22 +155,7 @@ export function VerifyForm() {
           disabled={busy}
           className="flex min-h-[140px] w-full flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-border-default bg-accent-primary/[0.02] px-6 py-10 transition-colors hover:border-border-strong hover:bg-accent-primary/[0.06] disabled:opacity-50"
         >
-          <svg
-            width="32"
-            height="32"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            className="text-text-tertiary"
-            aria-hidden="true"
-          >
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-            <polyline points="14 2 14 8 20 8" />
-            <line x1="16" y1="13" x2="8" y2="13" />
-            <line x1="16" y1="17" x2="8" y2="17" />
-            <polyline points="10 9 9 9 8 9" />
-          </svg>
+          <Icon as={FileText} size="xl" className="h-8 w-8 text-text-tertiary" />
           <span className="text-center">
             <span className="block text-sm text-text-secondary">
               Tap to upload college ID, timetable, or fee receipt
@@ -179,19 +166,7 @@ export function VerifyForm() {
       ) : (
         <div className="flex items-center gap-3 rounded-lg border-2 border-dashed border-accent-primary bg-accent-primary/5 p-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-accent-primary/15">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              className="text-accent-primary"
-              aria-hidden="true"
-            >
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-            </svg>
+            <Icon as={File} size="lg" className="text-brand-text" />
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium text-text-primary">{file.name}</p>
@@ -204,9 +179,7 @@ export function VerifyForm() {
             aria-label={`Remove ${file.name}`}
             className="shrink-0 rounded p-1 text-text-tertiary transition-colors hover:text-text-secondary disabled:opacity-50"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
+            <Icon as={X} size="xs" />
           </button>
         </div>
       )}

@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { Ban } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { CONTACT_EMAIL } from '@/lib/site'
+import { Icon } from '@/components/ui/Icon'
 
 export const metadata: Metadata = {
   title: 'Account suspended — StudySpot',
@@ -30,10 +32,7 @@ export default async function BannedPage() {
   return (
     <div className="space-y-6 text-center">
       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent-red/10 text-accent-red">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-          <circle cx="12" cy="12" r="9" />
-          <path d="m5.6 5.6 12.8 12.8" />
-        </svg>
+        <Icon as={Ban} size="lg" />
       </div>
 
       <div className="space-y-2">

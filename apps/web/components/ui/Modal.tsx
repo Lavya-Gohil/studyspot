@@ -3,6 +3,8 @@
 import { AnimatePresence, motion, useReducedMotion, type MotionProps } from 'framer-motion'
 import { useCallback, useEffect, useId, useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
+import { X } from 'lucide-react'
+import { Icon } from './Icon'
 
 const EASE = [0.16, 1, 0.3, 1] as const
 
@@ -184,9 +186,7 @@ function OverlayShell({
                     aria-label="Close"
                     className="shrink-0 -mr-1 -mt-1 rounded-md p-1.5 text-text-tertiary hover:text-text-primary hover:bg-bg-subtle transition-colors"
                   >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                      <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
+                    <Icon as={X} size="md" />
                   </button>
                 ) : null}
               </div>

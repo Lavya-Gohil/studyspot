@@ -3,7 +3,7 @@
 import { useId, useMemo, useState, type ReactNode } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { GraduationCap, SearchX, Users } from 'lucide-react'
+import { Check, GraduationCap, SearchX, Users } from 'lucide-react'
 import { Avatar } from '@/components/profile/Avatar'
 import { Icon } from '@/components/ui/Icon'
 // Deep imports rather than the '@/components/ui' barrel — the barrel also
@@ -354,22 +354,7 @@ function MatchCard({
               key={reason}
               className="inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-bg-subtle px-2.5 py-1 text-xs text-text-secondary"
             >
-              <svg
-                width="11"
-                height="11"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
-                className="shrink-0 text-accent-primary"
-              >
-                <path
-                  d="M5 13l4 4L19 7"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <Icon as={Check} size="xs" strokeWidth={3} className="shrink-0 text-brand-text" />
               {reason}
             </li>
           ))}

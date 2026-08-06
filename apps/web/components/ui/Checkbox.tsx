@@ -1,5 +1,7 @@
 import { InputHTMLAttributes, forwardRef, useId, type ReactNode, type Ref } from 'react'
+import { Check } from 'lucide-react'
 import { FieldMessage } from './Field'
+import { Icon } from './Icon'
 
 interface ToggleProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
   label: ReactNode
@@ -53,14 +55,12 @@ function Toggle(
               className="absolute h-1.5 w-1.5 rounded-full bg-accent-fg scale-0 peer-checked:scale-100 transition-transform"
             />
           ) : (
-            <svg
-              aria-hidden="true"
-              className="absolute h-3 w-3 text-accent-fg scale-0 peer-checked:scale-100 transition-transform pointer-events-none"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <Icon
+              as={Check}
+              size="xs"
+              strokeWidth={3}
+              className="pointer-events-none absolute h-3 w-3 scale-0 text-accent-fg transition-transform peer-checked:scale-100"
+            />
           )}
         </span>
         <label htmlFor={inputId} className="text-sm text-text-primary cursor-pointer select-none">

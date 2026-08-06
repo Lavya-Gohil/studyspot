@@ -1,7 +1,9 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { X } from 'lucide-react'
 import { SUBJECT_CATEGORIES } from '@studyspot/types'
+import { Icon } from '@/components/ui/Icon'
 import { Input } from '@/components/ui/Input'
 
 const ALL_SUBJECTS = SUBJECT_CATEGORIES.flatMap((c) => c.subjects)
@@ -99,9 +101,7 @@ export function SubjectPicker({
                 aria-label={`Remove ${s}`}
                 className="opacity-60 transition-opacity hover:opacity-100"
               >
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-                </svg>
+                <Icon as={X} size="xs" strokeWidth={3} className="h-2.5 w-2.5" />
               </button>
             </span>
           ))}

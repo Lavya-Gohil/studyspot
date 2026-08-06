@@ -1,5 +1,7 @@
 import Link from 'next/link'
+import { Mail } from 'lucide-react'
 import { CONTACT_EMAIL, INSTAGRAM_URL } from '@/lib/site'
+import { Icon } from '@/components/ui/Icon'
 
 const FOOTER_COLS = [
   {
@@ -89,17 +91,15 @@ export function SiteFooter() {
   )
 }
 
+// Instagram's glyph, hand-drawn: lucide dropped brand logos from its set, and
+// third-party marks shouldn't be approximated by a generic icon anyway — same
+// call as the Google mark on the auth forms.
 const IconInstagram = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
     <rect x="3" y="3" width="18" height="18" rx="5" />
     <circle cx="12" cy="12" r="4" />
     <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
   </svg>
 )
 
-const IconMail = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="5" width="18" height="14" rx="3" />
-    <path d="m4 7 8 6 8-6" />
-  </svg>
-)
+const IconMail = () => <Icon as={Mail} size="sm" />

@@ -10,6 +10,9 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import { AlertTriangle, Check, Info, X } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+import { Icon } from './Icon'
 import { createPortal } from 'react-dom'
 
 type ToastVariant = 'success' | 'error' | 'info'
@@ -134,10 +137,10 @@ const iconColors: Record<ToastVariant, string> = {
   info: 'text-text-tertiary',
 }
 
-const icons: Record<ToastVariant, ReactNode> = {
-  success: <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />,
-  error: <path d="M12 8v5m0 3.5h.01M12 3l9 16H3l9-16z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />,
-  info: <path d="M12 16v-4m0-4h.01M12 21a9 9 0 100-18 9 9 0 000 18z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />,
+const icons: Record<ToastVariant, LucideIcon> = {
+  success: Check,
+  error: AlertTriangle,
+  info: Info,
 }
 
 function ToastViewport({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: number) => void }) {
@@ -162,25 +165,16 @@ function ToastViewport({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id:
             t.leaving ? 'translate-y-2 opacity-0' : 'animate-slide-up'
           } ${variantStyles[t.variant]}`}
         >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            className={`mt-0.5 shrink-0 ${iconColors[t.variant]}`}
-            aria-hidden="true"
-          >
-            {icons[t.variant]}
-          </svg>
+          <span className={`mt-0.5 shrink-0 ${iconColors[t.variant]}`}>
+            <Icon as={icons[t.variant]} size="sm" />
+          </span>
           <p className="min-w-0 flex-1 text-sm text-text-primary">{t.message}</p>
           <button
             onClick={() => onDismiss(t.id)}
             aria-label="Dismiss"
             className="shrink-0 rounded p-0.5 text-text-tertiary transition-colors hover:text-text-primary"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
+            <Icon as={X} size="xs" />
           </button>
         </div>
       ))}

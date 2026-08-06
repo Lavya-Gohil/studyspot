@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { MapPin } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { Icon } from '@/components/ui/Icon'
 import { OnboardingProgress } from '@/components/ui/OnboardingProgress'
 import { LocationFields } from '@/components/profile/LocationFields'
 import { Button } from '@/components/ui/Button'
@@ -103,10 +105,7 @@ export function LocationForm({ countries }: { countries: CountryOption[] }) {
         />
 
         <p className="flex items-center gap-1.5 text-xs text-text-tertiary">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-            <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z" />
-            <circle cx="12" cy="10" r="3" />
-          </svg>
+          <Icon as={MapPin} size="xs" className="h-3 w-3 shrink-0" />
           Your exact location is never shared publicly.
         </p>
 

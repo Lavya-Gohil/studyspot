@@ -1,8 +1,10 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { Send } from 'lucide-react'
 import { formatRelativeTime } from '@studyspot/utils'
 import type { Message } from '@studyspot/types'
+import { Icon } from '@/components/ui/Icon'
 import { useToast } from '@/components/ui/Toast'
 import { friendlyDbError } from '@/lib/db-errors'
 import { messageSchema, validate } from '@/lib/validation'
@@ -144,10 +146,7 @@ export function RoomChat({
             aria-label="Send message"
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent-primary text-accent-fg transition-opacity hover:bg-accent-hover disabled:opacity-50"
           >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <line x1="22" y1="2" x2="11" y2="13" />
-              <polygon points="22 2 15 22 11 13 2 9 22 2" />
-            </svg>
+            <Icon as={Send} size="sm" />
           </button>
         </form>
       ) : null}

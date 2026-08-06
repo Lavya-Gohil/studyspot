@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { Mail } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
+import { Icon } from '@/components/ui/Icon'
 import { useToast } from '@/components/ui/Toast'
 
 /**
@@ -52,10 +54,7 @@ export function CheckInbox({ email, onRestart }: { email: string; onRestart: () 
   return (
     <div className="space-y-6 text-center">
       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent-primary/10 text-accent-primary">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <rect x="3" y="5" width="18" height="14" rx="3" />
-          <path d="m4 7 8 6 8-6" />
-        </svg>
+        <Icon as={Mail} size="lg" />
       </div>
 
       <div className="space-y-2">

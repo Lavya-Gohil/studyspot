@@ -1,5 +1,7 @@
 import { SelectHTMLAttributes, forwardRef, useId } from 'react'
+import { ChevronDown } from 'lucide-react'
 import { FieldLabel, FieldMessage, controlClasses, type FieldProps } from './Field'
+import { Icon } from './Icon'
 
 const sizes = {
   sm: 'h-8 pl-2.5 text-xs',
@@ -61,16 +63,11 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             ))}
             {children}
           </select>
-          <svg
-            className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-tertiary"
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            aria-hidden="true"
-          >
-            <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <Icon
+            as={ChevronDown}
+            size="xs"
+            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-text-tertiary"
+          />
         </div>
         <FieldMessage id={messageId} hint={hint} error={error} />
       </div>
