@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Country, State } from 'country-state-city'
 import { Avatar } from '@/components/profile/Avatar'
+import { LocationFields } from '@/components/profile/LocationFields'
+import type { CountryOption } from '@/lib/geo-data'
 import { SUBJECT_CATEGORIES, YEAR_LABELS, type YearOfStudy } from '@studyspot/types'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -15,7 +16,13 @@ import {
   validate,
 } from '@/lib/validation'
 
-export function ProfileSettingsClient({ profile }: { profile: any }) {
+export function ProfileSettingsClient({
+  profile,
+  countries,
+}: {
+  profile: any
+  countries: CountryOption[]
+}) {
   const supabase = createClient()
   const router = useRouter()
 
@@ -46,12 +53,11 @@ export function ProfileSettingsClient({ profile }: { profile: any }) {
   }
 
   // Location (so users who move can update where they study)
-  const allCountries = Country.getAllCountries()
   const [countryCode, setCountryCode] = useState<string>(profile?.country || '')
   const [countryName, setCountryName] = useState<string>(profile?.country_name || '')
+  const [stateCode, setStateCode] = useState<string>('')
   const [stateName, setStateName] = useState<string>(profile?.state_region || '')
   const [city, setCity] = useState<string>(profile?.city || '')
-  const states = countryCode ? State.getStatesOfCountry(countryCode) : []
 
   function toggleSubject(s: string) {
     setSubjects((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s])
@@ -181,53 +187,23 @@ export function ProfileSettingsClient({ profile }: { profile: any }) {
               Moved? Update this to see in-person sessions where you now live.
             </p>
           </div>
-          <div className="space-y-1">
-            <label className="text-xs text-text-secondary">Country</label>
-            <select
-              value={countryCode}
-              onChange={(e) => {
-                const code = e.target.value
-                setCountryCode(code)
-                setCountryName(allCountries.find((c) => c.isoCode === code)?.name || '')
-                setStateName('')
-              }}
-              className="w-full h-11 px-3.5 rounded-md bg-bg-elevated border border-border-default text-text-primary text-sm focus:outline-none focus:border-accent-primary appearance-none"
-            >
-              <option value="">Select your country</option>
-              {allCountries.map((c) => (
-                <option key={c.isoCode} value={c.isoCode}>
-                  {c.flag} {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          {states.length > 0 && (
-            <div className="space-y-1">
-              <label className="text-xs text-text-secondary">State / Region</label>
-              <select
-                value={stateName}
-                onChange={(e) => setStateName(e.target.value)}
-                className="w-full h-11 px-3.5 rounded-md bg-bg-elevated border border-border-default text-text-primary text-sm focus:outline-none focus:border-accent-primary appearance-none"
-              >
-                <option value="">Select your state / region</option>
-                {states.map((s) => (
-                  <option key={s.isoCode} value={s.name}>
-                    {s.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-          <div className="space-y-1">
-            <label className="text-xs text-text-secondary">City (optional)</label>
-            <input
-              type="text"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              placeholder="Your city"
-              className="w-full h-11 px-3.5 rounded-md bg-bg-elevated border border-border-default text-text-primary placeholder:text-text-tertiary text-sm focus:outline-none focus:border-accent-primary"
-            />
-          </div>
+          <LocationFields
+            countries={countries}
+            countryCode={countryCode}
+            stateCode={stateCode}
+            stateName={stateName}
+            city={city}
+            disabled={loading}
+            onCountryChange={(code, name) => {
+              setCountryCode(code)
+              setCountryName(name)
+            }}
+            onStateChange={(code, name) => {
+              setStateCode(code)
+              setStateName(name)
+            }}
+            onCityChange={setCity}
+          />
         </div>
 
         <div className="space-y-2">

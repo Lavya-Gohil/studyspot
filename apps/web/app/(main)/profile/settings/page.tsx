@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { listCountries } from '@/lib/geo-data'
 import { ProfileSettingsClient } from './ProfileSettingsClient'
 
 export default async function ProfileSettingsPage() {
@@ -13,5 +14,6 @@ export default async function ProfileSettingsPage() {
     .eq('id', user.id)
     .single()
 
-  return <ProfileSettingsClient profile={profile} />
+  // Resolved on the server so the country dataset never reaches the browser.
+  return <ProfileSettingsClient profile={profile} countries={listCountries()} />
 }
