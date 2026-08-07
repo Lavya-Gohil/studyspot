@@ -38,7 +38,7 @@ enable_confirmations = false
 
 # verify_jwt=false on the webhook/cron functions is intentional: they
 # authenticate callers with their own shared secrets instead
-# (x-webhook-secret / x-cron-secret — see functions/_shared/security.ts).
+# (x-webhook-secret / x-cron-secret, see functions/_shared/security.ts).
 # Scheduling is NOT done here; cron jobs are configured in the Dashboard.
 [functions.on-request-approved]
 verify_jwt = false
