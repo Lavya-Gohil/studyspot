@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { FieldLabel } from '@/components/ui/Field'
 import { useToast } from '@/components/ui/Toast'
-import { emailSchema, validate } from '@/lib/validation'
+import { emailSchema, validate } from '@studyspot/utils/validation'
 
 export function LoginForm() {
   const router = useRouter()

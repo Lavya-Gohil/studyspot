@@ -5,8 +5,9 @@ import { Target } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Icon } from '@/components/ui/Icon'
 import { goalProgress, goalTypeLabel } from '@studyspot/utils'
+import { createGoalSchema, validate } from '@studyspot/utils/validation'
+import { friendlyDbError } from '@studyspot/utils/db-errors'
 import type { Goal, GoalType } from '@studyspot/types'
-import { createGoalSchema, friendlyDbError, validate } from '@/lib/validation'
 
 interface Props {
   initialGoals: Goal[]

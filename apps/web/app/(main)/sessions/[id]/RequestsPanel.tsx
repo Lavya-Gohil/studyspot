@@ -11,7 +11,7 @@ import { Card } from '@/components/ui/Card'
 import { EmptyState, ErrorState } from '@/components/ui/EmptyState'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { useToast } from '@/components/ui/Toast'
-import { friendlyDbError } from '@/lib/db-errors'
+import { friendlyDbError } from '@studyspot/utils/db-errors'
 import type { RequestStatus, SessionRequest } from '@studyspot/types'
 
 const REQUESTER_FIELDS =

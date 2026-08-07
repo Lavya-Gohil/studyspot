@@ -18,7 +18,7 @@ import { SessionCardSkeleton } from '@/components/ui/Skeleton'
 import { EmptyState, ErrorState } from '@/components/ui/EmptyState'
 import { Button } from '@/components/ui/Button'
 import { useToast } from '@/components/ui/Toast'
-import { friendlyDbError } from '@/lib/db-errors'
+import { friendlyDbError } from '@studyspot/utils/db-errors'
 import type { Session, FeedFilters, SessionVibe } from '@studyspot/types'
 
 interface Props {

@@ -6,8 +6,8 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { useToast } from '@/components/ui/Toast'
-import { friendlyDbError } from '@/lib/db-errors'
-import { basicInfoSchema, validate } from '@/lib/validation'
+import { friendlyDbError } from '@studyspot/utils/db-errors'
+import { basicInfoSchema, validate } from '@studyspot/utils/validation'
 
 type FieldErrors = { full_name?: string; age?: string }
 

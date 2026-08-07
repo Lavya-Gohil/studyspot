@@ -1,5 +1,5 @@
 import { Dna } from 'lucide-react'
-import type { ProductivityDNA } from '@/lib/dna'
+import type { ProductivityDNA } from '@studyspot/utils'
 import { Icon } from '@/components/ui/Icon'
 
 export function ProductivityDnaCard({ dna }: { dna: ProductivityDNA }) {

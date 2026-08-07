@@ -7,7 +7,7 @@ import { Avatar } from '@/components/profile/Avatar'
 import { Card } from '@/components/ui/Card'
 import { Icon } from '@/components/ui/Icon'
 import { useToast } from '@/components/ui/Toast'
-import { friendlyDbError } from '@/lib/db-errors'
+import { friendlyDbError } from '@studyspot/utils/db-errors'
 
 interface Participant {
   id: string

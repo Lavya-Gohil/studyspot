@@ -234,13 +234,16 @@ export const reportSchema = z
 
 /* ------------------------------ helper -------------------------------- */
 
-/**
- * Re-exported for existing call sites. The implementation moved to
- * lib/db-errors.ts so components needing error formatting but not schema
- * validation don't pull zod into their bundle; client components should
- * import it from there directly.
+/*
+ * friendlyDbError is deliberately NOT re-exported here.
+ *
+ * It used to be, as a convenience for call sites, and that convenience was
+ * the whole reason zod reached client bundles: a component that wanted one
+ * error-formatting function imported this module, and this module imports
+ * zod at the top. It now sits behind its own dependency-free subpath:
+ *
+ *     import { friendlyDbError } from '@studyspot/utils/db-errors'
  */
-export { friendlyDbError } from './db-errors'
 
 export type Validated<T> = { ok: true; data: T } | { ok: false; error: string }
 

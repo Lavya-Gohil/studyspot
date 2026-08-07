@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/Button'
 import { EmptyState, ErrorState } from '@/components/ui/EmptyState'
 import { Tabs, TabPanel, type TabItem } from '@/components/ui/Tabs'
 import { YEAR_LABELS, type YearOfStudy } from '@studyspot/types'
-import type { MatchResult } from '@/lib/matching'
+import type { MatchResult } from '@studyspot/utils'
 
 type Mode = 'compatible' | 'twin'
 /** Label under the number; also decides whether it reads as a percentage. */

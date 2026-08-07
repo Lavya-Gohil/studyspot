@@ -8,7 +8,7 @@ import { Icon } from '@/components/ui/Icon'
 import { OnboardingProgress } from '@/components/ui/OnboardingProgress'
 import { LocationFields } from '@/components/profile/LocationFields'
 import { Button } from '@/components/ui/Button'
-import { friendlyDbError } from '@/lib/db-errors'
+import { friendlyDbError } from '@studyspot/utils/db-errors'
 import type { CountryOption } from '@/lib/geo-data'
 
 export function LocationForm({ countries }: { countries: CountryOption[] }) {

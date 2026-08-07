@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { Send } from 'lucide-react'
 import { formatRelativeTime } from '@studyspot/utils'
+import { messageSchema, validate } from '@studyspot/utils/validation'
 import type { Message } from '@studyspot/types'
 import { Icon } from '@/components/ui/Icon'
 import { useToast } from '@/components/ui/Toast'
-import { friendlyDbError } from '@/lib/db-errors'
-import { messageSchema, validate } from '@/lib/validation'
+import { friendlyDbError } from '@studyspot/utils/db-errors'
 import type { CurrentUser } from './types'
 
 /** How close to the bottom still counts as "following the conversation". */

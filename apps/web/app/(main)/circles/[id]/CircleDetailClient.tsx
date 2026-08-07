@@ -7,8 +7,9 @@ import { createClient } from '@/lib/supabase/client'
 import { Avatar } from '@/components/profile/Avatar'
 import { Icon } from '@/components/ui/Icon'
 import { formatRelativeTime } from '@studyspot/utils'
+import { circlePostSchema, validate } from '@studyspot/utils/validation'
+import { friendlyDbError } from '@studyspot/utils/db-errors'
 import type { CirclePost } from '@studyspot/types'
-import { circlePostSchema, friendlyDbError, validate } from '@/lib/validation'
 
 interface Props {
   circleId: string

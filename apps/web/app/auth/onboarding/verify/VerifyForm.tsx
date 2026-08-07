@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
 import { Icon } from '@/components/ui/Icon'
 import { useToast } from '@/components/ui/Toast'
-import { friendlyDbError } from '@/lib/db-errors'
+import { friendlyDbError } from '@studyspot/utils/db-errors'
 
 // Mirrors ALLOWED_TYPES / MAX_FILE_SIZE in supabase/functions/verify-upload-url.
 // The `accept` attribute is a filter, not a check; a drag-drop or a renamed

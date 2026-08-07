@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/Button'
 import { Icon } from '@/components/ui/Icon'
 import { Textarea } from '@/components/ui/Input'
 import { useToast } from '@/components/ui/Toast'
-import { friendlyDbError } from '@/lib/db-errors'
-import { joinRequestSchema, validate } from '@/lib/validation'
+import { friendlyDbError } from '@studyspot/utils/db-errors'
+import { joinRequestSchema, validate } from '@studyspot/utils/validation'
 import type { SessionRequest } from '@studyspot/types'
 
 const MESSAGE_MAX = 140

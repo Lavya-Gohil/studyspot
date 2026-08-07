@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { ErrorState } from '@/components/ui/EmptyState'
-import { friendlyDbError } from '@/lib/db-errors'
+import { friendlyDbError } from '@studyspot/utils/db-errors'
 
 /**
  * Catches the throws page.tsx makes when a read fails. Before this boundary

@@ -5,7 +5,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import type { Circle } from '@studyspot/types'
-import { createCircleSchema, friendlyDbError, joinCodeSchema, validate } from '@/lib/validation'
+import { createCircleSchema, joinCodeSchema, validate } from '@studyspot/utils/validation'
+import { friendlyDbError } from '@studyspot/utils/db-errors'
 
 const EMOJIS = ['📚', '🧪', '💻', '⚖️', '🩺', '🎨', '🗣️', '🧮', '🌍', '🎯']
 

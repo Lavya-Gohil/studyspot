@@ -11,13 +11,8 @@ import type { CountryOption } from '@/lib/geo-data'
 import { SUBJECT_CATEGORIES, YEAR_LABELS, type YearOfStudy } from '@studyspot/types'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import {
-  AVATAR_MAX_BYTES,
-  AVATAR_TYPES,
-  friendlyDbError,
-  profileUpdateSchema,
-  validate,
-} from '@/lib/validation'
+import { AVATAR_MAX_BYTES, AVATAR_TYPES, profileUpdateSchema, validate } from '@studyspot/utils/validation'
+import { friendlyDbError } from '@studyspot/utils/db-errors'
 
 export function ProfileSettingsClient({
   profile,

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { AVATAR_MAX_BYTES, AVATAR_TYPES } from '@/lib/validation'
+import { AVATAR_MAX_BYTES, AVATAR_TYPES } from '@studyspot/utils/validation'
 
 /**
  * Photo picker with a live preview. The preview URL is created in an effect

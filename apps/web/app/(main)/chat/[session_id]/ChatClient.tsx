@@ -7,9 +7,10 @@ import { Avatar } from '@/components/profile/Avatar'
 import { VerifiedBadge } from '@/components/ui/Badge'
 import { Icon } from '@/components/ui/Icon'
 import { formatRelativeTime, formatCountdown } from '@studyspot/utils'
+import { messageSchema, validate } from '@studyspot/utils/validation'
+import { friendlyDbError } from '@studyspot/utils/db-errors'
 import type { Message } from '@studyspot/types'
 import Link from 'next/link'
-import { friendlyDbError, messageSchema, validate } from '@/lib/validation'
 
 interface Props {
   sessionId: string

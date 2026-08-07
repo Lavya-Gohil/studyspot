@@ -1,9 +1,8 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { computeReputation } from '@studyspot/utils'
+import { computeReputation, scoreCompatibility, scoreSimilarity, type MatchProfile } from '@studyspot/utils'
 import { ReputationCard } from '@/components/profile/ReputationCard'
-import { friendlyDbError } from '@/lib/db-errors'
-import { scoreCompatibility, scoreSimilarity, type MatchProfile } from '@/lib/matching'
+import { friendlyDbError } from '@studyspot/utils/db-errors'
 import { MatchClient } from './MatchClient'
 import type { StudyStats } from '@studyspot/types'
 

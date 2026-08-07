@@ -4,8 +4,8 @@ import { useCallback, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/components/ui/Toast'
-import { friendlyDbError } from '@/lib/db-errors'
-import { createSessionSchema, validate } from '@/lib/validation'
+import { friendlyDbError } from '@studyspot/utils/db-errors'
+import { createSessionSchema, validate } from '@studyspot/utils/validation'
 import type { SessionMode, SessionVibe } from '@studyspot/types'
 
 export const CREATE_STEPS = ['Format', 'Details', 'Review'] as const

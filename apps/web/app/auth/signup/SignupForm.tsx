@@ -9,7 +9,7 @@ import { Checkbox } from '@/components/ui/Checkbox'
 import { Input } from '@/components/ui/Input'
 import { FieldLabel } from '@/components/ui/Field'
 import { useToast } from '@/components/ui/Toast'
-import { signupSchema, validate } from '@/lib/validation'
+import { signupSchema, validate } from '@studyspot/utils/validation'
 import { CheckInbox } from './CheckInbox'
 
 const CONSENT_REQUIRED = 'Please agree to the Terms of Service and Privacy Policy first.'

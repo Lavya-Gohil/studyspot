@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 // which calls createClient() at module scope and pulls a second Supabase client
 // into the graph that the web app never uses.
 import { fetchFeedSessions } from '@studyspot/api/sessions'
-import { friendlyDbError } from '@/lib/db-errors'
+import { friendlyDbError } from '@studyspot/utils/db-errors'
 import { ExploreClient } from './ExploreClient'
 import type { Session } from '@studyspot/types'
 

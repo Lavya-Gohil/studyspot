@@ -1,5 +1,5 @@
 import type { StudyStats, Reputation } from '@studyspot/types'
-import { computeReputation } from '@studyspot/utils'
+import { computeReputation } from './reputation'
 
 export interface MatchProfile {
   id: string
