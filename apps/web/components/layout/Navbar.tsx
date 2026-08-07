@@ -298,8 +298,11 @@ export function Navbar() {
 
       {mobileOpen ? (
         <div className="glass-strong glass-sheen enter-up mx-auto mt-2 max-w-6xl overflow-hidden rounded-3xl p-2 md:hidden">
+          {/* MENU only. PRIMARY lives in the floating tab bar at the bottom
+              of the screen now, and listing it here as well would put the
+              same five destinations on screen twice. */}
           <div className="stagger grid grid-cols-2 gap-1">
-            {[...PRIMARY, ...MENU].map((link, i) => {
+            {MENU.map((link, i) => {
               const active = isActive(link.href)
               return (
                 <Link
