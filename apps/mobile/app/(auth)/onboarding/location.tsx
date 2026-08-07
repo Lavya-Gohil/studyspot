@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Picker } from '@react-native-picker/picker'
 import { useRouter } from 'expo-router'
 import { Country, State } from 'country-state-city'
@@ -7,6 +8,7 @@ import { supabase } from '@/lib/supabase'
 import { theme } from '@/lib/theme'
 
 export default function LocationScreen() {
+  const insets = useSafeAreaInsets()
   const router = useRouter()
   const [countryCode, setCountryCode] = useState('')
   const [countryName, setCountryName] = useState('')
@@ -37,7 +39,7 @@ export default function LocationScreen() {
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: theme.bg.base }} contentContainerStyle={{ flexGrow: 1 }}>
-      <View style={{ flex: 1, padding: 24, paddingTop: 60, gap: 24 }}>
+      <View style={{ flex: 1, padding: 24, paddingTop: insets.top + 16, gap: 24 }}>
         <View style={{ gap: 4 }}>
           <Text style={{ fontSize: 24, fontWeight: '600', color: theme.text.primary }}>Where are you based?</Text>
           <Text style={{ fontSize: 14, color: theme.text.secondary }}>This helps us show you nearby study sessions.</Text>

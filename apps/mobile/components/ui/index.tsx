@@ -7,6 +7,7 @@ import {
   View,
   type ScrollViewProps,
 } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { theme } from '@/lib/theme'
 
 /**
@@ -26,7 +27,17 @@ const RADIUS = { sm: 8, md: 12, lg: 16, pill: 999 } as const
 
 /* ------------------------------- Screen ------------------------------- */
 
-/** Page container. Owns the background and the status-bar inset. */
+/**
+ * Page container. Owns the background and the safe-area insets.
+ *
+ * The top padding is the REAL inset, not a guess. A fixed 56 is right on
+ * roughly one phone: it clips under a Dynamic Island and leaves a visible gap
+ * on a device with no notch at all.
+ *
+ * The bottom is a plain gap rather than insets.bottom, because a screen inside
+ * the tab navigator is already laid out above the bar, and the bar carries the
+ * inset itself. Adding it here too would double it.
+ */
 export function Screen({
   children,
   scroll = true,
@@ -38,7 +49,13 @@ export function Screen({
   padded?: boolean
   refreshControl?: ScrollViewProps['refreshControl']
 }) {
-  const inner = { paddingHorizontal: padded ? 16 : 0, paddingTop: 56, paddingBottom: 96, gap: 16 }
+  const insets = useSafeAreaInsets()
+  const inner = {
+    paddingHorizontal: padded ? 16 : 0,
+    paddingTop: insets.top + 12,
+    paddingBottom: 32,
+    gap: 16,
+  }
 
   if (!scroll) {
     return <View style={{ flex: 1, backgroundColor: theme.bg.base, ...inner }}>{children}</View>

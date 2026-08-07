@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import { SUBJECT_CATEGORIES, YEAR_LABELS, type YearOfStudy } from '@studyspot/types'
 import { theme } from '@/lib/theme'
 
 export default function ProfileSetupScreen() {
+  const insets = useSafeAreaInsets()
   const router = useRouter()
   const [college, setCollege] = useState('')
   const [course, setCourse] = useState('')
@@ -34,7 +36,7 @@ export default function ProfileSetupScreen() {
   }
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: theme.bg.base }} contentContainerStyle={{ padding: 24, paddingTop: 60, gap: 24 }}>
+    <ScrollView style={{ flex: 1, backgroundColor: theme.bg.base }} contentContainerStyle={{ padding: 24, paddingTop: insets.top + 16, gap: 24 }}>
       <View style={{ gap: 4 }}>
         <Text style={{ fontSize: 24, fontWeight: '600', color: theme.text.primary }}>Set up your study profile</Text>
         <Text style={{ fontSize: 14, color: theme.text.secondary }}>All optional; you can fill this in later.</Text>

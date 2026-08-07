@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { View, Text, FlatList, TouchableOpacity, RefreshControl, ScrollView } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import type { Session } from '@studyspot/types'
@@ -20,6 +21,7 @@ function MetaRow({ icon: Glyph, text }: { icon: LucideIcon; text: string }) {
 }
 
 export default function FeedScreen() {
+  const insets = useSafeAreaInsets()
   const router = useRouter()
   const [sessions, setSessions] = useState<Session[]>([])
   const [loading, setLoading] = useState(true)
@@ -131,7 +133,7 @@ export default function FeedScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.bg.base }}>
-      <View style={{ paddingTop: 56, paddingHorizontal: 16, paddingBottom: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+      <View style={{ paddingTop: insets.top + 12, paddingHorizontal: 16, paddingBottom: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <Text style={{ fontSize: 24, fontWeight: '700', color: theme.brand.text }}>StudySpot</Text>
         <TouchableOpacity onPress={() => router.push('/sessions/create')} style={{ height: 32, paddingHorizontal: 16, borderRadius: 10, backgroundColor: theme.brand.primary, alignItems: 'center', justifyContent: 'center' }}>
           <Text style={{ color: theme.brand.fg, fontSize: 13, fontWeight: '500' }}>+ Create</Text>

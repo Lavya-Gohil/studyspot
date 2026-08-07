@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import { formatSessionTime } from '@studyspot/utils'
@@ -8,6 +9,7 @@ import { BadgeCheck, CalendarDays, MapPin } from '@/components/icons'
 import { theme } from '@/lib/theme'
 
 export default function SessionDetailScreen() {
+  const insets = useSafeAreaInsets()
   const { id } = useLocalSearchParams<{ id: string }>()
   const router = useRouter()
   const [session, setSession] = useState<Session | null>(null)
@@ -51,7 +53,7 @@ export default function SessionDetailScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.bg.base }}>
-      <View style={{ paddingTop: 56, paddingHorizontal: 16, paddingBottom: 12, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+      <View style={{ paddingTop: insets.top + 12, paddingHorizontal: 16, paddingBottom: 12, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
         <TouchableOpacity onPress={() => router.back()}>
           <Text style={{ color: theme.text.secondary, fontSize: 16 }}>← Back</Text>
         </TouchableOpacity>

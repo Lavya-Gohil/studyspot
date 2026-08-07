@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { View, Text, FlatList } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Stack } from 'expo-router'
 import { fetchLeaderboard, type LeaderboardRow, type LeaderboardScope } from '@studyspot/api'
 import { supabase } from '@/lib/supabase'
@@ -24,6 +25,7 @@ function formatMinutes(mins: number): string {
 }
 
 export default function LeaderboardScreen() {
+  const insets = useSafeAreaInsets()
   const [scope, setScope] = useState<LeaderboardScope>('global')
   const [days, setDays] = useState(7)
   const [rows, setRows] = useState<LeaderboardRow[]>([])
@@ -66,7 +68,7 @@ export default function LeaderboardScreen() {
   return (
     <>
       <Stack.Screen options={{ title: 'Leaderboard' }} />
-      <View style={{ flex: 1, backgroundColor: theme.bg.base, paddingTop: 56 }}>
+      <View style={{ flex: 1, backgroundColor: theme.bg.base, paddingTop: insets.top + 12 }}>
         <View style={{ paddingHorizontal: 16, gap: 12, paddingBottom: 12 }}>
           <Title>Leaderboard</Title>
           <Subtitle>Ranked by focused minutes. Only finished timers count.</Subtitle>

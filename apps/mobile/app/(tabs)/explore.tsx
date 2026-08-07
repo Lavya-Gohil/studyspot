@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { View, Text, TextInput, FlatList, TouchableOpacity } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import type { Session } from '@studyspot/types'
@@ -8,6 +9,7 @@ import { CalendarDays, MapPin } from '@/components/icons'
 import { theme } from '@/lib/theme'
 
 export default function ExploreScreen() {
+  const insets = useSafeAreaInsets()
   const router = useRouter()
   const [sessions, setSessions] = useState<Session[]>([])
   const [query, setQuery] = useState('')
@@ -41,7 +43,7 @@ export default function ExploreScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.bg.base }}>
-      <View style={{ paddingTop: 56, paddingHorizontal: 16, paddingBottom: 12, gap: 12 }}>
+      <View style={{ paddingTop: insets.top + 12, paddingHorizontal: 16, paddingBottom: 12, gap: 12 }}>
         <Text style={{ fontSize: 24, fontWeight: '600', color: theme.text.primary }}>Explore</Text>
         <TextInput
           value={query}

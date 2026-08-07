@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { View, Text, Pressable, ScrollView, TextInput, KeyboardAvoidingView, Platform } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
 import { recordFocusSession } from '@studyspot/api/focus'
 import { useRoomChannel } from '@studyspot/api/room'
@@ -160,6 +161,7 @@ function Room({
     sendMessage,
   } = useRoomChannel({ client: supabase, session, currentUser: me, seatCount })
 
+  const insets = useSafeAreaInsets()
   const [now, setNow] = useState(() => Date.now())
   const [draft, setDraft] = useState('')
   const [runStartedAt, setRunStartedAt] = useState<number | null>(null)
@@ -237,7 +239,7 @@ function Room({
         style={{ flex: 1, backgroundColor: theme.bg.base }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <View style={{ paddingTop: 56, paddingHorizontal: 16, paddingBottom: 12, gap: 4 }}>
+        <View style={{ paddingTop: insets.top + 12, paddingHorizontal: 16, paddingBottom: 12, gap: 4 }}>
           <Text numberOfLines={1} style={{ fontSize: 20, fontWeight: '700', color: theme.text.primary }}>
             {session.subject}
           </Text>
@@ -415,7 +417,7 @@ function Room({
             flexDirection: 'row',
             gap: 8,
             paddingHorizontal: 16,
-            paddingBottom: 28,
+            paddingBottom: insets.bottom + 12,
             paddingTop: 8,
             borderTopWidth: 1,
             borderTopColor: theme.border.subtle,

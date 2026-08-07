@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import { theme } from '@/lib/theme'
 
 export default function BasicInfoScreen() {
+  const insets = useSafeAreaInsets()
   const router = useRouter()
   const [fullName, setFullName] = useState('')
   const [age, setAge] = useState('')
@@ -33,7 +35,7 @@ export default function BasicInfoScreen() {
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: theme.bg.base }} contentContainerStyle={{ flexGrow: 1 }}>
-      <View style={{ flex: 1, padding: 24, paddingTop: 60, gap: 24 }}>
+      <View style={{ flex: 1, padding: 24, paddingTop: insets.top + 16, gap: 24 }}>
         <View style={{ gap: 4 }}>
           <Text style={{ fontSize: 24, fontWeight: '600', color: theme.text.primary }}>Tell us about yourself</Text>
           <Text style={{ fontSize: 14, color: theme.text.secondary }}>Just a couple of things to get started.</Text>

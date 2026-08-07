@@ -11,8 +11,15 @@ import { theme } from '@/lib/theme'
  * loudest "assembled quickly" signal in a mobile app. The one emoji left in
  * the product is the circle emoji, which is user-chosen data.
  *
- * Labels are always visible. Six unlabelled glyphs is a memory test, and this
- * app is opened daily by people who should not have to learn it.
+ * Labels are always visible. Seven unlabelled glyphs is a memory test, and
+ * this app is opened daily by people who should not have to learn it.
+ *
+ * The bar sits at the bottom, which is what expo-router's Tabs does and where
+ * a thumb can reach it. Note what is NOT set below: height and paddingBottom.
+ * React Navigation computes those as 49 + insets.bottom and insets.bottom, so
+ * hardcoding them (as this did) throws the safe-area inset away and drops the
+ * labels into the home-indicator zone on every phone with gesture navigation.
+ * Style the appearance here; leave the geometry to the inset.
  */
 
 const ICON_SIZE = 20
@@ -32,8 +39,6 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: theme.bg.elevated,
           borderTopColor: theme.border.subtle,
-          height: 64,
-          paddingBottom: 8,
           paddingTop: 6,
         },
         tabBarActiveTintColor: theme.brand.text,

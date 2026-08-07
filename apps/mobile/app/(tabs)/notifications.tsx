@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { View, Text, FlatList, TouchableOpacity } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import { formatRelativeTime } from '@studyspot/utils'
@@ -36,6 +37,7 @@ const ICONS: Record<string, { icon: LucideIcon; tone: 'brand' | 'good' | 'bad' }
 const TONE = { brand: theme.brand.text, good: theme.accent.green, bad: theme.accent.red }
 
 export default function NotificationsScreen() {
+  const insets = useSafeAreaInsets()
   const router = useRouter()
   const [notifications, setNotifications] = useState<Notification[]>([])
 
@@ -56,7 +58,7 @@ export default function NotificationsScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.bg.base }}>
-      <View style={{ paddingTop: 56, paddingHorizontal: 16, paddingBottom: 12 }}>
+      <View style={{ paddingTop: insets.top + 12, paddingHorizontal: 16, paddingBottom: 12 }}>
         <Text style={{ fontSize: 24, fontWeight: '600', color: theme.text.primary }}>Notifications</Text>
       </View>
       <FlatList

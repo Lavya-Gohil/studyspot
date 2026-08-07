@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import * as DocumentPicker from 'expo-document-picker'
 import { useRouter } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import { theme } from '@/lib/theme'
 
 export default function VerifyScreen() {
+  const insets = useSafeAreaInsets()
   const router = useRouter()
   const [file, setFile] = useState<{ name: string; uri: string; mimeType: string; size: number } | null>(null)
   const [uploading, setUploading] = useState(false)
@@ -66,7 +68,7 @@ export default function VerifyScreen() {
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: theme.bg.base }} contentContainerStyle={{ flexGrow: 1 }}>
-      <View style={{ flex: 1, padding: 24, paddingTop: 60, gap: 24 }}>
+      <View style={{ flex: 1, padding: 24, paddingTop: insets.top + 16, gap: 24 }}>
         <View style={{ gap: 4 }}>
           <Text style={{ fontSize: 24, fontWeight: '600', color: theme.text.primary }}>Verify your student status</Text>
           <Text style={{ fontSize: 14, color: theme.text.secondary, lineHeight: 20 }}>

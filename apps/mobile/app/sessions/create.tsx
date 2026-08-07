@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import { theme } from '@/lib/theme'
@@ -14,6 +15,7 @@ const VIBES = [
 ]
 
 export default function CreateSessionScreen() {
+  const insets = useSafeAreaInsets()
   const router = useRouter()
   const [locationName, setLocationName] = useState('')
   const [subject, setSubject] = useState('')
@@ -61,7 +63,7 @@ export default function CreateSessionScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.bg.base }}>
-      <View style={{ paddingTop: 56, paddingHorizontal: 16, paddingBottom: 12, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+      <View style={{ paddingTop: insets.top + 12, paddingHorizontal: 16, paddingBottom: 12, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
         <TouchableOpacity onPress={() => router.back()}>
           <Text style={{ color: theme.text.secondary, fontSize: 16 }}>✕</Text>
         </TouchableOpacity>
