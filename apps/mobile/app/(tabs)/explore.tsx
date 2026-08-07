@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import type { Session } from '@studyspot/types'
 import { formatSessionTime } from '@studyspot/utils'
+import { CalendarDays, MapPin } from '@/components/icons'
 import { theme } from '@/lib/theme'
 
 export default function ExploreScreen() {
@@ -61,8 +62,18 @@ export default function ExploreScreen() {
             style={{ backgroundColor: theme.bg.surface, borderRadius: 12, borderWidth: 1, borderColor: theme.border.subtle, padding: 14, marginBottom: 10, gap: 6 }}
           >
             <Text style={{ fontSize: 15, fontWeight: '600', color: theme.text.primary }}>{item.subject}</Text>
-            <Text style={{ fontSize: 13, color: theme.text.secondary }}>📍 {item.location_name}</Text>
-            <Text style={{ fontSize: 13, color: theme.text.secondary }}>📅 {formatSessionTime(item.start_time, item.end_time)}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <MapPin size={14} color={theme.text.tertiary} strokeWidth={2} />
+              <Text style={{ fontSize: 13, color: theme.text.secondary, flex: 1 }} numberOfLines={1}>
+                {item.location_name ?? 'Online'}
+              </Text>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <CalendarDays size={14} color={theme.text.tertiary} strokeWidth={2} />
+              <Text style={{ fontSize: 13, color: theme.text.secondary, flex: 1 }} numberOfLines={1}>
+                {formatSessionTime(item.start_time, item.end_time)}
+              </Text>
+            </View>
           </TouchableOpacity>
         )}
         ListEmptyComponent={

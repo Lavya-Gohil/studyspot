@@ -12,7 +12,11 @@
     "./requests": "./src/requests.ts",
     "./stats": "./src/stats.ts",
     "./filters": "./src/filters.ts",
-    "./client": "./src/client.ts"
+    "./client": "./src/client.ts",
+    "./focus": "./src/focus.ts",
+    "./gamification": "./src/gamification.ts",
+    "./circles": "./src/circles.ts",
+    "./goals": "./src/goals.ts"
   },
   "dependencies": {
     "@studyspot/types": "workspace:*",

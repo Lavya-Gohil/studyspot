@@ -4,7 +4,20 @@ import { useRouter } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import type { Session } from '@studyspot/types'
 import { formatSessionTime, truncate } from '@studyspot/utils'
+import { BadgeCheck, BookOpen, CalendarDays, MapPin, type LucideIcon } from '@/components/icons'
 import { theme } from '@/lib/theme'
+
+/** Icon plus a line of metadata, so the two rows cannot drift apart. */
+function MetaRow({ icon: Glyph, text }: { icon: LucideIcon; text: string }) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+      <Glyph size={14} color={theme.text.tertiary} strokeWidth={2} />
+      <Text style={{ fontSize: 13, color: theme.text.secondary, flex: 1 }} numberOfLines={1}>
+        {text}
+      </Text>
+    </View>
+  )
+}
 
 export default function FeedScreen() {
   const router = useRouter()
@@ -75,7 +88,7 @@ export default function FeedScreen() {
             {session.host_college && <Text style={{ fontSize: 12, color: theme.text.secondary }}>{session.host_college}</Text>}
           </View>
           {session.host_verification_status === 'verified' && (
-            <Text style={{ fontSize: 12, color: theme.accent.green }}>✓ Verified</Text>
+            <BadgeCheck size={16} color={theme.accent.green} strokeWidth={2} accessibilityLabel="Verified" />
           )}
         </View>
 
@@ -84,16 +97,16 @@ export default function FeedScreen() {
 
         {/* Location + time */}
         <View style={{ gap: 4 }}>
-          <Text style={{ fontSize: 13, color: theme.text.secondary }}>📍 {session.location_name}</Text>
-          <Text style={{ fontSize: 13, color: theme.text.secondary }}>📅 {formatSessionTime(session.start_time, session.end_time)}</Text>
+          <MetaRow icon={MapPin} text={session.location_name ?? 'Online'} />
+          <MetaRow icon={CalendarDays} text={formatSessionTime(session.start_time, session.end_time)} />
         </View>
 
         {/* Pills */}
         <View style={{ flexDirection: 'row', gap: 8 }}>
-          <View style={{ paddingHorizontal: 10, paddingVertical: 3, borderRadius: 99, backgroundColor: theme.brand.tint, borderWidth: 1, borderColor: 'rgba(123,97,255,0.2)' }}>
+          <View style={{ paddingHorizontal: 10, paddingVertical: 3, borderRadius: 99, backgroundColor: theme.brand.tint, borderWidth: 1, borderColor: theme.brand.line }}>
             <Text style={{ fontSize: 12, color: theme.brand.text, fontWeight: '500' }}>{session.vibe.replace('_', ' ')}</Text>
           </View>
-          <View style={{ paddingHorizontal: 10, paddingVertical: 3, borderRadius: 99, backgroundColor: 'rgba(0,229,160,0.1)', borderWidth: 1, borderColor: 'rgba(0,229,160,0.2)' }}>
+          <View style={{ paddingHorizontal: 10, paddingVertical: 3, borderRadius: 99, backgroundColor: theme.accent.greenWash, borderWidth: 1, borderColor: theme.accent.greenLine }}>
             <Text style={{ fontSize: 12, color: theme.accent.green, fontWeight: '500' }}>{remaining} spot{remaining === 1 ? '' : 's'} left</Text>
           </View>
         </View>
@@ -106,7 +119,7 @@ export default function FeedScreen() {
         <TouchableOpacity
           onPress={() => handleInterest(session.id)}
           disabled={!!status || remaining === 0}
-          style={{ height: 40, borderRadius: 10, backgroundColor: status ? theme.bg.elevated : theme.brand.text, alignItems: 'center', justifyContent: 'center', opacity: (status || remaining === 0) ? 0.7 : 1, borderWidth: status ? 1 : 0, borderColor: theme.border.default }}
+          style={{ height: 40, borderRadius: 10, backgroundColor: status ? theme.bg.elevated : theme.brand.primary, alignItems: 'center', justifyContent: 'center', opacity: (status || remaining === 0) ? 0.7 : 1, borderWidth: status ? 1 : 0, borderColor: theme.border.default }}
         >
           <Text style={{ color: status ? theme.text.secondary : theme.brand.fg, fontWeight: '500', fontSize: 14 }}>
             {status === 'approved' ? 'You\'re in. Open chat' : status === 'pending' ? 'Request sent' : remaining === 0 ? 'Session full' : 'Interested'}
@@ -138,7 +151,7 @@ export default function FeedScreen() {
             </View>
           ) : (
             <View style={{ padding: 40, alignItems: 'center', gap: 12 }}>
-              <Text style={{ fontSize: 40 }}>📚</Text>
+              <BookOpen size={34} color={theme.text.tertiary} strokeWidth={1.6} />
               <Text style={{ fontSize: 18, fontWeight: '600', color: theme.text.primary }}>No sessions near you yet</Text>
               <Text style={{ fontSize: 14, color: theme.text.secondary }}>Be the first to create one.</Text>
               <TouchableOpacity onPress={() => router.push('/sessions/create')} style={{ height: 40, paddingHorizontal: 24, borderRadius: 10, backgroundColor: theme.brand.primary, alignItems: 'center', justifyContent: 'center' }}>

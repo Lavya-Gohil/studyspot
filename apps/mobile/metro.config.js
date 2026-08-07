@@ -25,6 +25,13 @@ config.resolver.nodeModulesPaths = [
   path.resolve(__dirname, 'node_modules'),
   path.resolve(workspaceRoot, 'node_modules'),
 ]
+// Resolve the "exports" field in package.json. The workspace packages use
+// subpath exports (@studyspot/utils/validation, @studyspot/api/focus) to keep
+// heavy dependencies out of the web bundle, and Metro ignores "exports"
+// entirely unless this is on, so those imports would resolve in TypeScript
+// and then fail at bundle time.
+config.resolver.unstable_enablePackageExports = true
+
 // Hierarchical lookup stays ON, deliberately. The usual monorepo recipe
 // disables it, but that recipe assumes a hoisted layout: pnpm keeps a
 // package's transitive dependencies inside that package's own node_modules,

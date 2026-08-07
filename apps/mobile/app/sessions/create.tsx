@@ -113,7 +113,7 @@ export default function CreateSessionScreen() {
 
         <TouchableOpacity onPress={handleCreate} disabled={!isValid || loading} style={{ height: 48, borderRadius: 12, backgroundColor: theme.brand.primary, alignItems: 'center', justifyContent: 'center', opacity: (!isValid || loading) ? 0.5 : 1, marginTop: 8 }}>
           <Text style={{ color: theme.brand.fg, fontWeight: '600', fontSize: 15 }}>
-            {loading ? 'Posting...' : 'Post session →'}
+            {loading ? 'Posting...' : 'Post session'}
           </Text>
         </TouchableOpacity>
       </ScrollView>

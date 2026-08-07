@@ -70,13 +70,13 @@ export default function VerifyScreen() {
         <View style={{ gap: 4 }}>
           <Text style={{ fontSize: 24, fontWeight: '600', color: theme.text.primary }}>Verify your student status</Text>
           <Text style={{ fontSize: 14, color: theme.text.secondary, lineHeight: 20 }}>
-            Upload your college ID, timetable, or fee receipt to get a ✓ Verified Student badge. You can skip this and do it later.
+            Upload your college ID, timetable, or fee receipt to get a Verified Student badge. You can skip this and do it later.
           </Text>
         </View>
 
         <TouchableOpacity
           onPress={pickFile}
-          style={{ borderWidth: 2, borderStyle: 'dashed', borderColor: theme.border.default, borderRadius: 14, padding: 32, alignItems: 'center', gap: 12, backgroundColor: 'rgba(123,97,255,0.02)' }}
+          style={{ borderWidth: 2, borderStyle: 'dashed', borderColor: theme.border.default, borderRadius: 14, padding: 32, alignItems: 'center', gap: 12, backgroundColor: theme.brand.wash }}
         >
           <Text style={{ fontSize: 32 }}>📄</Text>
           {file ? (
@@ -110,7 +110,7 @@ export default function VerifyScreen() {
 
           <TouchableOpacity onPress={handleSkip} disabled={skipping} style={{ alignItems: 'flex-end' }}>
             <Text style={{ color: theme.text.secondary, fontSize: 14, textDecorationLine: 'underline' }}>
-              {skipping ? 'Skipping...' : 'Skip for now →'}
+              {skipping ? 'Skipping...' : 'Skip for now'}
             </Text>
           </TouchableOpacity>
         </View>

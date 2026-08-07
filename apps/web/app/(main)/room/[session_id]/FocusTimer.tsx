@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/Button'
 import { useToast } from '@/components/ui/Toast'
-import { recordFocusSession } from '@/lib/focus'
+import { recordFocusSession } from '@studyspot/api/focus'
+import { createClient } from '@/lib/supabase/client'
 import { secondsLeft, type TimerState } from './types'
 
 const PRESETS = [
@@ -73,7 +74,12 @@ export function FocusTimer({
       return
     }
 
-    void recordFocusSession({ startedAt, endedAt: Date.now(), sessionId, subject }).then((r) => {
+    void recordFocusSession(createClient(), {
+      startedAt,
+      endedAt: Date.now(),
+      sessionId,
+      subject,
+    }).then((r) => {
       if (r.ok) {
         const mins = Math.round(r.seconds / 60)
         toast.success(`Time's up, ${mins} min banked.`)

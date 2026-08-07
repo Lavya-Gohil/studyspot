@@ -16,8 +16,12 @@ export type Theme = {
     hover: string
     fg: string
     green: string
+    greenWash: string
+    greenLine: string
     amber: string
     red: string
+    redWash: string
+    redLine: string
   }
   brand: Ramp & {
     primary: string
@@ -25,6 +29,8 @@ export type Theme = {
     fg: string
     text: string
     tint: string
+    wash: string
+    line: string
   }
   text: { primary: string; secondary: string; tertiary: string }
   border: { subtle: string; default: string; strong: string }

@@ -69,7 +69,7 @@ export default function ProfileSetupScreen() {
 
       <TouchableOpacity onPress={handleFinish} disabled={loading} style={{ height: 44, borderRadius: 10, backgroundColor: theme.brand.primary, alignItems: 'center', justifyContent: 'center', opacity: loading ? 0.5 : 1 }}>
         <Text style={{ color: theme.brand.fg, fontWeight: '500', fontSize: 14 }}>
-          {loading ? 'Finishing setup...' : 'Finish setup →'}
+          {loading ? 'Finishing setup...' : 'Finish setup'}
         </Text>
       </TouchableOpacity>
     </ScrollView>

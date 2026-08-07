@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import { formatSessionTime } from '@studyspot/utils'
 import type { Session, SessionRequest } from '@studyspot/types'
+import { BadgeCheck, CalendarDays, MapPin } from '@/components/icons'
 import { theme } from '@/lib/theme'
 
 export default function SessionDetailScreen() {
@@ -65,7 +66,9 @@ export default function SessionDetailScreen() {
           <View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
               <Text style={{ fontSize: 15, fontWeight: '600', color: theme.text.primary }}>{session.host_name}</Text>
-              {session.host_verification_status === 'verified' && <Text style={{ fontSize: 12, color: theme.accent.green }}>✓ Verified</Text>}
+              {session.host_verification_status === 'verified' ? (
+                <BadgeCheck size={16} color={theme.accent.green} strokeWidth={2} accessibilityLabel="Verified" />
+              ) : null}
             </View>
             {session.host_college && <Text style={{ fontSize: 13, color: theme.text.secondary }}>{session.host_college}</Text>}
           </View>
@@ -74,13 +77,24 @@ export default function SessionDetailScreen() {
         <Text style={{ fontSize: 26, fontWeight: '700', color: theme.text.primary }}>{session.subject}</Text>
 
         <View style={{ backgroundColor: theme.bg.surface, borderRadius: 14, borderWidth: 1, borderColor: theme.border.subtle, padding: 16, gap: 12 }}>
-          <Text style={{ fontSize: 14, color: theme.text.secondary }}>📍 {session.location_name}{session.location_address ? `\n${session.location_address}` : ''}</Text>
-          <Text style={{ fontSize: 14, color: theme.text.secondary }}>📅 {formatSessionTime(session.start_time, session.end_time)}</Text>
           <View style={{ flexDirection: 'row', gap: 8 }}>
-            <View style={{ paddingHorizontal: 10, paddingVertical: 3, borderRadius: 99, backgroundColor: theme.brand.tint, borderWidth: 1, borderColor: 'rgba(123,97,255,0.2)' }}>
+            <MapPin size={15} color={theme.text.tertiary} strokeWidth={2} style={{ marginTop: 2 }} />
+            <Text style={{ fontSize: 14, color: theme.text.secondary, flex: 1 }}>
+              {session.location_name ?? 'Online'}
+              {session.location_address ? `\n${session.location_address}` : ''}
+            </Text>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <CalendarDays size={15} color={theme.text.tertiary} strokeWidth={2} />
+            <Text style={{ fontSize: 14, color: theme.text.secondary, flex: 1 }}>
+              {formatSessionTime(session.start_time, session.end_time)}
+            </Text>
+          </View>
+          <View style={{ flexDirection: 'row', gap: 8 }}>
+            <View style={{ paddingHorizontal: 10, paddingVertical: 3, borderRadius: 99, backgroundColor: theme.brand.tint, borderWidth: 1, borderColor: theme.brand.line }}>
               <Text style={{ fontSize: 12, color: theme.brand.text, fontWeight: '500' }}>{session.vibe.replace('_', ' ')}</Text>
             </View>
-            <View style={{ paddingHorizontal: 10, paddingVertical: 3, borderRadius: 99, backgroundColor: remaining > 0 ? 'rgba(0,229,160,0.1)' : 'rgba(239,68,68,0.1)', borderWidth: 1, borderColor: remaining > 0 ? 'rgba(0,229,160,0.2)' : 'rgba(239,68,68,0.2)' }}>
+            <View style={{ paddingHorizontal: 10, paddingVertical: 3, borderRadius: 99, backgroundColor: remaining > 0 ? theme.accent.greenWash : theme.accent.redWash, borderWidth: 1, borderColor: remaining > 0 ? theme.accent.greenLine : theme.accent.redLine }}>
               <Text style={{ fontSize: 12, fontWeight: '500', color: remaining > 0 ? theme.accent.green : theme.accent.red }}>
                 {remaining > 0 ? `${remaining} spot${remaining === 1 ? '' : 's'} left` : 'Full'}
               </Text>
@@ -95,9 +109,9 @@ export default function SessionDetailScreen() {
         {(userRequest?.status === 'approved' || isHost) ? (
           <TouchableOpacity
             onPress={() => router.push(`/sessions/${id}/chat`)}
-            style={{ height: 48, borderRadius: 12, backgroundColor: 'rgba(0,229,160,0.15)', borderWidth: 1, borderColor: 'rgba(0,229,160,0.3)', alignItems: 'center', justifyContent: 'center' }}
+            style={{ height: 48, borderRadius: 12, backgroundColor: theme.accent.greenWash, borderWidth: 1, borderColor: theme.accent.greenLine, alignItems: 'center', justifyContent: 'center' }}
           >
-            <Text style={{ color: theme.accent.green, fontWeight: '600', fontSize: 15 }}>Open group chat →</Text>
+            <Text style={{ color: theme.accent.green, fontWeight: '600', fontSize: 15 }}>Open group chat</Text>
           </TouchableOpacity>
         ) : userRequest?.status === 'pending' ? (
           <View style={{ height: 48, borderRadius: 12, backgroundColor: theme.bg.elevated, borderWidth: 1, borderColor: theme.border.default, alignItems: 'center', justifyContent: 'center' }}>

@@ -46,8 +46,13 @@ const theme = {
     hover: '#E0E0E4',
     fg: '#0A0A0C',
     green: '#4ADE80',
+    /** Washes and hairlines for status chips, so no screen hand-rolls an rgba. */
+    greenWash: 'rgba(74, 222, 128, 0.10)',
+    greenLine: 'rgba(74, 222, 128, 0.22)',
     amber: '#FBBF24',
     red: '#FB7185',
+    redWash: 'rgba(251, 113, 133, 0.10)',
+    redLine: 'rgba(251, 113, 133, 0.24)',
   },
   brand: {
     ...brandRamp,
@@ -61,6 +66,10 @@ const theme = {
     /** Selected-chip wash. The web spells this `bg-brand-primary/15`;
         React Native has no colour-with-alpha shorthand, so it is a value. */
     tint: 'rgba(25, 204, 180, 0.15)',
+    /** Faint wash behind an unread or highlighted row. */
+    wash: 'rgba(25, 204, 180, 0.06)',
+    /** Hairline in the brand hue, for a tinted surface's edge. */
+    line: 'rgba(25, 204, 180, 0.28)',
   },
   text: {
     primary: '#F5F5F7',
