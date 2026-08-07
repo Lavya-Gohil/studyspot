@@ -48,7 +48,7 @@ export async function fetchFeedSessions(
   // location-independent and shown globally.
   //
   // `country` originates from profiles.country, which the browser writes
-  // directly — it is untrusted here and must never be interpolated into
+  // directly; it is untrusted here and must never be interpolated into
   // `.or()` raw. See ./filters.ts for what a crafted value does to the tree.
   if (isCountryCode(country)) {
     query = query.or(`mode.eq.online,location_country.eq.${country}`)
@@ -67,7 +67,7 @@ export async function fetchFeedSessions(
  * How many sessions start today within the user's scope. Drives the "N
  * sessions today" line in the feed header.
  *
- * Reuses the same country guard as fetchFeedSessions — see ./filters.ts for
+ * Reuses the same country guard as fetchFeedSessions, see ./filters.ts for
  * why a raw interpolation into `.or()` is unsafe.
  */
 export async function countSessionsToday(
@@ -98,7 +98,7 @@ export async function countSessionsToday(
 }
 
 /**
- * The soonest session the user is actually committed to — one they host, or
+ * The soonest session the user is actually committed to: one they host, or
  * one their join request was approved for. Drives the "you're in one soon"
  * banner at the top of the feed.
  *

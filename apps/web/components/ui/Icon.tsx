@@ -2,13 +2,13 @@
  * The icon layer.
  *
  * Before this existed there were 45 hand-rolled inline <svg> elements across
- * 25 files, each picking its own viewBox, stroke width and size — app/page.tsx
+ * 25 files, each picking its own viewBox, stroke width and size, app/page.tsx
  * alone declared seven local icon components. Nothing enforced consistency, so
  * there wasn't any. Emoji filled the remaining gaps, which is worse: emoji
  * render differently on every OS, can't inherit currentColor, and are the
  * single loudest "generated" signal a UI can send.
  *
- * USAGE — import the lucide glyph directly and wrap it:
+ * USAGE, import the lucide glyph directly and wrap it:
  *
  *   import { Search } from 'lucide-react'
  *   import { Icon } from '@/components/ui/Icon'
@@ -18,7 +18,7 @@
  * Importing from 'lucide-react' at the call site is deliberate. Next 14 lists
  * lucide-react in its default `optimizePackageImports`, so each named import is
  * rewritten to a direct path and only the glyphs actually used are bundled. A
- * central `{ name: Component }` map would defeat that entirely — it would make
+ * central `{ name: Component }` map would defeat that entirely; it would make
  * every icon reachable from every importer, which is the same class of mistake
  * as the components/ui barrel documented in ./index.ts.
  *
@@ -56,7 +56,7 @@ export interface IconProps {
   /** Override only when a specific glyph reads too light or too heavy. */
   strokeWidth?: number
   /**
-   * Icons are decorative by default and hidden from assistive tech — the
+   * Icons are decorative by default and hidden from assistive tech, the
    * adjacent label carries the meaning. Pass a label only when the icon is
    * genuinely the sole content of a control, and prefer labelling the control.
    */
@@ -101,7 +101,7 @@ const brandFrame = (size: IconSize) => ({
 })
 
 /**
- * The mark: a point held between two brackets — "the spot".
+ * The mark: a point held between two brackets, "the spot".
  * Deliberately not a map pin. Every local-discovery product is a map pin.
  */
 export function LogoMark({ size = 'md', className }: BrandIconProps) {
@@ -118,7 +118,7 @@ export function LogoMark({ size = 'md', className }: BrandIconProps) {
   )
 }
 
-/** Streak. Distinct silhouette from lucide's Flame — taller, with a core. */
+/** Streak. Distinct silhouette from lucide's Flame, taller, with a core. */
 export function FlameIcon({ size = 'md', className }: BrandIconProps) {
   return (
     <svg {...brandFrame(size)} className={className}>

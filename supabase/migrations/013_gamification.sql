@@ -1,7 +1,7 @@
 -- 013: XP, levels, badges and leaderboards.
 --
 -- Everything here derives from focus_sessions (011), which is append-only and
--- carries the overlap constraint — so XP cannot be inflated without first
+-- carries the overlap constraint, so XP cannot be inflated without first
 -- defeating a constraint that encodes a fact about reality. Nothing in this
 -- migration trusts a client-supplied number.
 
@@ -26,7 +26,7 @@ ALTER TABLE profiles
  *
  * Quadratic: level N begins at 100 * (N-1)^2 XP, so levels 1-5 arrive at
  * 0 / 100 / 400 / 900 / 1600. At 1 XP per focused minute that is roughly
- * 0h, 1.7h, 6.7h, 15h, 27h of real study — fast at the start where
+ * 0h, 1.7h, 6.7h, 15h, 27h of real study, fast at the start where
  * encouragement matters, slow later where it should mean something.
  *
  * IMMUTABLE so it can be used in generated columns and indexes.
@@ -186,13 +186,13 @@ CREATE POLICY "user_badges: readable for visible profiles"
 /**
  * Why a function and not a view.
  *
- * focus_sessions is RLS'd to own-rows-only, which is correct — your study log
+ * focus_sessions is RLS'd to own-rows-only, which is correct, your study log
  * is nobody else's business. But that makes a leaderboard impossible to build
  * as a security_invoker view: it would only ever contain the caller's own row.
  *
  * So this is SECURITY DEFINER, deliberately and narrowly. It reads across
- * users but returns ONLY what a leaderboard needs — display name, avatar,
- * level, and a minute total — never the underlying sessions, subjects or
+ * users but returns ONLY what a leaderboard needs, display name, avatar,
+ * level, and a minute total, never the underlying sessions, subjects or
  * timestamps. It re-implements the visibility rules by hand because it has
  * stepped outside RLS: banned accounts are excluded, and blocks are honoured
  * in both directions via is_blocked().

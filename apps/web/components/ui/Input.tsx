@@ -17,7 +17,7 @@ interface InputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>,
     FieldProps {
   size?: keyof typeof sizes
-  /** Rendered inside the control on the trailing edge — a unit, counter, or icon. */
+  /** Rendered inside the control on the trailing edge: a unit, counter, or icon. */
   suffix?: ReactNode
 }
 

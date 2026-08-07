@@ -27,7 +27,7 @@ export function BasicInfoForm() {
 
   /**
    * Validating a single field off the schema's shape keeps the messages
-   * identical to the ones the whole-object parse produces on submit — the
+   * identical to the ones the whole-object parse produces on submit, the
    * alternative, hand-written copy per field, drifts from lib/validation.ts
    * the moment a limit changes.
    */
@@ -110,7 +110,7 @@ export function BasicInfoForm() {
           placeholder="Your age"
           disabled={loading}
         />
-        {/* Consequence, not a validation failure — say it before they commit. */}
+        {/* Consequence, not a validation failure, say it before they commit. */}
         {isMinor && !errors.age ? (
           <p className="mt-1.5 text-xs text-accent-amber">
             Your profile will show an &quot;Under 18&quot; label to session hosts.

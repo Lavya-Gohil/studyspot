@@ -5,7 +5,7 @@ const sizes = {
 }
 
 /**
- * Indeterminate loading spinner — the one mark every surface spins with,
+ * Indeterminate loading spinner: the one mark every surface spins with,
  * Button included.
  *
  * The arc is hand-drawn rather than lucide's Loader2 on purpose: this is a
@@ -13,7 +13,7 @@ const sizes = {
  * standing in for a noun. Swapping it for a stock glyph would be uniformity
  * for its own sake.
  *
- * Prefer <Skeleton> when the shape of the incoming content is known — a
+ * Prefer <Skeleton> when the shape of the incoming content is known, a
  * spinner is for waits with no known layout.
  */
 export function Spinner({

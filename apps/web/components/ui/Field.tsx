@@ -4,7 +4,7 @@ import type { ReactNode } from 'react'
  * Shared label / hint / error scaffolding for form controls.
  *
  * Input, Textarea, Select and Checkbox all render through this so a validation
- * message looks the same wherever it comes from — including the strings
+ * message looks the same wherever it comes from, including the strings
  * `friendlyDbError()` (lib/validation.ts) produces for Postgres errors.
  *
  * The control owns its own id and wires `aria-describedby` itself; this

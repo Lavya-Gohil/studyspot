@@ -11,7 +11,7 @@ import { ProgressBar, ProgressRing } from '@/components/ui/Progress'
  *
  * The feed answers "what is happening"; this answers "where am I", which is
  * the question that actually brings someone back tomorrow. Everything here is
- * derived from rows the user created — no targets we invented on their behalf,
+ * derived from rows the user created: no targets we invented on their behalf,
  * because a fabricated goal is worse than no goal.
  *
  * The ring measures days active this week out of seven rather than progress
@@ -46,7 +46,7 @@ export function TodayPanel({
   /** Distinct local days with recorded focus in the last seven. 0–7. */
   daysActive: number
   level: number
-  /** The one goal worth showing — nearest deadline, else newest. */
+  /** The one goal worth showing, nearest deadline, else newest. */
   goal: Goal | null
   /** The auto-tracked stat this goal measures; ignored for custom goals. */
   goalStatValue: number

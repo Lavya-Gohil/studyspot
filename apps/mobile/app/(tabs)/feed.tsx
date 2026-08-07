@@ -109,7 +109,7 @@ export default function FeedScreen() {
           style={{ height: 40, borderRadius: 10, backgroundColor: status ? theme.bg.elevated : theme.brand.text, alignItems: 'center', justifyContent: 'center', opacity: (status || remaining === 0) ? 0.7 : 1, borderWidth: status ? 1 : 0, borderColor: theme.border.default }}
         >
           <Text style={{ color: status ? theme.text.secondary : theme.brand.fg, fontWeight: '500', fontSize: 14 }}>
-            {status === 'approved' ? '✓ You\'re in — Chat' : status === 'pending' ? 'Request sent ✓' : remaining === 0 ? 'Session full' : 'Interested'}
+            {status === 'approved' ? 'You\'re in. Open chat' : status === 'pending' ? 'Request sent' : remaining === 0 ? 'Session full' : 'Interested'}
           </Text>
         </TouchableOpacity>
       </TouchableOpacity>

@@ -8,12 +8,12 @@
  *  - strict, schema-style body validation helpers
  *
  * Required function secrets (set with `supabase secrets set NAME=value`):
- *  - WEBHOOK_SECRET  — random 32+ char string; also set it as the
+ *  - WEBHOOK_SECRET, random 32+ char string; also set it as the
  *    `x-webhook-secret` header on the Database Webhooks that call
  *    on-message-insert / on-request-approved.
- *  - CRON_SECRET     — random 32+ char string; send it as `x-cron-secret`
+ *  - CRON_SECRET, random 32+ char string; send it as `x-cron-secret`
  *    from the scheduler that triggers the cron functions.
- *  - ALLOWED_ORIGINS — optional comma-separated browser origins allowed to
+ *  - ALLOWED_ORIGINS, optional comma-separated browser origins allowed to
  *    call user-facing functions (defaults below).
  */
 
@@ -27,7 +27,7 @@ function allowedOrigins(): string[] {
   return env ? env.split(',').map((o) => o.trim()).filter(Boolean) : DEFAULT_ORIGINS
 }
 
-/** CORS headers for a request — echoes the origin only if allow-listed. */
+/** CORS headers for a request, echoes the origin only if allow-listed. */
 export function corsHeaders(req: Request): Record<string, string> {
   const origin = req.headers.get('origin') ?? ''
   const allow = allowedOrigins().includes(origin) ? origin : allowedOrigins()[0]
@@ -59,7 +59,7 @@ const buckets = new Map<string, Bucket>()
 
 /**
  * Per-isolate sliding-window limiter. Edge function isolates are recycled,
- * so this is best-effort — but it still blunts burst abuse (notification
+ * so this is best-effort, but it still blunts burst abuse (notification
  * spam, signed-URL farming) at zero infra cost. For hard guarantees the data
  * paths are also limited inside Postgres (006_security_hardening.sql).
  *
@@ -103,7 +103,7 @@ async function sha256Hex(value: string): Promise<string> {
 /**
  * Verify a caller-supplied shared secret. Comparison happens on SHA-256
  * digests so it is constant-time with respect to the secret's content.
- * FAILS CLOSED: if the env secret is missing the request is rejected —
+ * FAILS CLOSED: if the env secret is missing the request is rejected,
  * deploy the secret before (or with) the function.
  */
 export async function requireSecret(
@@ -114,7 +114,7 @@ export async function requireSecret(
   const expected = Deno.env.get(envName)
   const provided = req.headers.get(headerName)
   if (!expected) {
-    console.error(`${envName} is not configured — rejecting request (fail closed).`)
+    console.error(`${envName} is not configured; rejecting request (fail closed).`)
     return json(req, { error: 'misconfigured', message: `${envName} not set` }, 503)
   }
   if (!provided || (await sha256Hex(provided)) !== (await sha256Hex(expected))) {

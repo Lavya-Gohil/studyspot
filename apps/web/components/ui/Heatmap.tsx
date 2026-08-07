@@ -46,7 +46,7 @@ export function Heatmap({
   data: Record<string, number>
   weeks?: number
   /** Defaults to today. Pass the user's local date for correctness across
-      timezones — the server's day is not the user's day (see migration 011). */
+      timezones; the server's day is not the user's day (see migration 011). */
   endDate?: Date
   className?: string
 }) {
@@ -96,7 +96,7 @@ export function Heatmap({
           </div>
 
           <div className="flex gap-[3px]">
-            {/* Weekday gutter — only alternate rows, or it's noise at 11px. */}
+            {/* Weekday gutter, only alternate rows, or it's noise at 11px. */}
             <div className="mr-1 flex w-6 shrink-0 flex-col gap-[3px] text-[10px] leading-[11px] text-text-tertiary">
               {['Mon', '', 'Wed', '', 'Fri', '', ''].map((d, i) => (
                 <span key={i} className="h-[11px]">
@@ -118,7 +118,7 @@ export function Heatmap({
                       // A native title is the right call here: 180 cells with
                       // JS tooltips would mean 180 listeners for a hint that
                       // is one line of text.
-                      title={`${date.toDateString()} — ${
+                      title={`${date.toDateString()}, ${
                         minutes > 0 ? `${Math.round(minutes)} min focused` : 'nothing logged'
                       }`}
                       className={`h-[11px] w-[11px] rounded-[2px] transition-colors duration-fast ease-out ${LEVELS[lvl].className}`}

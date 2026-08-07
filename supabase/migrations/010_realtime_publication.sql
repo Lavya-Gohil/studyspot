@@ -4,9 +4,9 @@
 --
 -- Supabase Realtime has three transports, and only one of them touches Postgres:
 --
---   * presence  — ephemeral, held in the Realtime server's memory
---   * broadcast — ephemeral, relayed between clients
---   * postgres_changes — replayed from the write-ahead log
+--   * presence, ephemeral, held in the Realtime server's memory
+--   * broadcast, ephemeral, relayed between clients
+--   * postgres_changes, replayed from the write-ahead log
 --
 -- The first two work out of the box. postgres_changes only delivers rows for
 -- tables that are members of the `supabase_realtime` publication, and a new
@@ -19,7 +19,7 @@
 --   apps/web/app/(main)/chat/[session_id]/ChatClient.tsx:54
 --   apps/web/app/(main)/room/[session_id]/useRoomChannel.ts:122
 --
--- Both call .subscribe() successfully and receive SUBSCRIBED — the channel is
+-- Both call .subscribe() successfully and receive SUBSCRIBED; the channel is
 -- genuinely open, it simply never carries an event. So there is no error, no
 -- failed request, and no console warning: sent messages just don't appear for
 -- anyone else until the page is reloaded.
@@ -65,4 +65,4 @@ ALTER TABLE public.notifications REPLICA IDENTITY FULL;
 -- messages: left at DEFAULT deliberately. It is the highest-volume table here
 -- and only INSERT is ever subscribed to, so FULL would double its WAL traffic
 -- to populate an old record nothing reads. If a future feature needs live edits
--- or deletions, revisit this then — with the volume in mind.
+-- or deletions, revisit this then, with the volume in mind.

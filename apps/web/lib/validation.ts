@@ -8,7 +8,7 @@
  *  - Length limits MIRROR the Postgres CHECK constraints (001/005/006 migrations)
  *    so the client and the database always agree.
  *
- * Client-side validation is UX + first line of defense only — the database
+ * Client-side validation is UX + first line of defense only: the database
  * RLS policies, CHECK constraints, and rate-limit triggers (006) are the
  * authoritative enforcement layer, since the browser talks to Supabase directly.
  */
@@ -129,7 +129,7 @@ export const createSessionSchema = z
     location_address: optionalText(240),
     // Copied from the host's profile rather than typed into the form, but they
     // still belong here: the schema is .strict(), so anything appended to the
-    // payload afterwards would either be rejected or — as it was — sneak into
+    // payload afterwards would either be rejected or, as it was, sneak into
     // the insert unvalidated. location_country in particular is interpolated
     // into a PostgREST .or() filter when building the feed and now carries a
     // CHECK constraint (007_country_constraint.sql), so a malformed value is a
@@ -139,7 +139,7 @@ export const createSessionSchema = z
       .string()
       .trim()
       .toUpperCase()
-      .regex(/^[A-Z]{2}$/, 'Your saved country looks wrong — update it in your location settings.')
+      .regex(/^[A-Z]{2}$/, 'Your saved country looks wrong, update it in your location settings.')
       .optional()
       .or(z.literal('').transform(() => undefined)),
     location_state: optionalText(80),
@@ -237,7 +237,7 @@ export const reportSchema = z
 /**
  * Re-exported for existing call sites. The implementation moved to
  * lib/db-errors.ts so components needing error formatting but not schema
- * validation don't pull zod into their bundle — client components should
+ * validation don't pull zod into their bundle; client components should
  * import it from there directly.
  */
 export { friendlyDbError } from './db-errors'

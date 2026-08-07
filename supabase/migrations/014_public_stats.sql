@@ -1,13 +1,13 @@
 -- 014: Aggregate counters the marketing pages can show to logged-out visitors.
 --
--- The landing page used to render an invented SESSIONS array — "Calc II grind"
+-- The landing page used to render an invented SESSIONS array, "Calc II grind"
 -- at "Bean & Brew" with three made-up classmates. That is the single most
 -- recognisable tell of a generated product page, and it is also a small lie:
 -- it shows a busy product to someone who cannot yet tell whether anyone is
 -- here.
 --
 -- Showing the truth instead needs a way in, because every RLS policy in
--- 002/004/005 is granted `TO authenticated` — an anonymous visitor reading
+-- 002/004/005 is granted `TO authenticated`: an anonymous visitor reading
 -- sessions or profiles correctly gets nothing back. So rather than loosening
 -- any policy, this is one narrow SECURITY DEFINER function that returns
 -- COUNTS ONLY.

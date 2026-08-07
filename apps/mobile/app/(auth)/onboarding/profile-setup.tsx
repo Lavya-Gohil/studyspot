@@ -37,7 +37,7 @@ export default function ProfileSetupScreen() {
     <ScrollView style={{ flex: 1, backgroundColor: theme.bg.base }} contentContainerStyle={{ padding: 24, paddingTop: 60, gap: 24 }}>
       <View style={{ gap: 4 }}>
         <Text style={{ fontSize: 24, fontWeight: '600', color: theme.text.primary }}>Set up your study profile</Text>
-        <Text style={{ fontSize: 14, color: theme.text.secondary }}>All optional — you can fill this in later.</Text>
+        <Text style={{ fontSize: 14, color: theme.text.secondary }}>All optional; you can fill this in later.</Text>
       </View>
 
       <View style={{ gap: 16 }}>

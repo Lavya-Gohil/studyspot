@@ -35,7 +35,7 @@ export function RateParticipants({
   async function rate(rateeId: string, value: number) {
     const previous = ratings[rateeId]
     setSaving(rateeId)
-    // Optimistic — the star should fill on press. Rolled back below if the
+    // Optimistic; the star should fill on press. Rolled back below if the
     // write fails, which the old version never checked: the upsert's error was
     // discarded, so a rejected rating stayed lit until the next page load.
     setRatings((prev) => ({ ...prev, [rateeId]: value }))

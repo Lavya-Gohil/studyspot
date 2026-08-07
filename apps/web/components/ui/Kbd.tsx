@@ -1,7 +1,7 @@
 /**
  * A keyboard key.
  *
- * <kbd> is the correct element and browsers already style it — badly, and
+ * <kbd> is the correct element and browsers already style it, badly, and
  * differently from each other. Everything here is undoing that so a shortcut
  * hint reads as part of the interface rather than as a browser default.
  */

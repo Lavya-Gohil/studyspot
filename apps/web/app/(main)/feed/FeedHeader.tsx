@@ -9,14 +9,14 @@ import { StudyingNow } from '@/components/layout/StudyingNow'
 /**
  * Above-the-fold section of the feed.
  *
- * The feed previously opened with a greeting and nothing else — nothing that
+ * The feed previously opened with a greeting and nothing else, nothing that
  * changes between visits, so no reason to come back. This surfaces the three
  * things that do change: a session you're committed to, your streak, and how
  * much is happening today.
  *
  * Server component on purpose: all of this is already fetched in page.tsx, so
  * rendering it here keeps it out of the client bundle. The one exception is
- * <StudyingNow>, which is live by nature — it is an isolated client island
+ * <StudyingNow>, which is live by nature; it is an isolated client island
  * rather than a reason to make the whole header client-side.
  */
 
@@ -74,7 +74,7 @@ export function FeedHeader({
 }: {
   userFullName: string | null
   userCountryName: string | null
-  /** Sessions starting today in the user's scope — 0 hides the line. */
+  /** Sessions starting today in the user's scope; 0 hides the line. */
   todayCount: number
   nextSession: Session | null
 }) {
@@ -96,7 +96,7 @@ export function FeedHeader({
                   : 'Find your study crew'}
             </p>
             {/* Renders nothing until presence syncs, and nothing when you're
-                the only one here — see StudyingNow. */}
+                the only one here, see StudyingNow. */}
             <StudyingNow />
           </div>
         </div>

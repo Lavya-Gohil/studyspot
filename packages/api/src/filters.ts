@@ -2,7 +2,7 @@
  * Safety helpers for PostgREST filter strings.
  *
  * Most supabase-js builder methods (`.eq`, `.in`, `.gt`) send their arguments
- * as *data* — those are safe with any value. `.or()` and `.and()` are the
+ * as *data*; those are safe with any value. `.or()` and `.and()` are the
  * exception: they take a raw filter **expression**, and PostgREST parses the
  * whole string as syntax. Interpolating user-controlled text into one lets the
  * caller restructure the filter tree, because `,` separates conditions and
@@ -12,7 +12,7 @@
  *
  * with `country = "XX,status.eq.cancelled"` becomes three OR'd conditions
  * instead of two. RLS still applies, so this is a scoping bypass rather than a
- * data breach — but the filter no longer means what it reads as.
+ * data breach, but the filter no longer means what it reads as.
  *
  * The rule: never interpolate into `.or()`. Validate against a strict pattern
  * first and drop the clause if it doesn't match.

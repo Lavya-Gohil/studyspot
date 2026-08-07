@@ -101,7 +101,7 @@ export default function SessionDetailScreen() {
           </TouchableOpacity>
         ) : userRequest?.status === 'pending' ? (
           <View style={{ height: 48, borderRadius: 12, backgroundColor: theme.bg.elevated, borderWidth: 1, borderColor: theme.border.default, alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ color: theme.text.secondary, fontWeight: '500', fontSize: 15 }}>Request sent ✓ — waiting for host</Text>
+            <Text style={{ color: theme.text.secondary, fontWeight: '500', fontSize: 15 }}>Request sent. Waiting for the host</Text>
           </View>
         ) : (
           <TouchableOpacity

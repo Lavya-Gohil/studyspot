@@ -15,7 +15,7 @@ const config: Config = {
           elevated: 'rgb(var(--bg-elevated) / <alpha-value>)',
           subtle: 'rgb(var(--bg-subtle) / <alpha-value>)',
         },
-        // Neutral emphasis — white on dark, near-black on light.
+        // Neutral emphasis, white on dark, near-black on light.
         // Most of the UI. Not the brand.
         accent: {
           primary: 'rgb(var(--accent-primary) / <alpha-value>)',
@@ -30,7 +30,7 @@ const config: Config = {
         // (borders, tints, gradient stops) and for the named roles
         // otherwise: `primary` is a FILL (pair with `brand-fg`),
         // `text` is the readable-as-text variant and resolves to a
-        // different step per theme — see globals.css.
+        // different step per theme, see globals.css.
         brand: {
           50: 'rgb(var(--brand-50) / <alpha-value>)',
           100: 'rgb(var(--brand-100) / <alpha-value>)',
@@ -75,7 +75,7 @@ const config: Config = {
         soft: '0 1px 2px rgba(0,0,0,0.12), 0 8px 24px -12px var(--shadow-tint)',
         lift: '0 2px 4px rgba(0,0,0,0.14), 0 24px 56px -16px var(--shadow-tint)',
         glass: '0 8px 40px -12px rgba(0,0,0,0.5)',
-        // Tinted, not black — see the note on --brand-glow.
+        // Tinted, not black, see the note on --brand-glow.
         glow: '0 8px 28px -8px var(--brand-glow), 0 2px 10px -3px var(--brand-glow-soft)',
         'glow-sm': '0 0 16px -4px var(--brand-glow-soft)',
       },
@@ -85,7 +85,7 @@ const config: Config = {
         lg: '14px',
         xl: '20px',
       },
-      // Durations and easings mirror the motion tokens in globals.css —
+      // Durations and easings mirror the motion tokens in globals.css;
       // reach for `duration-fast`/`ease-out` rather than an ad-hoc ms value,
       // so a new component inherits the system instead of inventing a number.
       transitionDuration: {

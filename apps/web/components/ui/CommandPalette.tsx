@@ -25,13 +25,13 @@ import { Kbd } from './Kbd'
  * framer-motion (the entrance is two CSS keyframes), and the command list is a
  * module constant rather than state.
  *
- * Matching is subsequence-based, not substring — "crsn" finds "Create
+ * Matching is subsequence-based, not substring, "crsn" finds "Create
  * session". That is the behaviour people have learned from editors, and it is
  * the difference between a palette worth reaching for and a search box.
  */
 
 /**
- * Open the palette from anywhere — the navbar's search affordance uses this.
+ * Open the palette from anywhere: the navbar's search affordance uses this.
  *
  * A custom event rather than lifted state or a context provider: the palette
  * is mounted once in the layout and the only thing any caller ever wants to

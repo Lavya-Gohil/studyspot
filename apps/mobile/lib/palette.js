@@ -3,13 +3,13 @@
  *
  * The web defines these as CSS custom properties that switch per theme.
  * React Native has no cascade to hang that on, so mobile pins the dark
- * values — the app has always been dark-only — and keeps the NAMES identical.
+ * values (the app has always been dark-only) and keeps the NAMES identical.
  * `bg.base` here and `--bg-base` there are the same colour by construction,
  * and `bg-bg-base` is the same class in both apps.
  *
  * Plain CommonJS JavaScript, deliberately, because three different loaders
  * need it and only this format satisfies all of them: Metro (via lib/theme.ts),
- * Tailwind's config loader, and Expo's app.config loader — the last of which
+ * Tailwind's config loader, and Expo's app.config loader: the last of which
  * cannot require a .ts module at all. lib/theme.ts re-exports it typed; import
  * from there in app code.
  *
@@ -40,7 +40,7 @@ const theme = {
     elevated: '#16161B',
     subtle: '#1F1F25',
   },
-  /** Neutral emphasis — most of the UI. Not the brand. */
+  /** Neutral emphasis, most of the UI. Not the brand. */
   accent: {
     primary: '#FAFAFA',
     hover: '#E0E0E4',

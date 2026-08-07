@@ -17,7 +17,7 @@ export default async function ChatPage({ params }: { params: Promise<{ session_i
 
   if (!session) redirect('/feed')
 
-  // For online sessions the chat lives inside the room — never expose it
+  // For online sessions the chat lives inside the room, never expose it
   // as a standalone page.
   if (session.mode === 'online') redirect(`/room/${session_id}`)
 

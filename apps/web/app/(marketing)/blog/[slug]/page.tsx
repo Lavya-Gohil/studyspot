@@ -13,8 +13,8 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const post = getPost(params.slug)
-  if (!post) return { title: 'Blog — StudySpot' }
-  return { title: `${post.title} — StudySpot`, description: post.excerpt }
+  if (!post) return { title: 'Blog. StudySpot' }
+  return { title: `${post.title}. StudySpot`, description: post.excerpt }
 }
 
 function formatDate(iso: string) {
@@ -75,7 +75,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             Put it into practice
           </h2>
           <p className="mx-auto mt-2 max-w-sm text-sm text-text-secondary">
-            Find a study session near you — or host one — and stop studying alone.
+            Find a study session near you, or host one, and stop studying alone.
           </p>
           <Link href="/auth/signup" className="btn-accent mt-5 inline-flex">
             Join StudySpot, free →

@@ -35,7 +35,7 @@ export const MAX_SPOTS = 9
  * Everything the create-session flow knows: the draft, which step is showing,
  * what's wrong with it, and how it gets written.
  *
- * Split out of the form so the three step components stay presentational — they
+ * Split out of the form so the three step components stay presentational, they
  * take a draft and a setter and render controls, nothing else.
  */
 export function useSessionDraft({
@@ -64,7 +64,7 @@ export function useSessionDraft({
     spotsTotal: 2,
   })
 
-  // Validation messages stay hidden until the user tries to move on — flagging
+  // Validation messages stay hidden until the user tries to move on, flagging
   // a field red before it has ever been filled in reads as an accusation.
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -100,7 +100,7 @@ export function useSessionDraft({
     return e
   }, [draft, step])
 
-  // Only the fields this step is responsible for gate it — and the first of
+  // Only the fields this step is responsible for gate it, and the first of
   // them is what Review reports, since Review shows none of these controls.
   const blocker = useMemo(() => {
     const relevant: (keyof SessionDraft)[] =
@@ -109,7 +109,7 @@ export function useSessionDraft({
   }, [errors, step])
   const stepValid = blocker === null
 
-  /** Errors to actually render — empty until the step has been submitted once. */
+  /** Errors to actually render; empty until the step has been submitted once. */
   const visibleErrors = submitted ? errors : {}
 
   const goTo = useCallback((next: CreateStep) => {
@@ -157,7 +157,7 @@ export function useSessionDraft({
     }
 
     // The country/state/city on a session are the host's, and the feed filters
-    // on them — if this read fails the session would post outside everyone's
+    // on them; if this read fails the session would post outside everyone's
     // local feed, so it's fatal rather than a shrug.
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
@@ -170,7 +170,7 @@ export function useSessionDraft({
       return
     }
 
-    // One validated payload, profile-derived location included — appending
+    // One validated payload, profile-derived location included, appending
     // those after the fact meant they reached Postgres unchecked.
     const v = validate(createSessionSchema, {
       subject: draft.subject,

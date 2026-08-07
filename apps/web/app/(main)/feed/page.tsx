@@ -10,7 +10,7 @@ import { TodayPanel } from './TodayPanel'
  *
  * Must match how migration 011 buckets focus_daily, which uses the timezone on
  * the profile rather than the server's. en-CA is the shortest route to an ISO
- * date from Intl — the alternative is reassembling parts by hand.
+ * date from Intl; the alternative is reassembling parts by hand.
  */
 function localDay(date: Date, timeZone: string): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone }).format(date)
@@ -50,10 +50,10 @@ export default async function FeedPage() {
 
   // All of this is fetched here rather than in the client so it renders with
   // the page and never ships to the browser. A failure in any one of these is
-  // not worth blanking the feed over — the affected panel simply degrades.
+  // not worth blanking the feed over: the affected panel simply degrades.
   //
   // focus_daily is security_invoker (011/012), so RLS scopes it to this user
-  // without a user_id filter, and it is pre-aggregated per local day — a week
+  // without a user_id filter, and it is pre-aggregated per local day: a week
   // of rows rather than a week of raw sessions.
   const [todayCount, nextSession, focusDays, activeGoal, studyStats] = await Promise.all([
     countSessionsToday(supabase, country).catch(() => 0),

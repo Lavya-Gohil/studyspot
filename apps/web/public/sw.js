@@ -1,5 +1,5 @@
 /**
- * StudySpot service worker — notifications only.
+ * StudySpot service worker, notifications only.
  *
  * Deliberately does NOT cache or intercept fetches: the app is server-rendered
  * behind auth, and a stale cached page of someone else's session data is a far
@@ -11,7 +11,7 @@
  *   { title, body, url, type, sessionId }
  */
 
-// Take over immediately instead of waiting for every tab to close — a user who
+// Take over immediately instead of waiting for every tab to close: a user who
 // just granted permission should get the working version of this file now.
 self.addEventListener('install', () => self.skipWaiting())
 self.addEventListener('activate', (event) => event.waitUntil(self.clients.claim()))
@@ -49,7 +49,7 @@ self.addEventListener('notificationclick', (event) => {
 
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windows) => {
-      // Reuse an open StudySpot tab — opening a new window every time would
+      // Reuse an open StudySpot tab; opening a new window every time would
       // leave a trail of duplicates behind a chatty session.
       for (const client of windows) {
         if (new URL(client.url).origin !== self.location.origin) continue

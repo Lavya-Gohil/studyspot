@@ -56,7 +56,7 @@ export function VerificationsClient({ pendingUsers }: { pendingUsers: any[] }) {
           </div>
 
           <p className="text-text-tertiary text-sm italic">
-            Document stored securely — access requires admin signed URL via Supabase dashboard.
+            Document stored securely; access requires admin signed URL via Supabase dashboard.
           </p>
 
           <div className="flex gap-3 flex-wrap">

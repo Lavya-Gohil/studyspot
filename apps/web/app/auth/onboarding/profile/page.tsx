@@ -15,7 +15,7 @@ export default function ProfileSetupPage() {
         <h1 className="font-display text-2xl font-semibold text-text-primary">
           Set up your study profile
         </h1>
-        <p className="text-sm text-text-secondary">All optional — you can fill this in later.</p>
+        <p className="text-sm text-text-secondary">All optional; you can fill this in later.</p>
       </div>
 
       <ProfileForm />

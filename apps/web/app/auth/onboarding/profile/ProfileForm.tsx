@@ -53,7 +53,7 @@ export function ProfileForm() {
     if (!v.ok) {
       checkField('college', college)
       checkField('course', course)
-      // Nothing above is a field the user typed into if both come back clean —
+      // Nothing above is a field the user typed into if both come back clean;
       // the subject cap is the only other rule, and it has no control to own.
       toast.error(v.error)
       return
@@ -78,9 +78,9 @@ export function ProfileForm() {
         .upload(path, avatarFile, { upsert: true })
       if (uploadError) {
         // A failed photo shouldn't cost them the rest of the form, but it used
-        // to fail completely silently — they'd land on the feed with no avatar
+        // to fail completely silently, they'd land on the feed with no avatar
         // and no idea why.
-        toast.error('We couldn’t save your photo — add it later from Settings.')
+        toast.error('We couldn’t save your photo; add it later from Settings.')
       } else {
         const { data } = supabase.storage.from('avatars').getPublicUrl(path)
         avatar_url = data.publicUrl

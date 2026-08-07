@@ -90,7 +90,7 @@ export function scoreSimilarity(me: MatchProfile, c: MatchProfile): MatchResult 
   let max = 0
   const reasons: string[] = []
 
-  // Subjects — Jaccard
+  // Subjects. Jaccard
   const union = new Set(
     [...(me.subjects || []), ...(c.subjects || [])].map((s) => s.toLowerCase())
   )
@@ -125,7 +125,7 @@ export function scoreSimilarity(me: MatchProfile, c: MatchProfile): MatchResult 
     }
   }
 
-  // Habits — closeness of attendance volume
+  // Habits, closeness of attendance volume
   max += 20
   const a = me.total_sessions_attended
   const b = c.total_sessions_attended

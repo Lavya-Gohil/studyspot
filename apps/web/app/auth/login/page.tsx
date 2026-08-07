@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { LoginForm } from './LoginForm'
 
 export const metadata: Metadata = {
-  title: 'Log in — StudySpot',
+  title: 'Log in. StudySpot',
   description: 'Sign in to StudySpot to find your study crew.',
 }
 

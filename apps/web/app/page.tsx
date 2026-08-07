@@ -17,7 +17,7 @@ import { FlameIcon, FocusIcon, Icon, LogoMark, PulseIcon } from '@/components/ui
  *
  * NO INVENTED DATA. The old page shipped a SESSIONS array of imaginary
  * students at imaginary cafés. Everything numeric here comes from
- * public_stats() (migration 014) — four aggregate counts, no PII — and when a
+ * public_stats(), which is migration 014: four aggregate counts and no PII. When a
  * number is zero the page says something true instead of showing a zero or
  * inventing a bigger one. A brand new product looks new; that is fine, and it
  * is better than looking fake.
@@ -75,7 +75,7 @@ export default async function HomePage() {
             className="enter-up mt-8 max-w-xl text-pretty text-base leading-relaxed text-text-secondary sm:text-lg"
             style={{ animationDelay: '120ms' }}
           >
-            StudySpot puts you in a room with people doing the same work at the same time — a
+            StudySpot puts you in a room with people doing the same work at the same time, a
             café down the road, or a live virtual desk with a shared timer. Turn up, lock in,
             leave having actually done it.
           </p>
@@ -107,7 +107,7 @@ export default async function HomePage() {
         </div>
 
         {/* The room, drawn from the real design system rather than a
-            screenshot — same tokens, same type, same live dot the app uses. */}
+            screenshot; same tokens, same type, same live dot the app uses. */}
         <div className="relative z-10 mx-auto mt-20 max-w-5xl px-5 pb-24">
           <RoomPreview live={live} open={open} />
         </div>
@@ -124,13 +124,13 @@ export default async function HomePage() {
             i={0}
             icon={<FocusIcon size="lg" />}
             title="A timer everyone can see"
-            body="The focus timer in a virtual room is shared. When someone starts it, it starts for the whole room — and every finished stretch is recorded against your name."
+            body="The focus timer in a virtual room is shared. When someone starts it, it starts for the whole room, and every finished stretch is recorded against your name."
           />
           <Feature
             i={1}
             icon={<FlameIcon size="lg" />}
             title="Streaks that survive real life"
-            body="Show up, the streak grows. Streaks count your local days, not a server's, and a freeze covers the day you were ill — because one bad week shouldn't erase three good months."
+            body="Show up and the streak grows. Streaks count your local days, not a server's, and a freeze covers the day you were ill, because one bad week shouldn't erase three good months."
           />
           <Feature
             i={2}
@@ -203,7 +203,7 @@ function Feature({
 /**
  * A study room, built from the app's own tokens rather than mocked up.
  * The seat labels are initials of nobody in particular and are presented as an
- * illustration, not as people — no names, no fabricated profiles.
+ * illustration, not as people: no names, no fabricated profiles.
  */
 function RoomPreview({ live, open }: { live: number; open: number }) {
   const seats = [0, 1, 2, 3, 4, 5, 6, 7]
@@ -214,7 +214,7 @@ function RoomPreview({ live, open }: { live: number; open: number }) {
       <div className="flex items-center justify-between gap-3 px-3 py-2.5">
         <div className="flex items-center gap-2 text-sm">
           <FocusIcon size="sm" className="text-brand-text" />
-          <span className="font-display font-semibold">Organic Chemistry — silent</span>
+          <span className="font-display font-semibold">Organic Chemistry, silent</span>
         </div>
         <span className="inline-flex items-center gap-2 rounded-full bg-brand-primary/10 px-3 py-1.5 text-xs font-semibold text-brand-text">
           <span className="live-dot" />
@@ -263,7 +263,7 @@ function RoomPreview({ live, open }: { live: number; open: number }) {
             {open > 0 ? `${open} open to join` : null}
           </span>
         ) : (
-          <span>An illustration of a virtual room — yours will have your crew in it.</span>
+          <span>An illustration of a virtual room; yours will have your crew in it.</span>
         )}
       </div>
     </div>

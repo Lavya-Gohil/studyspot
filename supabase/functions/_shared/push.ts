@@ -8,14 +8,14 @@
  *
  * Required function secrets for the web transport (set alongside
  * WEBHOOK_SECRET / CRON_SECRET):
- *  - VAPID_PUBLIC_KEY  — base64url P-256 public key, also handed to the browser
+ *  - VAPID_PUBLIC_KEY, base64url P-256 public key, also handed to the browser
  *    as NEXT_PUBLIC_VAPID_PUBLIC_KEY so both halves agree
- *  - VAPID_PRIVATE_KEY — base64url P-256 private scalar (server-only)
- *  - VAPID_SUBJECT     — `mailto:` or `https:` contact; RFC 8292 requires the
+ *  - VAPID_PRIVATE_KEY, base64url P-256 private scalar (server-only)
+ *  - VAPID_SUBJECT, `mailto:` or `https:` contact; RFC 8292 requires the
  *    push service be able to reach the sender about misbehaving pushes
  * Generate a pair with `npx web-push generate-vapid-keys`.
  *
- * Missing VAPID config disables the web transport and logs — unlike the shared
+ * Missing VAPID config disables the web transport and logs, unlike the shared
  * secrets it must NOT fail closed, because that would take Expo delivery (and
  * the calling webhook) down with it.
  */
@@ -133,7 +133,7 @@ async function sendWebPushAll(db: Db, subs: WebPushSubscription[], msg: PushMess
   if (subs.length === 0) return
 
   if (!vapidConfig()) {
-    console.warn('VAPID keys not configured — skipping web push for', subs.length, 'subscription(s).')
+    console.warn('VAPID keys not configured, skipping web push for', subs.length, 'subscription(s).')
     return
   }
 
@@ -206,7 +206,7 @@ function vapidSigningKey(privateKey: string, publicKey: string): Promise<CryptoK
   return signingKey
 }
 
-// One JWT per push service, reused until it nears expiry — a fan-out to 8
+// One JWT per push service, reused until it nears expiry: a fan-out to 8
 // members hits the same origin 8 times and re-signing each is pure waste.
 const jwtCache = new Map<string, { header: string; expiresAt: number }>()
 
@@ -241,7 +241,7 @@ async function vapidAuthHeader(audience: string): Promise<string> {
 /**
  * aes128gcm-encrypt a Web Push payload for one subscription.
  *
- * The push service is an untrusted relay — Google/Mozilla/Apple hand the bytes
+ * The push service is an untrusted relay. Google/Mozilla/Apple hand the bytes
  * to the browser without ever holding a key. The client's p256dh (its public
  * key) and auth (a shared secret) are what make the payload readable only by
  * the subscribing browser, so both come straight from PushManager.subscribe().
@@ -298,7 +298,7 @@ async function encryptPayload(
   return concat(header, ciphertext)
 }
 
-/** HKDF extract+expand in one step — WebCrypto's deriveBits does both. */
+/** HKDF extract+expand in one step. WebCrypto's deriveBits does both. */
 async function hkdf(
   salt: Uint8Array,
   ikm: Uint8Array,

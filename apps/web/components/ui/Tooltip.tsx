@@ -12,7 +12,7 @@ const placements = {
 /**
  * Text hint on hover *and* keyboard focus.
  *
- * Tooltips are supplementary only — never put an action or information the
+ * Tooltips are supplementary only; never put an action or information the
  * user needs here, since touch devices have no hover. For a control whose
  * purpose isn't obvious from its label, the label is the fix, not a tooltip.
  */

@@ -12,7 +12,7 @@ const MODES: { value: SessionMode; icon: LucideIcon; title: string; blurb: strin
   { value: 'online', icon: Laptop, title: 'Online room', blurb: 'Live virtual classroom with avatars' },
 ]
 
-/** Step 1 — how the session happens, and where. */
+/** Step 1; how the session happens, and where. */
 export function StepFormat({
   draft,
   errors,
@@ -65,7 +65,7 @@ export function StepFormat({
           onChange={(e) => onChange({ locationName: e.target.value })}
           maxLength={160}
           placeholder="e.g. Late-night JEE grind"
-          hint="Optional. Members join a live virtual classroom — everyone gets an avatar seat, a shared chat, and a group focus timer."
+          hint="Optional. Members join a live virtual classroom; everyone gets an avatar seat, a shared chat, and a group focus timer."
         />
       ) : (
         <>
@@ -77,7 +77,7 @@ export function StepFormat({
             maxLength={160}
             error={errors.locationName}
             placeholder="e.g. Blue Tokai Coffee, NMIMS Library"
-            hint="Public venues only — cafés, libraries, campuses, coworking spaces."
+            hint="Public venues only, cafés, libraries, campuses, coworking spaces."
           />
           <Input
             label="Address"

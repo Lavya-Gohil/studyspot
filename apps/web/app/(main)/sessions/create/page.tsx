@@ -29,7 +29,7 @@ export default function CreateSessionPage({
         </h1>
         <p className="mt-1 text-sm text-text-secondary">
           {isSilent
-            ? 'Pure focus — no chat, just everyone studying side by side and holding each other accountable.'
+            ? 'Pure focus: no chat, just everyone studying side by side and holding each other accountable.'
             : 'Three steps: pick a format, fill in the details, then check it over.'}
         </p>
       </header>

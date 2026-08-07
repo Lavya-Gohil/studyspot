@@ -13,7 +13,7 @@ import { signupSchema, validate } from '@/lib/validation'
 import { CheckInbox } from './CheckInbox'
 
 const CONSENT_REQUIRED = 'Please agree to the Terms of Service and Privacy Policy first.'
-const ALREADY_REGISTERED = 'You already have an account — log in instead.'
+const ALREADY_REGISTERED = 'You already have an account, log in instead.'
 
 export function SignupForm() {
   const router = useRouter()
@@ -72,7 +72,7 @@ export function SignupForm() {
       if (/already registered/i.test(error.message)) {
         setEmailError(ALREADY_REGISTERED)
       } else if (/rate limit/i.test(error.message)) {
-        toast.error('Our mail service is briefly at capacity — please try again in a few minutes.')
+        toast.error('Our mail service is briefly at capacity, please try again in a few minutes.')
       } else {
         toast.error(error.message)
       }
@@ -95,7 +95,7 @@ export function SignupForm() {
   }
 
   async function handleGoogle() {
-    // Google signup also creates an account — same consent gate applies.
+    // Google signup also creates an account; same consent gate applies.
     if (!agreed) {
       setConsentError(CONSENT_REQUIRED)
       return
@@ -153,7 +153,7 @@ export function SignupForm() {
         <div>
           <div className="flex items-center justify-between">
             <FieldLabel htmlFor={passwordId}>Password</FieldLabel>
-            {/* Outside the <label> on purpose — a button nested in one steals
+            {/* Outside the <label> on purpose: a button nested in one steals
                 the click that should focus the input. */}
             <button
               type="button"
@@ -220,9 +220,9 @@ export function SignupForm() {
       </div>
 
       <Button type="button" variant="secondary" size="lg" className="w-full gap-2" onClick={handleGoogle}>
-        {/* Google's brand mark — the one place fixed hex is correct, since the
+        {/* Google's brand mark; the one place fixed hex is correct, since the
             logo must not shift with our theme tokens. */}
-        {/* Google's own mark, at its exact brand hexes — must stay unmodified
+        {/* Google's own mark, at its exact brand hexes; must stay unmodified
             per Google's branding guidelines. Not a candidate for the icon system. */}
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>

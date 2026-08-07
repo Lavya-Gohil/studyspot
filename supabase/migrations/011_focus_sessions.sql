@@ -1,13 +1,13 @@
 -- 011: Make focus time real, and make "a day" mean the user's day.
 --
 -- The room's focus timer has never recorded anything. It counts down, it
--- announces that time is up, and then the interval is gone — so the single
+-- announces that time is up, and then the interval is gone, so the single
 -- most repeated action in the product leaves no trace, and there is nothing to
 -- build streaks, stats or leaderboards on top of.
 --
 -- This also fixes a latent correctness bug in handle_checkin(). It compares
 -- last_checkin_date against CURRENT_DATE, which Postgres evaluates in the
--- SERVER's timezone — UTC on Supabase. A student in India studying at 01:00
+-- SERVER's timezone, UTC on Supabase. A student in India studying at 01:00
 -- IST is at 19:30 UTC the previous day, so their day rolls over mid-evening:
 -- two check-ins on the same local night can count as two separate days, and a
 -- genuine consecutive day can look like a gap and reset the streak. Streaks
@@ -38,7 +38,7 @@ ALTER TABLE profiles VALIDATE CONSTRAINT profiles_timezone_valid;
 
 /**
  * The calendar date it currently is *for this user*.
- * One definition, used by streaks, the heatmap and the digest alike — the bug
+ * One definition, used by streaks, the heatmap and the digest alike: the bug
  * above came from three call sites each deciding for themselves.
  */
 CREATE OR REPLACE FUNCTION public.user_local_date(p_user_id UUID, at TIMESTAMPTZ DEFAULT NOW())
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS focus_sessions (
   id               UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id          UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   -- Nullable: focus can happen in a study room, or alone from /stats.
-  -- SET NULL rather than CASCADE — deleting a session must not erase the hours
+  -- SET NULL rather than CASCADE; deleting a session must not erase the hours
   -- somebody actually put in.
   session_id       UUID REFERENCES sessions(id) ON DELETE SET NULL,
   started_at       TIMESTAMPTZ NOT NULL,
@@ -113,7 +113,7 @@ CREATE TRIGGER trg_focus_session_bounds
   FOR EACH ROW EXECUTE FUNCTION check_focus_session_bounds();
 
 -- ------------------------------------------------------------
--- RLS — your own hours, and nobody else's
+-- RLS; your own hours, and nobody else's
 -- ------------------------------------------------------------
 
 ALTER TABLE focus_sessions ENABLE ROW LEVEL SECURITY;
@@ -140,7 +140,7 @@ CREATE POLICY "focus_sessions: insert own"
 -- ------------------------------------------------------------
 
 -- security_invoker so the caller's RLS applies. Without it the view would run
--- as its owner and hand every user everybody else's hours — the classic way a
+-- as its owner and hand every user everybody else's hours: the classic way a
 -- view quietly becomes a data leak.
 CREATE OR REPLACE VIEW focus_daily
 WITH (security_invoker = true) AS

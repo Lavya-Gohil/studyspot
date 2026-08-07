@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
 
 const variants = {
-  /** Default panel — flat surface with a hairline border. */
+  /** Default panel, flat surface with a hairline border. */
   surface: 'bg-bg-surface border border-border-subtle',
   /** Lifted above the page; use for anything overlapping other content. */
   elevated: 'bg-bg-elevated border border-border-default shadow-soft',
-  /** Frosted. Only over imagery or a gradient — over flat bg it reads as noise. */
+  /** Frosted. Only over imagery or a gradient; over flat bg it reads as noise. */
   glass: 'glass glass-sheen',
 }
 
@@ -57,7 +57,7 @@ export function CardHeader({
 }: {
   title: ReactNode
   description?: ReactNode
-  /** Trailing control — a button, menu, or badge. */
+  /** Trailing control: a button, menu, or badge. */
   action?: ReactNode
   className?: string
 }) {

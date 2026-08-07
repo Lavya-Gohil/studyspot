@@ -10,7 +10,7 @@ import { useToast } from '@/components/ui/Toast'
 import { friendlyDbError } from '@/lib/db-errors'
 
 // Mirrors ALLOWED_TYPES / MAX_FILE_SIZE in supabase/functions/verify-upload-url.
-// The `accept` attribute is a filter, not a check — a drag-drop or a renamed
+// The `accept` attribute is a filter, not a check; a drag-drop or a renamed
 // file walks straight past it, and the edge function's rejection reads as a
 // machine code, so the limits are restated here to fail early and legibly.
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'application/pdf']
@@ -20,12 +20,12 @@ const MAX_BYTES = 10 * 1024 * 1024
 function uploadErrorMessage(code: unknown): string {
   switch (code) {
     case 'invalid_file_type':
-      return 'That file type isn’t supported — use a JPG, PNG, or PDF.'
+      return 'That file type isn’t supported, use a JPG, PNG, or PDF.'
     case 'file_too_large':
     case 'invalid_file_size':
       return 'That file is too large. Keep it under 10MB.'
     case 'rate_limited':
-      return 'Too many upload attempts — wait a few minutes and try again.'
+      return 'Too many upload attempts, wait a few minutes and try again.'
     case 'unauthorized':
       return 'Your session expired. Log in again to upload.'
     default:
@@ -48,7 +48,7 @@ export function VerifyForm() {
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0]
-    // Clearing the input means re-picking the same file still fires a change —
+    // Clearing the input means re-picking the same file still fires a change;
     // otherwise a rejected file can't be retried without choosing another one.
     e.target.value = ''
     if (!f) return

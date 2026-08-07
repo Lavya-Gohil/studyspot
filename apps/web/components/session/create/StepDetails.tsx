@@ -7,7 +7,7 @@ import { SpotsStepper } from './SpotsStepper'
 import { SubjectTagPicker } from './SubjectTagPicker'
 import { DESCRIPTION_MAX, type SessionDraft } from './useSessionDraft'
 
-/** Step 2 — what's being studied, when, and with how many people. */
+/** Step 2, what's being studied, when, and with how many people. */
 export function StepDetails({
   draft,
   errors,

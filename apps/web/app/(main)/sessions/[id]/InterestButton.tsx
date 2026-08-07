@@ -70,7 +70,7 @@ export function InterestButton({
 
     setRequest(data as SessionRequest)
     setComposing(false)
-    toast.success('Request sent — the host will get back to you.')
+    toast.success('Request sent; the host will get back to you.')
   }
 
   if (request?.status === 'approved') {
@@ -115,7 +115,7 @@ export function InterestButton({
           showCount
           rows={2}
           error={error}
-          hint="Optional — a line about what you're working on helps."
+          hint="Optional: a line about what you're working on helps."
           placeholder="e.g. Revising thermodynamics, happy to share notes"
         />
         <div className="flex gap-3">

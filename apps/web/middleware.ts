@@ -4,7 +4,7 @@ import { checkRateLimit, clientIp, hashKey } from '@/lib/rate-limit'
 
 /**
  * Per-route rate-limit buckets (requests per window). Auth routes get a
- * tight budget — they're the credential-stuffing / signup-spam surface.
+ * tight budget, they're the credential-stuffing / signup-spam surface.
  * General pages stay generous so prefetching and fast browsing never 429.
  */
 const LIMITS = {
@@ -67,7 +67,7 @@ export const config = {
     // sw.js is excluded for a different reason: the browser fetches the service
     // worker outside any page navigation, including on update checks that can
     // race an expired cookie. Passing it through updateSession answers with a
-    // 302 to /auth/login, and registration then fails on the HTML MIME type —
+    // 302 to /auth/login, and registration then fails on the HTML MIME type;
     // which looks nothing like the auth problem it actually is.
     '/((?!_next/static|_next/image|favicon.ico|robots\\.txt|sitemap\\.xml|manifest\\.json|sw\\.js|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],

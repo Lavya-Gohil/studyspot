@@ -8,7 +8,7 @@ const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
 /**
  * Cron target (every minute): pushes "starts in 30 minutes" reminders.
- * Locked behind CRON_SECRET — an open trigger would let anyone replay it
+ * Locked behind CRON_SECRET; an open trigger would let anyone replay it
  * and spam duplicate reminders to every member of upcoming sessions.
  *
  * Scheduler setup (pg_cron/external): send header `x-cron-secret: <CRON_SECRET>`.

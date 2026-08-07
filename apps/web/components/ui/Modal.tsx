@@ -18,7 +18,7 @@ const widths = {
 }
 
 // Sheet is full-width on mobile and constrained from `sm` up. These must be
-// written out in full — Tailwind scans source text, so a class assembled at
+// written out in full. Tailwind scans source text, so a class assembled at
 // runtime (`sm:${widths[size]}`) would never make it into the stylesheet.
 const sheetWidths = {
   sm: 'sm:max-w-sm',
@@ -32,7 +32,7 @@ interface OverlayProps {
   title?: ReactNode
   description?: ReactNode
   children: ReactNode
-  /** Rendered in a bottom bar, right-aligned — put the confirm button last. */
+  /** Rendered in a bottom bar, right-aligned; put the confirm button last. */
   footer?: ReactNode
   size?: keyof typeof widths
   /** Set false for destructive confirmations that need a deliberate choice. */
@@ -41,8 +41,8 @@ interface OverlayProps {
 }
 
 /**
- * Modal dialog and Sheet share all their behaviour — portal, scroll lock,
- * Escape, focus trap, restore focus on close — and differ only in where they
+ * Modal dialog and Sheet share all their behaviour, portal, scroll lock,
+ * Escape, focus trap, restore focus on close, and differ only in where they
  * enter from. `useOverlay` holds that behaviour; the two exports style it.
  *
  * Both render into document.body so a parent's `overflow-hidden` or stacking
@@ -223,7 +223,7 @@ export function Modal({ size = 'md', className = '', ...props }: OverlayProps) {
 }
 
 /**
- * Edge-anchored panel. Prefer over Modal on mobile and for longer content —
+ * Edge-anchored panel. Prefer over Modal on mobile and for longer content,
  * it's reachable by thumb and doesn't fight the on-screen keyboard.
  */
 export function Sheet({ size = 'md', className = '', ...props }: OverlayProps) {

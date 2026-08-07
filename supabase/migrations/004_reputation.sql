@@ -1,5 +1,5 @@
 -- ============================================================
--- StudySpot — Reputation & Verified Study Hours
+-- StudySpot. Reputation & Verified Study Hours
 -- Peer ratings + a public stats view that powers the Study
 -- Reputation Score and Verified Study Hours features.
 -- ============================================================

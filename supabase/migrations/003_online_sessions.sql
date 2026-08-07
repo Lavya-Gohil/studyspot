@@ -1,5 +1,5 @@
 -- ============================================================
--- StudySpot — Online sessions
+-- StudySpot. Online sessions
 -- Adds a `mode` to sessions so they can be in-person OR online
 -- (a live virtual classroom). Physical location becomes optional
 -- for online sessions.

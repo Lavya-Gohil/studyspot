@@ -14,7 +14,7 @@ const ALLOWED_TYPES: Record<string, string> = {
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
 
 serve(async (req) => {
-  // CORS preflight — the browser sends OPTIONS before the authed POST.
+  // CORS preflight: the browser sends OPTIONS before the authed POST.
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders(req) })
   if (req.method !== 'POST') return json(req, { error: 'method_not_allowed' }, 405)
 
@@ -35,7 +35,7 @@ serve(async (req) => {
     const limited = rateLimit(req, `verify-upload:${user.id}`, 5, 10 * 60 * 1000)
     if (limited) return limited
 
-    // Strict body: exactly { fileType, fileSize } — anything else is a 400.
+    // Strict body: exactly { fileType, fileSize }; anything else is a 400.
     const parsed = await readJsonBody(req, ['fileType', 'fileSize'])
     if (!parsed.ok) return parsed.response
     const { fileType, fileSize } = parsed.body
@@ -51,7 +51,7 @@ serve(async (req) => {
       return json(req, { error: 'file_too_large', maxBytes: MAX_FILE_SIZE }, 400)
     }
 
-    // Path is built only from values WE generate (auth uid + random uuid) —
+    // Path is built only from values WE generate (auth uid + random uuid);
     // never from client input, so no traversal/overwrite is possible.
     const path = `${user.id}/${crypto.randomUUID()}.${ALLOWED_TYPES[fileType]}`
 

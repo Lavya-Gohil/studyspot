@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { FadeIn, Stagger, StaggerItem } from '@/components/motion/Motion'
 
 export const metadata: Metadata = {
-  title: 'About — StudySpot',
+  title: 'About. StudySpot',
   description:
     'Why StudySpot exists: studying alone is the default, and it shouldn\'t be. Meet the idea behind the study-crew platform.',
 }
@@ -15,11 +15,11 @@ const VALUES = [
   },
   {
     title: 'Students first, always',
-    body: 'StudySpot is free for students. Profiles are verified so you study with real classmates — not bots, recruiters, or randoms.',
+    body: 'StudySpot is free for students. Profiles are verified so you study with real classmates, not bots, recruiters, or randoms.',
   },
   {
     title: 'Focus is a group sport',
-    body: 'Body doubling, shared timers, silent rooms, streaks — the science is clear that focus is easier together. We turn it into a product.',
+    body: 'Body doubling, shared timers, silent rooms, streaks; the science is clear that focus is easier together. We turn it into a product.',
   },
   {
     title: 'Safety by design',
@@ -41,7 +41,7 @@ export default function AboutPage() {
           StudySpot started with a simple observation: every campus is full of students grinding
           through the same material, in the same buildings, completely alone. Group chats fizzle.
           &ldquo;We should study together sometime&rdquo; never happens. So we built the missing
-          piece — a way to turn <em className="text-text-primary not-italic">intent</em> into an
+          piece: a way to turn <em className="text-text-primary not-italic">intent</em> into an
           actual session with a time, a place, a vibe, and people who show up.
         </p>
       </FadeIn>
@@ -52,7 +52,7 @@ export default function AboutPage() {
             What StudySpot is
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-text-secondary sm:text-base">
-            A social productivity platform where students create and join real study sessions —
+            A social productivity platform where students create and join real study sessions,
             at cafés, libraries, campuses, or online rooms. Pick a vibe (silent, Pomodoro,
             discussion, exam prep), set the spots, and let verified students request to join.
             Reputation scores, verified study hours, circles, and accountability goals keep the

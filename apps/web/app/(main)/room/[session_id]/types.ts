@@ -34,7 +34,7 @@ export interface Member {
  * Shared countdown state, broadcast to everyone in the room.
  *
  * `updatedAt` is what makes the sharing correct. Any member can start, pause
- * or reset — so without an ordering key, two near-simultaneous changes (or a
+ * or reset, so without an ordering key, two near-simultaneous changes (or a
  * late-arriving reply to a sync request) could apply in the wrong order and
  * leave people looking at different clocks. Receivers accept a broadcast only
  * when its `updatedAt` is newer than what they already hold.

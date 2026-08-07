@@ -2,7 +2,7 @@
  * StudySpot UI primitives.
  *
  * Everything here is built on the design tokens in tailwind.config.ts /
- * globals.css — no component ships its own colors.
+ * globals.css; no component ships its own colors.
  *
  * ALWAYS IMPORT THE SPECIFIC MODULE, NOT THIS BARREL:
  *
@@ -11,7 +11,7 @@
  *
  * Modal depends on framer-motion, and this file re-exports it. Because Modal
  * is a `'use client'` module, importing the barrel establishes a client
- * boundary for everything it re-exports — so the route pays for framer-motion
+ * boundary for everything it re-exports, so the route pays for framer-motion
  * whether or not a Modal is ever rendered, and tree-shaking cannot remove it
  * because the decision happens at the module-graph level, not at usage.
  *

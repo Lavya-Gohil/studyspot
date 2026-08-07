@@ -15,7 +15,7 @@ import { useToast } from '@/components/ui/Toast'
  * that silently failed to save and bounced them back to login.
  *
  * Owns its own cooldown, seeded at 60s because the signup itself just sent an
- * email — the button must not be live the moment the panel appears.
+ * email; the button must not be live the moment the panel appears.
  */
 export function CheckInbox({ email, onRestart }: { email: string; onRestart: () => void }) {
   const toast = useToast()
@@ -42,7 +42,7 @@ export function CheckInbox({ email, onRestart }: { email: string; onRestart: () 
     if (error) {
       toast.error(
         /rate|too many/i.test(error.message)
-          ? 'Too many emails — wait a minute and try again.'
+          ? 'Too many emails, wait a minute and try again.'
           : error.message
       )
       return

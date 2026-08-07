@@ -31,7 +31,7 @@ export function RoomChat({
 
   const scrollRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
-  // Only follow new messages when the reader is already at the bottom —
+  // Only follow new messages when the reader is already at the bottom;
   // auto-scrolling unconditionally yanked people out of the history they had
   // deliberately scrolled back to.
   const stickToBottom = useRef(true)

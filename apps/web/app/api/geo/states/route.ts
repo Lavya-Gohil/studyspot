@@ -24,7 +24,7 @@ export function GET(request: NextRequest) {
     { states: listStates(code) },
     {
       headers: {
-        // Immutable for practical purposes — this data changes on the order of
+        // Immutable for practical purposes, this data changes on the order of
         // years, and a stale region list is harmless.
         'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800',
       },

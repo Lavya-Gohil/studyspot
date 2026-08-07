@@ -27,7 +27,7 @@ export default async function MatchPage() {
     .single()
 
   // Scoring reads the viewer's own profile on every comparison, so without it
-  // there is nothing to rank against — surface the failure instead of
+  // there is nothing to rank against, surface the failure instead of
   // rendering an empty screen that looks like "nobody matched you".
   if (meError || !meRow) {
     return (
@@ -91,9 +91,9 @@ export default async function MatchPage() {
     .sort((a, b) => b.score - a.score)
     .slice(0, MAX_RESULTS)
 
-  // "Reliable partner (Trusted)" is the one reason the string only gestures at
-  // — the reputation it came from is already in hand, so the top match gets the
-  // real breakdown rather than a claim the user has to take on faith.
+  // "Reliable partner (Trusted)" is the one reason the string only gestures
+  // at. The reputation it came from is already in hand, so the top match gets
+  // the real breakdown rather than a claim the user has to take on faith.
   const topStats = compatible[0] ? statsById.get(compatible[0].profile.id) : undefined
   const topMatchReputation =
     topStats && computeReputation(topStats).score != null ? (

@@ -4,7 +4,7 @@ import { FadeIn, Stagger, StaggerItem } from '@/components/motion/Motion'
 import { POSTS } from './posts'
 
 export const metadata: Metadata = {
-  title: 'Blog — StudySpot',
+  title: 'Blog. StudySpot',
   description: 'Focus science, study playbooks, and notes from the StudySpot team.',
 }
 

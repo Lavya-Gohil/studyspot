@@ -63,7 +63,7 @@ export function LegalPage({
 
         <div className="glass mt-14 flex flex-wrap items-center justify-between gap-3 rounded-2xl p-5 text-sm text-text-secondary">
           <span>Questions about this document?</span>
-          {/* Address lives only in the href — not shown as text. */}
+          {/* Address lives only in the href, not shown as text. */}
           <a href={`mailto:${CONTACT_EMAIL}`} className="btn-accent">
             Email us →
           </a>

@@ -1,5 +1,5 @@
 -- ============================================================
--- StudySpot — Security hardening (006)
+-- StudySpot. Security hardening (006)
 --
 -- Why this lives in Postgres: the web/mobile clients talk to
 -- Supabase DIRECTLY (PostgREST + RLS), so HTTP-layer rate
@@ -7,7 +7,7 @@
 -- database is the only place limits cannot be bypassed.
 --
 -- Contents:
---   1. enforce_insert_rate_limit() — generic per-user insert
+--   1. enforce_insert_rate_limit(), generic per-user insert
 --      throttle, applied to every user-writable table.
 --   2. Brute-force protection for join_circle_by_code().
 --   3. Length/format CHECK constraints (NOT VALID: they apply
@@ -175,7 +175,7 @@ ALTER TABLE goals
   ADD CONSTRAINT chk_goals_target_max CHECK (target <= 100000) NOT VALID;
 
 -- ------------------------------------------------------------
--- Manual dashboard steps (not expressible in SQL) — do these too:
+-- Manual dashboard steps (not expressible in SQL); do these too:
 --   * Auth → Rate Limits: keep Supabase's built-in auth limits on.
 --   * Auth → Passwords: enable leaked-password (HIBP) protection.
 --   * Storage: confirm `verification-docs` bucket stays PRIVATE.

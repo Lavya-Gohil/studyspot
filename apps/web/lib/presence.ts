@@ -19,7 +19,7 @@ import { createClient } from '@/lib/supabase/client'
  * otherwise be an UPDATE on one hot row, which is how a presence feature takes
  * a database down.
  *
- * Tracked state is deliberately minimal — a status, nothing identifying.
+ * Tracked state is deliberately minimal: a status, nothing identifying.
  * Presence payloads are broadcast to every subscriber on the channel, so
  * anything put here is public to all signed-in users by construction.
  */
@@ -48,7 +48,7 @@ export function useGlobalPresence(status: PresenceStatus = 'browsing') {
       if (!user || cancelled) return
 
       const channel = supabase.channel(CHANNEL, {
-        // Keyed by user id so one person in three tabs counts once — otherwise
+        // Keyed by user id so one person in three tabs counts once, otherwise
         // the number measures browser tabs, not people.
         config: { presence: { key: user.id } },
       })
@@ -75,7 +75,7 @@ export function useGlobalPresence(status: PresenceStatus = 'browsing') {
       channelRef.current = null
       if (channel) void channel.unsubscribe()
     }
-    // Mount only — see the note above. `status` is applied by the effect below.
+    // Mount only, see the note above. `status` is applied by the effect below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

@@ -4,7 +4,7 @@ import { Icon } from './Icon'
 
 /**
  * The screen shown when a list has nothing in it. Every empty list should use
- * one — a blank region reads as a bug. `action` matters most: an empty state
+ * one; a blank region reads as a bug. `action` matters most: an empty state
  * without a way out is a dead end, which is exactly what the feed and circles
  * screens currently show.
  */
@@ -39,7 +39,7 @@ export function EmptyState({
 
 /**
  * Empty state's sibling for the failure case. Keeps the retry affordance
- * consistent — pair the message with `friendlyDbError()` from lib/validation.
+ * consistent, pair the message with `friendlyDbError()` from lib/validation.
  */
 export function ErrorState({
   title = 'Something went wrong',

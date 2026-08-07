@@ -1,5 +1,5 @@
 /**
- * The typed way in to the palette. The values live in ./palette.js — see the
+ * The typed way in to the palette. The values live in ./palette.js, see the
  * note there for why that file is CommonJS JavaScript rather than TypeScript.
  *
  * App code imports from here, never from palette.js directly, so that a typo

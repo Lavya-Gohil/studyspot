@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { LegalPage } from '@/components/marketing/LegalPage'
 
 export const metadata: Metadata = {
-  title: 'Terms of Service — StudySpot',
+  title: 'Terms of Service. StudySpot',
   description: 'The agreement between you and StudySpot when you use the platform.',
 }
 
@@ -24,7 +24,7 @@ export default function TermsPage() {
         {
           heading: '2. Your content',
           paragraphs: [
-            'You own what you post — profiles, sessions, messages, circle posts, goals. By posting, you give StudySpot a licence to host, display, and distribute that content inside the product so the service can work (for example, showing your session to nearby students).',
+            'You own what you post: profiles, sessions, messages, circle posts and goals. By posting, you give StudySpot a licence to host, display, and distribute that content inside the product so the service can work (for example, showing your session to nearby students).',
             'You are responsible for what you post. Don\'t post anything illegal, harassing, deceptive, or that infringes someone else\'s rights.',
           ],
         },
@@ -47,7 +47,7 @@ export default function TermsPage() {
         {
           heading: '5. Enforcement',
           paragraphs: [
-            'We may remove content, suspend, or ban accounts that violate these terms or put other users at risk — including permanently for serious violations such as harassment or fake verification. Where reasonable, we\'ll tell you why.',
+            'We may remove content, suspend, or ban accounts that violate these terms or put other users at risk, including permanently for serious violations such as harassment or fake verification. Where reasonable, we\'ll tell you why.',
           ],
         },
         {

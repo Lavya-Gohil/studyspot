@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Check, GraduationCap, SearchX, Users } from 'lucide-react'
 import { Avatar } from '@/components/profile/Avatar'
 import { Icon } from '@/components/ui/Icon'
-// Deep imports rather than the '@/components/ui' barrel — the barrel also
+// Deep imports rather than the '@/components/ui' barrel: the barrel also
 // re-exports Modal, which pulls framer-motion into any client bundle that
 // touches it for a component this route never renders.
 import { VerifiedBadge } from '@/components/ui/Badge'
@@ -17,7 +17,7 @@ import { YEAR_LABELS, type YearOfStudy } from '@studyspot/types'
 import type { MatchResult } from '@/lib/matching'
 
 type Mode = 'compatible' | 'twin'
-/** Label under the number — also decides whether it reads as a percentage. */
+/** Label under the number; also decides whether it reads as a percentage. */
 type ScoreUnit = 'match' | 'similar'
 
 const TABS: TabItem[] = [
@@ -29,7 +29,7 @@ const TABS: TabItem[] = [
 const PAGE = 8
 
 /**
- * Below this, "twin" overstates it — a weak similarity still ranks first in a
+ * Below this, "twin" overstates it: a weak similarity still ranks first in a
  * thin pool, so the hero treatment is reserved for a genuinely close match.
  */
 const TWIN_HERO_MIN = 40
@@ -37,7 +37,7 @@ const TWIN_HERO_MIN = 40
 interface Props {
   compatible: MatchResult[]
   similar: MatchResult[]
-  /** The viewer's own subjects — drives the filter chips and the setup prompt. */
+  /** The viewer's own subjects, drives the filter chips and the setup prompt. */
   mySubjects: string[]
   /** Reputation breakdown for the top compatibility match, rendered on the server. */
   topMatchReputation: ReactNode
@@ -69,7 +69,7 @@ export function MatchClient({
   }, [results, subject])
 
   // Both tabs rank the same pool differently, so how far the user had scrolled
-  // through one says nothing about the other — start the new tab at the top.
+  // through one says nothing about the other, start the new tab at the top.
   function switchMode(next: string) {
     setMode(next as Mode)
     setVisible(PAGE)
@@ -92,7 +92,7 @@ export function MatchClient({
       <div>
         <h1 className="font-display text-2xl font-bold">Find your people</h1>
         <p className="mt-1 text-sm text-text-secondary">
-          Every match below lists exactly why it matched you — nothing is hidden behind a score.
+          Every match below lists exactly why it matched you; nothing is hidden behind a score.
         </p>
       </div>
 
@@ -133,7 +133,7 @@ export function MatchClient({
 
       <TabPanel id={`${tabsId}-compatible`} active={mode === 'compatible'}>
         <p className="text-sm text-text-secondary">
-          Who would make a good study partner — scored on shared subjects, course, year,
+          Who would make a good study partner, scored on shared subjects, course, year,
           college, city, and how reliably they turn up.
         </p>
         <Results
@@ -151,11 +151,11 @@ export function MatchClient({
               filteredBy={subject}
               onClearFilter={() => setSubject(null)}
               title="No study partners yet"
-              description="Nobody in your subjects has joined yet. Sessions are the fastest way to meet people — jump into one and matches follow."
+              description="Nobody in your subjects has joined yet. Sessions are the fastest way to meet people: jump into one and the matches follow."
             />
           }
         >
-          {/* Identity check, not just `hero` — the reputation was rendered on
+          {/* Identity check, not just `hero`; the reputation was rendered on
               the server for the top-ranked match, and a subject filter can put
               someone else in the hero slot. */}
           {hero && hero === compatible[0] && topMatchReputation ? (
@@ -171,7 +171,7 @@ export function MatchClient({
 
       <TabPanel id={`${tabsId}-twin`} active={mode === 'twin'}>
         <p className="text-sm text-text-secondary">
-          Who studies like you — the overlap between your subjects, level, and study
+          Who studies like you: the overlap between your subjects, level, and study
           activity, regardless of whether you&apos;d pair up.
         </p>
         <Results
@@ -189,7 +189,7 @@ export function MatchClient({
               filteredBy={subject}
               onClearFilter={() => setSubject(null)}
               title="No study twin yet"
-              description="Nobody close enough to call a twin — this gets sharper as more students in your subjects join."
+              description="Nobody close enough to call a twin; this gets sharper as more students in your subjects join."
             />
           }
         />
@@ -219,7 +219,7 @@ function Results({
   unit: ScoreUnit
   heroLabel: string
   empty: ReactNode
-  /** Extra detail rendered under the hero — e.g. the reputation breakdown. */
+  /** Extra detail rendered under the hero, e.g. the reputation breakdown. */
   children?: ReactNode
 }) {
   if (error) {
@@ -269,7 +269,7 @@ function Results({
 }
 
 /**
- * One candidate. The reasons come straight from lib/matching — rendered one per
+ * One candidate. The reasons come straight from lib/matching, rendered one per
  * chip and never truncated, because "why am I seeing this person" is the whole
  * point of the screen; collapsing them into a single elided line throws away
  * the only thing that makes the score trustworthy.
@@ -392,7 +392,7 @@ function NoResults({
     )
   }
 
-  // No subjects means the pool was never built from anything strong — sending
+  // No subjects means the pool was never built from anything strong, sending
   // the user to the feed here would be a dead end when the real fix is upstream.
   if (!hasSubjects) {
     return (

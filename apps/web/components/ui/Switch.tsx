@@ -3,7 +3,7 @@
 import { forwardRef, useId, type ReactNode } from 'react'
 
 /**
- * An on/off toggle for settings that apply immediately — push notifications,
+ * An on/off toggle for settings that apply immediately, push notifications,
  * profile visibility. Use <Checkbox> instead when the value only takes effect
  * on submit; a switch that needs a Save button is a lie about immediacy.
  *
@@ -12,7 +12,7 @@ import { forwardRef, useId, type ReactNode } from 'react'
  * visuals are ours, driven off peer-checked.
  *
  * The thumb translates; the track changes colour. Both are composited, and at
- * --dur-1 the whole thing lands in 120ms — a switch that takes longer feels
+ * --dur-1 the whole thing lands in 120ms; a switch that takes longer feels
  * like it's asking the server for permission.
  */
 export const Switch = forwardRef<
@@ -72,7 +72,7 @@ export const Switch = forwardRef<
           className="block h-6 w-10 rounded-full bg-bg-subtle ring-1 ring-inset ring-border-default transition-colors duration-fast ease-out peer-checked:bg-brand-primary peer-checked:ring-transparent peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-primary"
         />
 
-        {/* Thumb. translate-x only — no left/width animation. */}
+        {/* Thumb. translate-x only: no left/width animation. */}
         <span
           aria-hidden="true"
           className="pointer-events-none absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-text-primary shadow-soft transition-transform duration-fast ease-out peer-checked:translate-x-4 peer-checked:bg-brand-fg"

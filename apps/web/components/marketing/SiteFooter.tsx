@@ -41,7 +41,7 @@ export function SiteFooter() {
               Study<span className="text-text-tertiary">Spot</span>
             </span>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-text-secondary">
-              The place students find their crew, pick a vibe, and finally get focused — together.
+              The place students find their crew, pick a vibe, and finally get focused, together.
             </p>
             <div className="mt-5 flex gap-2">
               <a
@@ -92,7 +92,7 @@ export function SiteFooter() {
 }
 
 // Instagram's glyph, hand-drawn: lucide dropped brand logos from its set, and
-// third-party marks shouldn't be approximated by a generic icon anyway — same
+// third-party marks shouldn't be approximated by a generic icon anyway, same
 // call as the Google mark on the auth forms.
 const IconInstagram = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">

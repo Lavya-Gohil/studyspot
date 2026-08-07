@@ -9,7 +9,7 @@ import { CREATE_STEPS, useSessionDraft } from './create/useSessionDraft'
 import type { SessionMode, SessionVibe } from '@studyspot/types'
 
 /**
- * Create-a-session wizard. Composition only — the draft, its validation and the
+ * Create-a-session wizard. Composition only: the draft, its validation and the
  * insert all live in useSessionDraft; each step renders controls and nothing
  * else:
  *
@@ -45,7 +45,7 @@ export function CreateSessionForm({
 
       {step === 3 && <StepReview draft={draft} />}
 
-      {/* Submit-time failures only — per-field problems render on their control.
+      {/* Submit-time failures only; per-field problems render on their control.
           role="alert" so it's announced even though focus never moves here. */}
       {formError && (
         <p role="alert" className="text-sm text-accent-red">

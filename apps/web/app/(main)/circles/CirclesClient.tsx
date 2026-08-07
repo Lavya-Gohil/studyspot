@@ -65,7 +65,7 @@ export function CirclesClient({ mine, discover, userId }: Props) {
   }
 
   async function joinByCode() {
-    // Codes are exactly 6 alphanumerics — reject anything else locally
+    // Codes are exactly 6 alphanumerics, reject anything else locally
     // (the RPC re-validates and rate-limits server-side).
     const v = validate(joinCodeSchema, joinCode)
     if (!v.ok) {
@@ -77,7 +77,7 @@ export function CirclesClient({ mine, discover, userId }: Props) {
     if (error) {
       setError(
         error.message.includes('rate_limit_exceeded')
-          ? 'Too many attempts — wait a minute and try again.'
+          ? 'Too many attempts, wait a minute and try again.'
           : 'No circle found for that code.'
       )
       return
@@ -172,7 +172,7 @@ export function CirclesClient({ mine, discover, userId }: Props) {
               onChange={(e) => setIsPrivate(e.target.checked)}
               className="h-4 w-4 accent-accent-primary"
             />
-            Private — only people with the join code can join
+            Private; only people with the join code can join
           </label>
           <button
             onClick={createCircle}
@@ -204,7 +204,7 @@ export function CirclesClient({ mine, discover, userId }: Props) {
           Discover
         </h2>
         {discover.filter((c) => !myIds.has(c.id)).length === 0 ? (
-          <p className="text-sm text-text-tertiary">No public circles yet — create the first one.</p>
+          <p className="text-sm text-text-tertiary">No public circles yet. Create the first one.</p>
         ) : (
           <div className="grid gap-3 sm:grid-cols-2">
             {discover

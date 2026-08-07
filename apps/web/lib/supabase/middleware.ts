@@ -66,7 +66,7 @@ export async function updateSession(request: NextRequest) {
   }
 
   // Check onboarding progress (public marketing/legal pages stay reachable
-  // mid-onboarding — users must be able to read Privacy/Terms at any time)
+  // mid-onboarding; users must be able to read Privacy/Terms at any time)
   if (user && !pathname.startsWith('/auth') && !pathname.startsWith('/admin') && !isPublicRoute(pathname)) {
     const { data: profile } = await supabase
       .from('profiles')

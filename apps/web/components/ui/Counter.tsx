@@ -11,14 +11,14 @@ import { useEffect, useRef, useState } from 'react'
  *   few units settle. A linear count reads like a loading spinner; this reads
  *   like the number arriving.
  * - It only animates when the value actually changes, and never on a
- *   re-render with the same value — so a parent re-rendering doesn't make
+ *   re-render with the same value, so a parent re-rendering doesn't make
  *   every figure on the page replay.
  *
  * rAF rather than a CSS transition because there is no interpolatable CSS
  * property for "text content". The loop is cancelled on unmount and on any
  * value change mid-flight.
  *
- * Respects prefers-reduced-motion by rendering the final value immediately —
+ * Respects prefers-reduced-motion by rendering the final value immediately;
  * checked at run time, since a media query can't reach text content.
  */
 export function Counter({
@@ -40,7 +40,7 @@ export function Counter({
   const mounted = useRef(false)
 
   useEffect(() => {
-    // First paint shows the real value — nothing to animate from.
+    // First paint shows the real value, nothing to animate from.
     if (!mounted.current) {
       mounted.current = true
       fromRef.current = value
@@ -66,7 +66,7 @@ export function Counter({
 
     const step = (now: number) => {
       const t = Math.min(1, (now - start) / duration)
-      // easeOutQuart — matches --ease-out's character.
+      // easeOutQuart, matches --ease-out's character.
       const eased = 1 - Math.pow(1 - t, 4)
       setDisplay(from + delta * eased)
 
@@ -91,7 +91,7 @@ export function Counter({
 
   return (
     // tnum keeps digit width fixed, so the figure doesn't jitter sideways as
-    // it counts — the single biggest thing that makes counters look cheap.
+    // it counts; the single biggest thing that makes counters look cheap.
     <span className={`tnum ${className}`}>{format ? format(rounded) : rounded}</span>
   )
 }

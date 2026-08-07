@@ -1,5 +1,5 @@
 -- ============================================================
--- StudySpot — Full Database Schema
+-- StudySpot. Full Database Schema
 -- PostgreSQL via Supabase
 -- ============================================================
 

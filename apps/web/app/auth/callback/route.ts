@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get('code')
   const next = safeNextPath(searchParams.get('next'))
 
-  // PKCE codes are opaque but bounded — reject obviously bogus values early.
+  // PKCE codes are opaque but bounded, reject obviously bogus values early.
   if (code && code.length < 2048) {
     const cookieStore = await cookies()
     const supabase = createServerClient(

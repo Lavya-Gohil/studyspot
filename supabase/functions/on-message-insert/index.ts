@@ -9,7 +9,7 @@ const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 /**
  * Database-webhook target: fires on `messages` INSERT and fans out push
  * notifications. Before this hardening, ANYONE with the function URL could
- * post a fake payload and push-spam every member of any session — so the
+ * post a fake payload and push-spam every member of any session, so the
  * webhook now has to present the shared WEBHOOK_SECRET header.
  *
  * Supabase setup: Database → Webhooks → this function → add HTTP header

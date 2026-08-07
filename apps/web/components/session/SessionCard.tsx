@@ -151,7 +151,7 @@ export function SessionCard({
         ) : requestStatus === 'pending' ? (
           <div className="flex h-10 flex-1 items-center justify-center gap-2 rounded-md border border-accent-green/30 bg-accent-green/10 text-sm font-medium text-accent-green">
             <Icon as={Check} size="sm" />
-            Request sent — awaiting host
+            Request sent, awaiting host
           </div>
         ) : requestStatus === 'declined' ? (
           <div className="flex-1 h-10 rounded-md bg-bg-elevated border border-border-default flex items-center justify-center text-sm text-text-tertiary">

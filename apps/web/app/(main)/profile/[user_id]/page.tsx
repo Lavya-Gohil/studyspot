@@ -44,7 +44,7 @@ export default async function UserProfilePage({ params }: { params: Promise<{ us
     rating_count: 0,
   }
 
-  // Productivity DNA — own profile only (private behavioural insights).
+  // Productivity DNA; own profile only (private behavioural insights).
   let dna = null
   if (isOwnProfile) {
     const [{ data: hosted }, { data: attended }] = await Promise.all([

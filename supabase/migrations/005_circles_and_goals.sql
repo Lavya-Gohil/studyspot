@@ -1,5 +1,5 @@
 -- ============================================================
--- StudySpot — Study Circles & Accountability Contracts (Goals)
+-- StudySpot. Study Circles & Accountability Contracts (Goals)
 -- ============================================================
 
 CREATE TYPE circle_role_enum AS ENUM ('owner', 'admin', 'member');

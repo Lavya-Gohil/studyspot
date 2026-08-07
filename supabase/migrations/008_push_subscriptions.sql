@@ -1,8 +1,8 @@
 -- ============================================================
--- StudySpot — Web Push subscriptions (008)
+-- StudySpot. Web Push subscriptions (008)
 --
--- Push was Expo-only (profiles.expo_push_token), so the web app
--- — where every feature ships first — delivered nothing at all:
+-- Push was Expo-only (profiles.expo_push_token), so the web app,
+-- where every feature ships first, delivered nothing at all:
 -- no service worker, no subscription store, no transport.
 --
 -- Additive on purpose. profiles.expo_push_token keeps working
@@ -36,13 +36,13 @@ CREATE INDEX IF NOT EXISTS idx_push_subs_user ON push_subscriptions (user_id);
 -- Format constraints
 -- ------------------------------------------------------------
 -- NOT VALID then VALIDATE, matching 006/007. The table is new so the
--- validation scan is instant — the two-step form is kept so every constraint
+-- validation scan is instant; the two-step form is kept so every constraint
 -- in this schema is added the same way and re-running the file on a database
 -- that already has rows can never fail the migration.
 ALTER TABLE push_subscriptions
   ADD CONSTRAINT chk_push_subs_endpoint_https
     CHECK (endpoint ~ '^https://[^[:space:]]{1,900}$') NOT VALID,
-  -- 65-byte EC point and 16-byte secret, base64url — anything else could never
+  -- 65-byte EC point and 16-byte secret, base64url; anything else could never
   -- have come from a real PushManager subscription.
   ADD CONSTRAINT chk_push_subs_p256dh_fmt
     CHECK (p256dh ~ '^[A-Za-z0-9_-]{80,200}$') NOT VALID,
@@ -81,7 +81,7 @@ CREATE POLICY "push_subscriptions: users can unsubscribe"
 -- ------------------------------------------------------------
 -- Why a definer function instead of a plain INSERT: the endpoint is owned by
 -- the *browser*, not the account. Sign out and sign in as someone else and
--- PushManager hands back the same endpoint — the row must transfer, but RLS
+-- PushManager hands back the same endpoint; the row must transfer, but RLS
 -- (correctly) forbids deleting another user's row. Doing the handover inside
 -- SECURITY DEFINER keeps the policies strict while making re-registration
 -- work. search_path is pinned, as in 006's join_circle_by_code.

@@ -3,7 +3,7 @@
 -- SIGNUP IS BROKEN WITHOUT THIS on any freshly created Supabase project.
 --
 -- handle_new_user() is the trigger on auth.users that creates the profile row.
--- It is SECURITY DEFINER, which changes the *role* a function runs as — but
+-- It is SECURITY DEFINER, which changes the *role* a function runs as, but
 -- not the *search_path*, which is inherited from the caller. GoTrue connects as
 -- supabase_auth_admin, whose role config is `search_path=auth`. So `INSERT INTO
 -- profiles` resolved against the auth schema only, the table wasn't found, the
@@ -11,7 +11,7 @@
 -- HTTP 500 "Database error creating new user" with nothing pointing at cause.
 --
 -- It works when the same insert runs as postgres, whose search_path does
--- include public — which is why this survives local testing and direct SQL,
+-- include public, which is why this survives local testing and direct SQL,
 -- and only shows up through the real auth endpoint.
 --
 -- The same omission is a security problem in its own right, and the reason
@@ -33,7 +33,7 @@ ALTER FUNCTION public.handle_new_circle()              SET search_path = public,
 ALTER FUNCTION public.handle_circle_member_change()    SET search_path = public, extensions;
 
 -- RLS helper predicates. These run as the querying role rather than through
--- auth, so they were not the signup failure — but they gate every policy in
+-- auth, so they were not the signup failure, but they gate every policy in
 -- 002/004/005, which makes them the worst possible place to leave resolution
 -- up to the caller.
 ALTER FUNCTION public.is_admin()                       SET search_path = public, extensions;

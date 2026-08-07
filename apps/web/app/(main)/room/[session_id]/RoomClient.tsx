@@ -12,7 +12,7 @@ import { useRoomChannel } from './useRoomChannel'
 import type { CurrentUser, SessionInfo } from './types'
 
 /**
- * Virtual study room. Composition only — presence, the shared timer and chat
+ * Virtual study room. Composition only, presence, the shared timer and chat
  * each own their own state and markup:
  *
  *   useRoomChannel  realtime: presence, timer broadcast, message stream
@@ -69,7 +69,7 @@ export function RoomClient({
         {session.vibe === 'silent' ? (
           <div className="flex shrink-0 items-center justify-center gap-2 border-b border-border-subtle bg-bg-subtle px-4 py-2 text-center text-xs text-text-secondary">
             <Icon as={VolumeX} size="xs" className="shrink-0" />
-            Silent study — mics off, chat quiet. Just focus together and keep each other
+            Silent study, mics off, chat quiet. Just focus together and keep each other
             accountable.
           </div>
         ) : null}

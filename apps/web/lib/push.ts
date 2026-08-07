@@ -9,12 +9,12 @@
  * subscribe with our VAPID key, and hand the subscription to the server, which
  * stores it in `push_subscriptions` (migration 008).
  *
- * Nothing here is a security boundary — the route handlers re-derive the user
+ * Nothing here is a security boundary: the route handlers re-derive the user
  * from their session cookie and the RPC writes the row as auth.uid(), so a
  * tampered payload can only ever register the caller's own device.
  *
  * Requires NEXT_PUBLIC_VAPID_PUBLIC_KEY (the public half of the Edge Function's
- * VAPID_PUBLIC_KEY/VAPID_PRIVATE_KEY pair — see .env.example).
+ * VAPID_PUBLIC_KEY/VAPID_PRIVATE_KEY pair, see .env.example).
  */
 
 export type PushResult =
@@ -37,7 +37,7 @@ export function isPushSupported(): boolean {
   )
 }
 
-/** Current permission without prompting — safe to call on render. */
+/** Current permission without prompting; safe to call on render. */
 export function pushPermission(): NotificationPermission | 'unsupported' {
   return isPushSupported() ? Notification.permission : 'unsupported'
 }
@@ -70,7 +70,7 @@ export async function enablePush(): Promise<PushResult> {
   }
 
   try {
-    // Must ask before subscribing — Chrome rejects subscribe() outright when
+    // Must ask before subscribing. Chrome rejects subscribe() outright when
     // permission is still 'default'.
     const permission =
       Notification.permission === 'default' ? await Notification.requestPermission() : Notification.permission

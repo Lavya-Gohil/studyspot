@@ -1,5 +1,5 @@
 -- ============================================================
--- StudySpot — Row Level Security Policies
+-- StudySpot. Row Level Security Policies
 -- ============================================================
 
 CREATE OR REPLACE FUNCTION is_blocked(other_user_id UUID)

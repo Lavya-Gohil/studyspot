@@ -10,7 +10,7 @@ const { theme } = require('./lib/palette.js') as typeof import('./lib/theme')
  * Expo config as TypeScript rather than app.json, for two reasons.
  *
  * The background colours are the app's real background colour, taken from
- * lib/theme.ts instead of written out again — a splash screen that is a few
+ * lib/theme.ts instead of written out again; a splash screen that is a few
  * points off the first frame shows as a flash on launch, and that is exactly
  * the kind of drift a second copy of a hex value produces.
  *

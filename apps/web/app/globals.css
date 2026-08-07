@@ -11,7 +11,7 @@
    point:
 
    --accent-*  NEUTRAL emphasis. White on dark, near-black on
-               light. This is what most of the UI uses — active
+               light. This is what most of the UI uses, active
                nav, stat figures, secondary buttons, borders.
    --brand-*   The signature colour. Used deliberately and
                sparingly: primary CTAs, live indicators, focus
@@ -52,7 +52,7 @@
   --brand-200: 150 243 221;
   --brand-300: 93 234 208;
   --brand-400: 42 229 201;
-  --brand-500: 25 204 180;   /* #19CCB4 — the chosen turquoise */
+  --brand-500: 25 204 180;   /* #19CCB4: the chosen turquoise */
   --brand-600: 17 172 161;
   --brand-700: 12 136 134;
   --brand-800: 9 105 108;
@@ -81,21 +81,21 @@
   );
 
   /* Status. Amber and red are unchanged; green moves further blue so
-     it can never be mistaken for the turquoise brand — adjacent
+     it can never be mistaken for the turquoise brand, adjacent
      blue-greens are the one collision this palette can't afford. */
   --accent-green: 74 222 128;
   --accent-amber: 251 191 36;
   --accent-red: 251 113 133;
 
   --text-primary: 245 245 247;   /* #F5F5F7 */
-  --text-secondary: 169 169 178; /* #A9A9B2 — AA on near-black */
+  --text-secondary: 169 169 178; /* #A9A9B2, AA on near-black */
   --text-tertiary: 120 120 130;  /* #787882 */
 
   --border-subtle: rgba(255, 255, 255, 0.06);
   --border-default: rgba(255, 255, 255, 0.10);
   --border-strong: rgba(255, 255, 255, 0.18);
 
-  /* Elevation 2 only — floating surfaces. See the elevation note below. */
+  /* Elevation 2 only, floating surfaces. See the elevation note below. */
   --glass-bg: rgba(255, 255, 255, 0.045);
   --glass-bg-strong: rgba(20, 20, 24, 0.55);
   --glass-border: rgba(255, 255, 255, 0.10);
@@ -123,7 +123,7 @@
   --accent-hover: 31 31 37;
   --accent-fg: 250 250 250;
 
-  /* The ramp itself is shared — one material, lit differently.
+  /* The ramp itself is shared: one material, lit differently.
      Only the roles change. */
   --brand-50:  232 253 247;
   --brand-100: 199 249 236;
@@ -140,8 +140,8 @@
   /* The FILL stays the 500 in both themes: a turquoise chip with
      near-black text is strong on white and on near-black alike, and
      holding it constant is what makes the brand recognisable.
-     Only the TEXT role moves. The 500 as text on white is 1.95:1 —
-     unreadable — and even the 700 only reaches 4.12:1, which fails.
+     Only the TEXT role moves. The 500 as text on white is 1.95:1;
+     unreadable, and even the 700 only reaches 4.12:1, which fails.
      So light-mode text is the 800 at 6.19:1. Fill and text are
      different jobs; one value cannot do both. */
   --brand-primary: var(--brand-500);
@@ -164,7 +164,7 @@
   --accent-red: 220 38 38;
 
   --text-primary: 17 17 20;      /* #111114 */
-  --text-secondary: 82 82 91;    /* #52525B — AA on white */
+  --text-secondary: 82 82 91;    /* #52525B, AA on white */
   --text-tertiary: 130 130 140;  /* #82828C */
 
   --border-subtle: rgba(10, 10, 14, 0.07);
@@ -178,7 +178,7 @@
 
   --gradient-royal: linear-gradient(135deg, #1c1c20 0%, #0a0a0e 100%);
   --gradient-royal-soft: linear-gradient(135deg, rgba(10, 10, 14, 0.08), rgba(10, 10, 14, 0.03));
-  /* See the note in the dark block — the brand gradient is declared
+  /* See the note in the dark block; the brand gradient is declared
      once, with the ramp. */
   --glow: rgba(10, 10, 14, 0.08);
   --shadow-tint: rgba(10, 10, 14, 0.14);
@@ -199,17 +199,17 @@
    3. TRANSFORM AND OPACITY ONLY. Those two are the properties the
       compositor animates without layout or paint, which is what
       holds 60fps on a laptop that also has a lecture recording
-      open. Never animate width/height/top/left — animate scale
+      open. Never animate width/height/top/left, animate scale
       and translate instead.
 
    Durations are named by weight, not by component, so a new
    component inherits the system instead of inventing a number.
    ============================================================ */
 :root {
-  --dur-1: 120ms;  /* micro — press, hover, colour */
-  --dur-2: 180ms;  /* small — tooltip, toast, chip */
-  --dur-3: 260ms;  /* medium — modal, sheet, panel */
-  --dur-4: 400ms;  /* large — route and hero reveals */
+  --dur-1: 120ms;  /* micro, press, hover, colour */
+  --dur-2: 180ms;  /* small, tooltip, toast, chip */
+  --dur-3: 260ms;  /* medium, modal, sheet, panel */
+  --dur-4: 400ms;  /* large, route and hero reveals */
 
   /* Crisp deceleration. The default for anything arriving. */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -261,7 +261,7 @@ a {
   text-decoration: none;
 }
 
-/* Keyboard focus is a brand moment — it appears on every
+/* Keyboard focus is a brand moment, it appears on every
    interactive element and nowhere else. */
 :focus-visible {
   outline: 2px solid rgb(var(--brand-primary));
@@ -269,7 +269,7 @@ a {
   border-radius: 4px;
 }
 
-/* Gradient text helper — monochrome (white→grey / black→grey) */
+/* Gradient text helper, monochrome (white→grey / black→grey) */
 .text-royal {
   background: var(--gradient-royal);
   -webkit-background-clip: text;
@@ -317,7 +317,7 @@ a {
    Buttons
    ============================================================ */
 @layer components {
-  /* Neutral emphasis — the workhorse. */
+  /* Neutral emphasis: the workhorse. */
   .btn-accent {
     @apply inline-flex h-9 items-center justify-center rounded-full bg-accent-primary px-4 text-sm font-semibold text-accent-fg transition-all hover:bg-accent-hover active:scale-[0.98];
   }
@@ -325,7 +325,7 @@ a {
     @apply inline-flex h-12 items-center justify-center rounded-full bg-accent-primary px-7 text-sm font-semibold text-accent-fg shadow-soft transition-all hover:-translate-y-0.5 hover:bg-accent-hover active:scale-[0.98];
   }
 
-  /* Brand — the full material treatment, and RATIONED.
+  /* Brand: the full material treatment, and RATIONED.
      Reserved for the single most important action on a screen. If
      two of these are visible at once, one of them is wrong.
      Everything else brand-coloured uses a flat 500 or a tint; if
@@ -338,7 +338,7 @@ a {
     @apply relative inline-flex items-center justify-center rounded-full text-sm font-semibold text-brand-fg;
     background: var(--gradient-brand);
     box-shadow:
-      /* specular top edge — the cheapest thing that makes a surface
+      /* specular top edge; the cheapest thing that makes a surface
          look lit rather than filled */
       inset 0 1px 0 rgba(255, 255, 255, 0.36),
       /* grounded bottom edge */
@@ -390,14 +390,14 @@ a {
 }
 
 /* ============================================================
-   ELEVATION — exactly three levels.
+   ELEVATION, exactly three levels.
 
    0  the page            bg-base
    1  resting content     .surface        solid, hairline border
    2  floating overlays   .glass-strong   blurred, only here
 
    `.glass` used to be level 1 *and* level 2 and was applied 46
-   times — to cards, rows, pills, buttons and the nav alike. When
+   times, to cards, rows, pills, buttons and the nav alike. When
    every surface is translucent, nothing reads as lifted and the
    backdrop-filters stack into a real paint cost. It is redefined
    below as a solid level-1 surface, which quietly corrects every
@@ -441,7 +441,7 @@ a {
   opacity: 0.35;
 }
 
-/* Grain overlay — breaks up large flat areas. Landing only. */
+/* Grain overlay; breaks up large flat areas. Landing only. */
 .grain::before {
   content: '';
   position: absolute;
@@ -453,7 +453,7 @@ a {
 }
 
 /* ============================================================
-   Live indicator — the brand's most-repeated gesture. Used
+   Live indicator: the brand's most-repeated gesture. Used
    wherever something is happening right now: presence counts,
    ongoing sessions, active focus timers.
    ============================================================ */
@@ -480,14 +480,14 @@ a {
   width: 100%;
   border-radius: 999px;
   /* Lighter at the top than the bottom. At 8px this is almost
-     subliminal, which is the point — the dot reads as a bead with
+     subliminal, which is the point; the dot reads as a bead with
      light on it rather than a filled circle. */
   background: linear-gradient(160deg, rgb(var(--brand-300)), rgb(var(--brand-600)));
   box-shadow: 0 0 6px var(--brand-glow-soft);
 }
 
 /* ============================================================
-   Brand tint — the everyday treatment.
+   Brand tint: the everyday treatment.
 
    Used for streak chips, selected states, unread markers: anything
    brand-coloured that is NOT the primary action. A tint plus a
@@ -515,7 +515,7 @@ a {
    tuned in one place. All four animate transform/opacity only.
    ============================================================ */
 
-/* Press. The scale is deliberately small — 0.97 reads as a button
+/* Press. The scale is deliberately small; 0.97 reads as a button
    acknowledging you; 0.90 reads as a toy. Pointer-only: touch already
    has its own feedback and the delay makes it feel sluggish there. */
 @media (hover: hover) {
@@ -526,7 +526,7 @@ a {
     transform: scale(0.97);
   }
 
-  /* Cards that lift toward the cursor. 1px, not 4 — the shadow does
+  /* Cards that lift toward the cursor. 1px, not 4; the shadow does
      the work, the movement just confirms it's interactive. */
   .lift {
     transition: transform var(--dur-2) var(--ease-out),
@@ -561,7 +561,7 @@ a {
 }
 
 /* Command palette. The scrim fades and the panel arrives from slightly
-   above and behind — a modal that appears at its final position reads as
+   above and behind; a modal that appears at its final position reads as
    a screenshot, and one that springs reads as a toy. Both are cheap:
    opacity and transform only, so neither touches layout. */
 .palette-scrim {

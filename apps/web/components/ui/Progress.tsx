@@ -1,5 +1,5 @@
 /**
- * Progress — a bar and a ring.
+ * Progress: a bar and a ring.
  *
  * Both animate with stroke/transform rather than width, because width is a
  * layout property: animating it forces a reflow of everything after it on
@@ -8,7 +8,7 @@
  * recording open.
  *
  * Server-safe: no state, no effects, no 'use client'. The animation is
- * declarative — the browser tweens to whatever value the server rendered.
+ * declarative: the browser tweens to whatever value the server rendered.
  */
 
 const clamp = (v: number) => Math.min(100, Math.max(0, Number.isFinite(v) ? v : 0))
@@ -16,7 +16,7 @@ const clamp = (v: number) => Math.min(100, Math.max(0, Number.isFinite(v) ? v : 
 /**
  * A single fixed id, deliberately.
  *
- * The gradient depends on nothing — it is always brand-300 to brand-600 — so
+ * The gradient depends on nothing (it is always brand-300 to brand-600), so
  * every ring on a page declares an identical <defs>, and a browser resolving
  * duplicate ids to the first one produces exactly the right result. useId()
  * is not an option here: this component has no 'use client', so it renders as
@@ -81,7 +81,7 @@ export function ProgressRing({
   stroke?: number
   tone?: 'brand' | 'neutral'
   label?: string
-  /** Centred content — usually the figure the ring is describing. */
+  /** Centred content; usually the figure the ring is describing. */
   children?: React.ReactNode
   className?: string
 }) {
@@ -103,7 +103,7 @@ export function ProgressRing({
       {/* -90deg so the arc starts at twelve o'clock rather than three. */}
       <svg width={size} height={size} className="-rotate-90" aria-hidden="true">
         {/* The arc travels across the ramp rather than sitting on one
-            value — light where it starts, deep where it ends, so a full
+            value, light where it starts, deep where it ends, so a full
             ring reads as a lit object instead of a coloured line. */}
         <defs>
           <linearGradient id={RING_GRADIENT} x1="0" y1="0" x2="1" y2="1">

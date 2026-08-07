@@ -6,8 +6,8 @@ import type { CurrentUser, Member } from './types'
 /**
  * The classroom itself: a grid of seats showing who is present and whether
  * they're focusing or on a break. Presence is the whole point of the virtual
- * room — seeing other people working is the mechanism that makes body-doubling
- * effective — so this is the primary surface, not a sidebar.
+ * room; seeing other people working is the mechanism that makes body-doubling
+ * effective, so this is the primary surface, not a sidebar.
  */
 export function SeatGrid({
   seatCount,

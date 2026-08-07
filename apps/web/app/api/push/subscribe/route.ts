@@ -11,7 +11,7 @@ import { createClient } from '@/lib/supabase/server'
  * caller already controls.
  *
  * That RPC is a SECURITY DEFINER function rather than a plain insert because a
- * push endpoint belongs to the browser, not the account — signing in as a
+ * push endpoint belongs to the browser, not the account, signing in as a
  * different user hands back the same endpoint, and the row has to transfer.
  */
 
@@ -20,7 +20,7 @@ import { createClient } from '@/lib/supabase/server'
 const subscriptionSchema = z
   .object({
     endpoint: z.string().max(900).regex(/^https:\/\/[^\s]+$/, 'Invalid endpoint.'),
-    // Browsers include this (almost always null) — accepted and ignored.
+    // Browsers include this (almost always null), accepted and ignored.
     expirationTime: z.number().nullable().optional(),
     keys: z
       .object({

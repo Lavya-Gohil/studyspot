@@ -38,7 +38,7 @@ function Chip({
 
 /**
  * Subject multi-select: search narrows the list, otherwise the full catalogue
- * browses by category. The cap is enforced here rather than only at submit —
+ * browses by category. The cap is enforced here rather than only at submit,
  * profileUpdateSchema rejects a 13th subject with a message that gave no hint
  * which of the chips was the problem.
  */
@@ -77,7 +77,7 @@ export function SubjectPicker({
         label="Subjects / Interests"
         hint={
           atCap
-            ? `That's the maximum — remove one to swap it out.`
+            ? `That's the maximum, remove one to swap it out.`
             : `Pick up to ${max}. ${selected.length} selected.`
         }
         value={search}

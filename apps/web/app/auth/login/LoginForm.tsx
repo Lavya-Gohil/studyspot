@@ -21,7 +21,7 @@ export function LoginForm() {
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
   const [loading, setLoading] = useState(false)
-  // Set when login fails because the email was never confirmed — shows a
+  // Set when login fails because the email was never confirmed; shows a
   // resend button instead of the misleading "invalid password" message.
   const [unconfirmed, setUnconfirmed] = useState(false)
   const [resendIn, setResendIn] = useState(0)
@@ -35,7 +35,7 @@ export function LoginForm() {
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
-    // Validate the email shape only — password rules must never gate login
+    // Validate the email shape only; password rules must never gate login
     // (older accounts may predate the current policy).
     const v = validate(emailSchema, email)
     if (!v.ok) {
@@ -80,12 +80,12 @@ export function LoginForm() {
     if (error) {
       toast.error(
         /rate|too many/i.test(error.message)
-          ? 'Too many emails — wait a minute and try again.'
+          ? 'Too many emails, wait a minute and try again.'
           : error.message
       )
       return
     }
-    toast.success('Confirmation email sent — give it a minute, and check spam too.')
+    toast.success('Confirmation email sent; give it a minute, and check spam too.')
     setResendIn(60)
   }
 
@@ -116,7 +116,7 @@ export function LoginForm() {
         <div>
           <div className="flex items-center justify-between">
             <FieldLabel htmlFor={passwordId}>Password</FieldLabel>
-            {/* Outside the <label> on purpose — a button nested in one steals
+            {/* Outside the <label> on purpose: a button nested in one steals
                 the click that should focus the input. */}
             <button
               type="button"
@@ -144,7 +144,7 @@ export function LoginForm() {
         {unconfirmed ? (
           <div className="space-y-3 rounded-md border border-accent-amber/30 bg-accent-amber/5 p-3">
             <p role="alert" className="text-sm text-text-secondary">
-              Your email isn&apos;t confirmed yet — click the link we sent you, or resend it below.
+              Your email isn&apos;t confirmed yet, click the link we sent you, or resend it below.
             </p>
             <Button
               type="button"
@@ -176,9 +176,9 @@ export function LoginForm() {
       </div>
 
       <Button type="button" variant="secondary" size="lg" className="w-full gap-2" onClick={handleGoogle}>
-        {/* Google's brand mark — the one place fixed hex is correct, since the
+        {/* Google's brand mark; the one place fixed hex is correct, since the
             logo must not shift with our theme tokens. */}
-        {/* Google's own mark, at its exact brand hexes — the one SVG in the
+        {/* Google's own mark, at its exact brand hexes: the one SVG in the
             app that must not become a lucide glyph or inherit our tokens.
             Google's branding guidelines require the unmodified logo. */}
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">

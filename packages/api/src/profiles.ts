@@ -11,7 +11,7 @@ const PUBLIC_PROFILE_COLUMNS = [
 
 /**
  * supabase-js infers the row shape by parsing the `.select()` argument at the
- * type level. That only works on a string *literal* — because the column list
+ * type level. That only works on a string *literal*, because the column list
  * above is assembled with .join() its type is plain `string`, so the inference
  * falls back to GenericStringError and a direct `as Profile` is rejected.
  *

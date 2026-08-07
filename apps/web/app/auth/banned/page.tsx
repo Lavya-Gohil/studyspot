@@ -6,7 +6,7 @@ import { CONTACT_EMAIL } from '@/lib/site'
 import { Icon } from '@/components/ui/Icon'
 
 export const metadata: Metadata = {
-  title: 'Account suspended — StudySpot',
+  title: 'Account suspended. StudySpot',
 }
 
 /**

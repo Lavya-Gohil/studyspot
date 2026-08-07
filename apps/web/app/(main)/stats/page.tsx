@@ -9,7 +9,7 @@ import { FlameIcon, FocusIcon, Icon } from '@/components/ui/Icon'
 import { ProgressBar, ProgressRing } from '@/components/ui/Progress'
 import { StatFigure } from './StatFigure'
 
-export const metadata = { title: 'Your stats — StudySpot' }
+export const metadata = { title: 'Your stats. StudySpot' }
 
 /** Inverse of level_from_xp in migration 013: level N begins at 100*(N-1)^2. */
 const xpForLevel = (level: number) => 100 * Math.pow(Math.max(level - 1, 0), 2)
@@ -69,7 +69,7 @@ export default async function StatsPage() {
   const intoLevel = xp - floorXp
   const levelSpan = Math.max(1, ceilXp - floorXp)
 
-  // The user's own today, not the server's — same reasoning as migration 011.
+  // The user's own today, not the server's, same reasoning as migration 011.
   const localToday = new Date(
     new Date().toLocaleString('en-US', { timeZone: profile?.timezone || 'UTC' })
   )
@@ -225,7 +225,7 @@ export default async function StatsPage() {
 /**
  * `icon` is a rendered node, not a component type. The brand glyphs and the
  * lucide glyphs have genuinely different prop shapes, and a union of the two
- * only type-checks behind a cast — which would mean the compiler stops
+ * only type-checks behind a cast, which would mean the compiler stops
  * catching a real mistake here. Letting the caller render its own icon costs
  * one extra pair of angle brackets and keeps the types honest.
  */

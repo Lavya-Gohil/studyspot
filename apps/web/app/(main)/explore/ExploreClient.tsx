@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { BookOpen, SearchX } from 'lucide-react'
 import { SessionCard } from '@/components/session/SessionCard'
 import { Icon } from '@/components/ui/Icon'
-// Deep imports rather than the '@/components/ui' barrel — the barrel also
+// Deep imports rather than the '@/components/ui' barrel: the barrel also
 // re-exports Modal, which pulls framer-motion into this bundle for a component
 // this route never renders.
 import { Button } from '@/components/ui/Button'
@@ -49,7 +49,7 @@ export function ExploreClient({ sessions, mySubjects, error }: Props) {
       <div>
         <h1 className="font-display text-2xl font-bold">Explore</h1>
         <p className="mt-1 text-sm text-text-secondary">
-          Search every open session — by subject, place, or who&apos;s hosting.
+          Search every open session, by subject, place, or who&apos;s hosting.
         </p>
       </div>
 

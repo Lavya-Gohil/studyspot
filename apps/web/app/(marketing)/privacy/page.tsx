@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { LegalPage } from '@/components/marketing/LegalPage'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy — StudySpot',
+  title: 'Privacy Policy. StudySpot',
   description: 'What StudySpot collects, why, and the controls you have over your data.',
 }
 
@@ -13,7 +13,7 @@ export default function PrivacyPage() {
       title="Privacy"
       accent="policy."
       updated="June 12, 2026"
-      intro="StudySpot exists to help students study together — not to monetise your attention or sell your data. This policy explains, in plain language, what we collect, why we collect it, and the controls you have."
+      intro="StudySpot exists to help students study together, not to monetise your attention or sell your data. This policy explains, in plain language, what we collect, why we collect it, and the controls you have."
       sections={[
         {
           heading: '1. What we collect',
@@ -22,7 +22,7 @@ export default function PrivacyPage() {
             'Profile details you choose to add: username, college, course, year of study, subjects, bio, and avatar.',
             'Location: the city/region you set during onboarding, and the location of sessions you create or join. Precise device location is used only when you allow it, to show sessions near you.',
             'Verification documents: if you verify as a student, the document you upload is stored in a private bucket, visible only to our review team, and used solely to confirm student status.',
-            'Activity inside the product: sessions, join requests, messages, circles, goals, and ratings — the content you create by using StudySpot.',
+            'Activity inside the product: sessions, join requests, messages, circles, goals, and ratings. This is the content you create by using StudySpot.',
             'Technical data: IP address and basic device/browser information, used for security (rate limiting, abuse prevention) and to keep the service running.',
           ],
         },
@@ -39,7 +39,7 @@ export default function PrivacyPage() {
           heading: '3. What we never do',
           bullets: [
             'We never sell your personal data.',
-            'We never show your precise location to other users — others see session locations and the city on your profile, not your live position.',
+            'We never show your precise location to other users; others see session locations and the city on your profile, not your live position.',
             'We never make verification documents visible to other users, and we delete them after review where regulations allow.',
             'We never read your private messages for advertising.',
           ],
@@ -53,14 +53,14 @@ export default function PrivacyPage() {
         {
           heading: '5. Where your data lives',
           paragraphs: [
-            'StudySpot runs on Supabase (database, authentication, storage) and Vercel (web hosting). Both act as data processors for us, and access to production data is restricted and protected by row-level security — each user\'s requests can only ever read what that user is allowed to see.',
+            'StudySpot runs on Supabase (database, authentication, storage) and Vercel (web hosting). Both act as data processors for us, and access to production data is restricted and protected by row-level security; each user\'s requests can only ever read what that user is allowed to see.',
           ],
         },
         {
           heading: '6. Your controls',
           bullets: [
             'Edit or remove profile fields anytime in Profile → Settings.',
-            'Block any user — they can no longer see or contact you.',
+            'Block any user; they can no longer see or contact you.',
             'Delete your account: contact us with the "Email us" button at the bottom of this page and we erase your profile and content within 30 days, except records we must keep for safety or legal reasons.',
             'Export: ask us for a copy of your data and we will provide it in a portable format.',
           ],

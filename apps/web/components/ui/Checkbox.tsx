@@ -12,7 +12,7 @@ interface ToggleProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'
 /**
  * Checkbox and Radio share everything but the input type and the indicator
  * shape, so they're one implementation. The native input stays in the DOM
- * (visually hidden via peer + sr-only) — that keeps keyboard, form submission,
+ * (visually hidden via peer + sr-only), and that keeps keyboard, form submission,
  * and screen-reader semantics intact while letting us draw the box ourselves.
  */
 function Toggle(

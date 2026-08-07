@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/Input'
 import type { CountryOption, StateOption } from '@/lib/geo-data'
 
 /**
- * Country / state / city picker, shared by onboarding and profile settings —
+ * Country / state / city picker, shared by onboarding and profile settings:
  * the two screens previously carried identical copies of this markup.
  *
  * Countries arrive as props from the server. States are fetched per-country
@@ -29,12 +29,12 @@ export function LocationFields({
   stateCode: string
   /**
    * Existing saved region. profiles.state_region stores the display name, not
-   * the code, so an already-populated profile has a name and no code — this
+   * the code, so an already-populated profile has a name and no code, this
    * lets the select resolve one back to the other and pre-select correctly.
    */
   stateName?: string
   city: string
-  /** Receives both code and display name — callers persist the name too. */
+  /** Receives both code and display name, callers persist the name too. */
   onCountryChange: (code: string, name: string) => void
   onStateChange: (code: string, name: string) => void
   onCityChange: (city: string) => void
@@ -43,7 +43,7 @@ export function LocationFields({
   const [states, setStates] = useState<StateOption[]>([])
   const [loadingStates, setLoadingStates] = useState(false)
 
-  // Read inside the fetch effect but deliberately not dependencies of it —
+  // Read inside the fetch effect but deliberately not dependencies of it;
   // including them would refetch the region list on every keystroke, so the
   // latest values are mirrored into a ref instead.
   const resolveRef = useRef({ stateCode, stateName, onStateChange })
@@ -73,7 +73,7 @@ export function LocationFields({
           if (match) notify(match.code, match.name)
         }
       })
-      // A missing region list shouldn't block the form — country and city are
+      // A missing region list shouldn't block the form; country and city are
       // enough to save a profile.
       .catch(() => {
         if (active) setStates([])

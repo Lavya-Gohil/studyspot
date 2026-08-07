@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/client'
 
-/** Below this, a completed run isn't worth a row — it's noise in the calendar. */
+/** Below this, a completed run isn't worth a row, it's noise in the calendar. */
 const MIN_RECORDED_SECONDS = 60
 
 /** Postgres exclusion_violation. Raised by focus_sessions_no_overlap (011). */
@@ -13,14 +13,14 @@ export type RecordResult =
 /**
  * Persist a completed focus run.
  *
- * The room's timer is SHARED — anyone present can start, pause or reset it,
+ * The room's timer is SHARED; anyone present can start, pause or reset it,
  * and every client watches the same countdown. So each client records only its
  * own row for the interval IT actually observed running, which is both what
  * RLS allows (own rows only) and what is true: someone who joined halfway
  * through did not focus for the full 25 minutes.
  *
  * `startedAt` is therefore this client's local run start, not `endsAt` minus
- * the nominal duration — those differ whenever the timer was paused or joined
+ * the nominal duration; those differ whenever the timer was paused or joined
  * late, and the second one would quietly credit time nobody spent.
  *
  * duration_seconds is deliberately not sent: migration 011's BEFORE trigger
@@ -54,7 +54,7 @@ export async function recordFocusSession(opts: {
 
   if (error) {
     // The overlap constraint firing means this stretch of time is already
-    // logged — two tabs in two rooms, or a reconnect replaying a completion.
+    // logged: two tabs in two rooms, or a reconnect replaying a completion.
     // That is a success from the user's point of view: their time is counted
     // exactly once. Surfacing it as a failure would be actively misleading.
     if (error.code === OVERLAP) return { ok: false, reason: 'duplicate' }

@@ -8,7 +8,7 @@ const MAX_TAGS = 12
 
 /**
  * Tags drive matching and feed filtering, but nothing in the form ever set
- * them — `subject_tags` was posted as an empty array on every session. This is
+ * them; `subject_tags` was posted as an empty array on every session. This is
  * the missing control: a grouped picker over SUBJECT_CATEGORIES, so the values
  * stored stay a closed vocabulary rather than free text.
  */

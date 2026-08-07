@@ -43,7 +43,7 @@ export function RequestsPanel({ sessionId }: { sessionId: string }) {
     if (seq !== requestSeq.current) return
 
     // This error used to be dropped, so a failed read rendered "No requests
-    // yet" — a host would see that and assume nobody wanted in.
+    // yet"; a host would see that and assume nobody wanted in.
     if (loadError) setError(friendlyDbError(loadError.message))
     else setRequests((data ?? []) as SessionRequest[])
 
@@ -75,7 +75,7 @@ export function RequestsPanel({ sessionId }: { sessionId: string }) {
       return next
     })
 
-    // Previously the failure branch did nothing at all — approving past a full
+    // Previously the failure branch did nothing at all, approving past a full
     // session was rejected by the spots trigger and the button just sat there.
     if (updateError || !data) {
       setRequests((prev) => prev.map((r) => (r.id === requestId ? previous : r)))
@@ -84,7 +84,7 @@ export function RequestsPanel({ sessionId }: { sessionId: string }) {
     }
 
     setRequests((prev) => prev.map((r) => (r.id === requestId ? (data as SessionRequest) : r)))
-    toast.success(status === 'approved' ? 'Approved — they can join now.' : 'Request declined.')
+    toast.success(status === 'approved' ? 'Approved; they can join now.' : 'Request declined.')
   }
 
   if (loading) {

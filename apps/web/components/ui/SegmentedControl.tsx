@@ -8,7 +8,7 @@ export interface Segment<T extends string> {
 }
 
 /**
- * A compact exclusive choice — leaderboard scope, stats range, feed filter.
+ * A compact exclusive choice; leaderboard scope, stats range, feed filter.
  *
  * The moving indicator is one absolutely-positioned element translated into
  * place, not a background colour swapped between buttons. That is what makes

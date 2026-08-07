@@ -82,7 +82,7 @@ const AVATAR_HUES = 12
  *
  * HSL lightness is not perceptual: at a single fixed L, yellow-green comes out
  * more than twice as bright as blue. Holding L constant across the wheel gave
- * 8.7:1 on the indigo and 2.2:1 on the chartreuse — the same nominal colour
+ * 8.7:1 on the indigo and 2.2:1 on the chartreuse: the same nominal colour
  * value, half of it unreadable. These are solved per hue against the WCAG
  * relative-luminance formula rather than eyeballed.
  */
@@ -91,8 +91,8 @@ const AVATAR_LIGHTNESS = [49.2, 36.7, 30.3, 32.2, 33, 32.4, 34.7, 51.3, 60, 55.1
 /**
  * A deterministic avatar gradient for someone with no photo.
  *
- * This was ten hand-picked gradient pairs — hot pink into orange, purple into
- * magenta — which read as ten unrelated products rather than one. They are now
+ * This was ten hand-picked gradient pairs, hot pink into orange, purple into
+ * magenta, which read as ten unrelated products rather than one. They are now
  * generated from a single rule: pick one of twelve hues from the id, and run
  * it into a neighbouring hue a little deeper. That is the same idea as the
  * brand ramp, where the hue rotates as it darkens, so an avatar looks lit
@@ -116,6 +116,6 @@ export function getAvatarGradient(userId: string): string {
   const deeper = (hue + 26) % 360
 
   // The second stop is 12 points darker, so the contrast floor is set by the
-  // first — which is the one the table solves for.
+  // first, which is the one the table solves for.
   return `linear-gradient(140deg, hsl(${hue} 56% ${light}%), hsl(${deeper} 62% ${light - 12}%))`
 }

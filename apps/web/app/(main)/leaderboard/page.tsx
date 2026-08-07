@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { LeaderboardClient, type LeaderRow } from './LeaderboardClient'
 
-export const metadata = { title: 'Leaderboard — StudySpot' }
+export const metadata = { title: 'Leaderboard. StudySpot' }
 
 export default async function LeaderboardPage() {
   const supabase = await createClient()

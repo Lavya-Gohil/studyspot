@@ -7,7 +7,7 @@ const { withNativeWind } = require('nativewind/metro')
  * This file's absence is why mobile looked the way it did. NativeWind v4
  * compiles global.css through Metro; without `withNativeWind` the import in
  * app/_layout.tsx resolves to nothing useful and every `className` in the app
- * is inert. That is the reason each screen carries inline hex — className was
+ * is inert. That is the reason each screen carries inline hex; className was
  * never doing anything, so the styles had to go somewhere.
  *
  * It also generates nativewind-env.d.ts, the reference that makes `className`

@@ -26,7 +26,7 @@ export default async function SessionDetailPage({ params }: { params: Promise<{ 
   } = await supabase.auth.getUser()
 
   // maybeSingle so "no such session" and "the query failed" stay distinguishable:
-  // .single() reports both as an error, and the old code treated both as a 404 —
+  // .single() reports both as an error, and the old code treated both as a 404;
   // a transient database fault told the user their session had been deleted.
   const { data: session, error: sessionError } = await supabase
     .from('session_feed')
@@ -61,7 +61,7 @@ export default async function SessionDetailPage({ params }: { params: Promise<{ 
 
   // For ended sessions, let attendees rate the people they studied with. This
   // block is supplementary, so a failure hides the panel rather than taking the
-  // whole page down — but it is never rendered from a partial list, because a
+  // whole page down, but it is never rendered from a partial list, because a
   // missing name reads as "that person wasn't here".
   let rateables: Rateable[] = []
   const myRatings: Record<string, number> = {}
@@ -151,7 +151,7 @@ export default async function SessionDetailPage({ params }: { params: Promise<{ 
                   {session.location_name || 'Online study room'}
                 </p>
                 <p className="text-sm text-text-secondary">
-                  Live virtual classroom — avatars, chat &amp; focus timer
+                  Live virtual classroom, avatars, chat &amp; focus timer
                 </p>
               </div>
             </>

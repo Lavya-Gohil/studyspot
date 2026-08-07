@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 /**
  * Drop this browser's Web Push registration.
  *
- * A plain delete is enough — RLS ("push_subscriptions: users can unsubscribe",
+ * A plain delete is enough; RLS ("push_subscriptions: users can unsubscribe",
  * migration 008) scopes it to the caller's own rows, so passing someone else's
  * endpoint deletes nothing rather than silencing them.
  */

@@ -2,7 +2,7 @@
 --
 -- profiles.country and sessions.location_country were declared as bare TEXT
 -- (001_schema.sql). The only thing enforcing the ISO 3166-1 alpha-2 shape was
--- the zod regex in apps/web/lib/validation.ts — and since the browser talks to
+-- the zod regex in apps/web/lib/validation.ts, and since the browser talks to
 -- Supabase directly, a client can PATCH its own profile and skip that entirely.
 --
 -- That mattered because profiles.country is interpolated into a PostgREST

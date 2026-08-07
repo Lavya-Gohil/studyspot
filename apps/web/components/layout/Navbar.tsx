@@ -34,7 +34,7 @@ import { openCommandPalette } from '@/components/ui/CommandPalette'
  * Previously seven flat links of equal weight, which meant nothing had
  * priority and the bar grew every time a route was added. Now: four primary
  * destinations inline, everything else behind an account menu, and the two
- * things that change on their own — unread notifications and your streak —
+ * things that change on their own, unread notifications and your streak,
  * given permanent, glanceable positions.
  */
 
@@ -93,7 +93,7 @@ export function Navbar() {
   }, [menuOpen])
 
   // Unread count and streak, kept live. The notifications table was added to
-  // the realtime publication in migration 010 — before that this subscription
+  // the realtime publication in migration 010, before that this subscription
   // would have opened successfully and never fired.
   useEffect(() => {
     const supabase = createClient()

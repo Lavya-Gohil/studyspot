@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { SignupForm } from './SignupForm'
 
 export const metadata: Metadata = {
-  title: 'Sign up — StudySpot',
+  title: 'Sign up. StudySpot',
   description: 'Create a StudySpot account and find your study crew.',
 }
 

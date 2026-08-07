@@ -13,7 +13,7 @@ const PRESETS = [
 ]
 
 /**
- * The shared countdown. Anyone in the room can drive it — the ordering key on
+ * The shared countdown. Anyone in the room can drive it: the ordering key on
  * TimerState (see ./types) is what keeps everyone's clock agreeing rather than
  * making one person the owner.
  */
@@ -56,7 +56,7 @@ export function FocusTimer({
 
   const left = secondsLeft(timer, now)
 
-  // Reaching zero used to do nothing at all — the number just sat at 00:00.
+  // Reaching zero used to do nothing at all: the number just sat at 00:00.
   // Now it also banks the time, which is what makes /stats, streaks, XP and
   // the leaderboards real rather than decorative.
   useEffect(() => {
@@ -69,19 +69,19 @@ export function FocusTimer({
     onPublish({ running: false, endsAt: null, remaining: 0, duration: timer.duration })
 
     if (startedAt === null) {
-      toast.success("Time's up — take a break.")
+      toast.success("Time's up; take a break.")
       return
     }
 
     void recordFocusSession({ startedAt, endedAt: Date.now(), sessionId, subject }).then((r) => {
       if (r.ok) {
         const mins = Math.round(r.seconds / 60)
-        toast.success(`Time's up — ${mins} min banked.`)
+        toast.success(`Time's up, ${mins} min banked.`)
       } else if (r.reason === 'error') {
         // Never lose the completion itself over a failed write.
-        toast.success("Time's up — take a break.")
+        toast.success("Time's up; take a break.")
       } else {
-        toast.success("Time's up — take a break.")
+        toast.success("Time's up; take a break.")
       }
     })
   }, [timer, left, toast, onPublish, sessionId, subject])
@@ -146,7 +146,7 @@ export function FocusTimer({
         </div>
       </div>
       <p className="mx-auto mt-1.5 max-w-2xl text-center text-[11px] text-text-tertiary sm:text-left">
-        Shared timer — everyone in the room sees the same countdown.
+        Shared timer, everyone in the room sees the same countdown.
       </p>
     </div>
   )

@@ -22,7 +22,7 @@ export function ReputationCard({ stats, isOwn }: { stats: StudyStats; isOwn: boo
             className={`flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-2xl border ${s.ring} ${s.bg}`}
           >
             <span className={`font-display text-2xl font-bold tnum ${s.text}`}>
-              {rep.score ?? '—'}
+              {rep.score ?? ', '}
             </span>
           </div>
           <div>

@@ -7,7 +7,7 @@ import { Icon } from '@/components/ui/Icon'
 import { formatSessionTime } from '@studyspot/utils'
 import type { SessionDraft } from './useSessionDraft'
 
-/** Step 3 — read it back before it goes public. */
+/** Step 3; read it back before it goes public. */
 export function StepReview({ draft }: { draft: SessionDraft }) {
   const start = new Date(`${draft.date}T${draft.startTime}`)
   const end = new Date(`${draft.date}T${draft.endTime}`)

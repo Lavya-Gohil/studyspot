@@ -8,7 +8,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://web-livid-two-79.v
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'StudySpot — Find your study crew',
+    default: 'StudySpot. Find your study crew',
     template: '%s',
   },
   description: 'Create and join real-world study sessions at cafés, libraries, and campuses.',
@@ -17,13 +17,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     siteName: 'StudySpot',
-    title: 'StudySpot — Find your study crew',
+    title: 'StudySpot. Find your study crew',
     description: 'Create and join real-world study sessions at cafés, libraries, and campuses.',
     url: '/',
   },
   twitter: {
     card: 'summary',
-    title: 'StudySpot — Find your study crew',
+    title: 'StudySpot. Find your study crew',
     description: 'Create and join real-world study sessions at cafés, libraries, and campuses.',
   },
 }

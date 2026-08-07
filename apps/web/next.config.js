@@ -27,7 +27,7 @@ const securityHeaders = [
   { key: 'X-Frame-Options', value: 'DENY' },
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-  // Only the geolocation API is used (session/location features) — everything
+  // Only the geolocation API is used (session/location features), everything
   // else is denied so injected scripts can't reach sensors.
   { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(self), payment=(), usb=()' },
   { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains' },
@@ -35,7 +35,7 @@ const securityHeaders = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Workspace packages ship raw TS (no build step) — Next must transpile them.
+  // Workspace packages ship raw TS (no build step). Next must transpile them.
   transpilePackages: ['@studyspot/types', '@studyspot/api', '@studyspot/utils'],
   poweredByHeader: false, // don't advertise the framework (OWASP: fingerprinting)
   images: {

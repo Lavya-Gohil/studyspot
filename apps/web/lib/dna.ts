@@ -92,11 +92,11 @@ export function computeProductivityDNA(sessions: DnaSession[]): ProductivityDNA 
   ]
 
   const recommendations = [
-    `Schedule your hardest work in the ${bestTime.toLowerCase()} — that's when you show up most.`,
-    `Aim for groups of around ${avgGroup}; that's your sweet spot.`,
+    `Schedule your hardest work in the ${bestTime.toLowerCase()}. That's when you show up most.`,
+    `Aim for groups of around ${avgGroup}. That's your sweet spot.`,
     prefersOnline
-      ? 'Lean into online rooms — they fit how you actually study.'
-      : 'In-person sessions suit you — keep meeting up.',
+      ? 'Lean into online rooms, they fit how you actually study.'
+      : 'In-person sessions suit you; keep meeting up.',
     `Your go-to vibe is ${VIBE_LABELS[topVibe]}; try mixing in one other vibe to stay fresh.`,
   ]
 

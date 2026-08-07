@@ -9,8 +9,8 @@ import { theme as tokens } from './lib/theme'
  * the same thing in both apps: `bg-bg-base`, `text-text-secondary`,
  * `bg-brand-primary`, `text-brand-text`.
  *
- * TypeScript rather than JS so the values can be imported from lib/theme.ts
- * — the one place the palette is written down — instead of being copied here
+ * TypeScript rather than JS so the values can be imported from lib/theme.ts,
+ * the one place the palette is written down, instead of being copied here
  * and left to drift. Tailwind 3.4 loads a .ts config natively, and NativeWind
  * resolves `tailwind.config` without an extension.
  */

@@ -8,7 +8,7 @@ import { useGlobalPresence } from '@/lib/presence'
  *
  * Renders nothing until presence has actually synced, and nothing when the
  * only person here is you. An ambient counter that says "1 studying" when you
- * are alone is worse than no counter — it makes an empty room feel emptier.
+ * are alone is worse than no counter; it makes an empty room feel emptier.
  */
 export function StudyingNow({ className = '' }: { className?: string }) {
   const { count, focusing } = useGlobalPresence('browsing')

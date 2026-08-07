@@ -5,7 +5,7 @@ import { AVATAR_MAX_BYTES, AVATAR_TYPES } from '@/lib/validation'
 
 /**
  * Photo picker with a live preview. The preview URL is created in an effect
- * and revoked on cleanup — building it inline during render (as this screen
+ * and revoked on cleanup; building it inline during render (as this screen
  * used to) mints a fresh blob on every keystroke elsewhere in the form and
  * never frees any of them.
  */
@@ -34,10 +34,10 @@ export function AvatarPicker({
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const picked = e.target.files?.[0] ?? null
-    // Clearing the input means re-picking the same file still fires a change —
+    // Clearing the input means re-picking the same file still fires a change;
     // otherwise a rejected photo can't be retried without choosing another one.
     e.target.value = ''
-    // Type + size checked before upload (5MB JPEG/PNG only) — the storage
+    // Type + size checked before upload (5MB JPEG/PNG only): the storage
     // bucket rejects the rest, but not until after the round trip.
     if (picked && (!AVATAR_TYPES.includes(picked.type) || picked.size > AVATAR_MAX_BYTES)) {
       setError('Photo must be a JPEG or PNG under 5MB.')

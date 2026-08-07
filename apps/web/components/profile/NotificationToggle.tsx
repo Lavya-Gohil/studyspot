@@ -8,9 +8,9 @@ import { disablePush, enablePush, isPushEnabled, isPushSupported, pushPermission
 /**
  * The only caller of enablePush().
  *
- * Everything else for web push has existed for a while — the service worker,
+ * Everything else for web push has existed for a while: the service worker,
  * the VAPID pair, migration 008's push_subscriptions table with its RLS, the
- * Edge Function fan-out — but nothing ever called it, so no browser user could
+ * Edge Function fan-out, but nothing ever called it, so no browser user could
  * turn notifications on. This is that switch.
  *
  * Three states worth distinguishing, because collapsing them produces a
@@ -20,7 +20,7 @@ import { disablePush, enablePush, isPushEnabled, isPushSupported, pushPermission
  *                installed to the Home Screen). Explain, don't offer a toggle
  *                that cannot work.
  *   blocked      permission was denied at the browser level. We cannot
- *                re-prompt — only the user can undo this in site settings — so
+ *                re-prompt (only the user can undo this in site settings), so
  *                say that instead of failing silently on every tap.
  *   ready        show the switch.
  */
@@ -105,7 +105,7 @@ export function NotificationToggle() {
       onChange={toggle}
       pending={pending}
       label="Push notifications"
-      hint="Session reminders, join requests, and messages — on this device."
+      hint="Session reminders, join requests, and messages, on this device."
     />
   )
 }

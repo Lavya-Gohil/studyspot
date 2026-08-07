@@ -4,14 +4,14 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 // Deep import, not the '@studyspot/api' barrel: the barrel re-exports
-// ./client, which calls createClient() at module scope — pulling a second
+// ./client, which calls createClient() at module scope, pulling a second
 // Supabase client into this bundle that the web app never uses (it has its
 // own in @/lib/supabase/client).
 import { fetchFeedSessions } from '@studyspot/api/sessions'
 import { BookOpen, SearchX } from 'lucide-react'
 import { SessionCard } from '@/components/session/SessionCard'
 import { Icon } from '@/components/ui/Icon'
-// Deep imports rather than the '@/components/ui' barrel — the barrel also
+// Deep imports rather than the '@/components/ui' barrel: the barrel also
 // re-exports Modal and Tooltip, which pull framer-motion into any client
 // bundle that touches it for components this route never renders.
 import { SessionCardSkeleton } from '@/components/ui/Skeleton'
@@ -63,7 +63,7 @@ export function FeedClient({ userCountry }: Props) {
 
   const offset = useRef(0)
   // Toggling filters quickly fires overlapping requests, and they can resolve
-  // out of order — without this guard a slow early response overwrites a fast
+  // out of order, without this guard a slow early response overwrites a fast
   // later one and the list stops matching the selected chips.
   const requestSeq = useRef(0)
 
@@ -108,7 +108,7 @@ export function FeedClient({ userCountry }: Props) {
   )
 
   useEffect(() => {
-    // Keep the current results on screen while refetching — a filter toggle
+    // Keep the current results on screen while refetching: a filter toggle
     // that blanks the list to skeletons reads as though everything vanished.
     setRefreshing(true)
     loadSessions(true, filters)
@@ -155,7 +155,7 @@ export function FeedClient({ userCountry }: Props) {
       return
     }
     setRequestStatuses((prev) => ({ ...prev, [sessionId]: 'pending' }))
-    toast.success('Request sent — the host will get back to you.')
+    toast.success('Request sent; the host will get back to you.')
   }
 
   async function handleSave(sessionId: string, saved: boolean) {
@@ -244,7 +244,7 @@ export function FeedClient({ userCountry }: Props) {
           <EmptyState
             icon={<Icon as={SearchX} size="lg" />}
             title="Nothing matches those filters"
-            description="Try widening your search — or create the session you were looking for."
+            description="Try widening your search, or create the session you were looking for."
             action={
               <Button variant="secondary" size="lg" onClick={() => setFilters({})}>
                 Clear filters
@@ -255,7 +255,7 @@ export function FeedClient({ userCountry }: Props) {
           <EmptyState
             icon={<Icon as={BookOpen} size="lg" />}
             title="No sessions near you yet"
-            description="Be the first to create one — study sessions show up here as soon as someone posts them."
+            description="Be the first to create one; study sessions show up here as soon as someone posts them."
             action={
               <Link href="/sessions/create">
                 <Button size="lg">Create a session</Button>

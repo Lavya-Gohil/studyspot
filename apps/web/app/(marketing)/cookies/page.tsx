@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { LegalPage } from '@/components/marketing/LegalPage'
 
 export const metadata: Metadata = {
-  title: 'Cookie Policy — StudySpot',
+  title: 'Cookie Policy. StudySpot',
   description: 'The (very short) list of cookies and local storage StudySpot uses.',
 }
 
@@ -13,7 +13,7 @@ export default function CookiesPage() {
       title="Cookie"
       accent="policy."
       updated="June 12, 2026"
-      intro="StudySpot uses a deliberately small set of cookies and browser storage — only what's needed to keep you signed in and remember your preferences. There are no advertising or cross-site tracking cookies."
+      intro="StudySpot uses a deliberately small set of cookies and browser storage: only what's needed to keep you signed in and remember your preferences. There are no advertising or cross-site tracking cookies."
       sections={[
         {
           heading: 'Strictly necessary',

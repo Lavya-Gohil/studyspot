@@ -42,7 +42,7 @@ export function ProfileSettingsClient({
 
   function pickAvatar(file: File | null) {
     if (!file) return setAvatarFile(null)
-    // Validate before upload: type + size (5MB) — never trust the picker alone.
+    // Validate before upload: type + size (5MB), never trust the picker alone.
     if (!AVATAR_TYPES.includes(file.type)) {
       setError('Avatar must be a JPEG or PNG image.')
       return
@@ -224,7 +224,7 @@ export function ProfileSettingsClient({
         </div>
       </div>
 
-      {/* Notifications. Per-device, not per-account — the subscription belongs
+      {/* Notifications. Per-device, not per-account; the subscription belongs
           to this browser, so the switch reflects this browser only. */}
       <div className="rounded-lg border border-border-subtle bg-bg-surface p-4">
         <NotificationToggle />

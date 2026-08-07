@@ -6,7 +6,7 @@
  * no external service, adds ~0ms latency, and still stops the abuse that
  * matters (credential stuffing, scraping, endpoint hammering). If StudySpot
  * outgrows a single region/instance, swap `check()` for a Redis-backed store
- * (e.g. Upstash @upstash/ratelimit) — the call sites won't change.
+ * (e.g. Upstash @upstash/ratelimit): the call sites won't change.
  *
  * NOTE: writes to Supabase go browser → Supabase directly and never pass
  * through this middleware. Those paths are rate-limited in the database
@@ -21,7 +21,7 @@ const buckets = new Map<string, Window>()
 const MAX_BUCKETS = 10_000
 
 function sweep(now: number) {
-  // Drop expired windows; if still too big (IP-spoofing flood), clear all —
+  // Drop expired windows; if still too big (IP-spoofing flood), clear all;
   // losing counters is safer than an out-of-memory crash.
   buckets.forEach((w, k) => {
     if (w.resetAt <= now) buckets.delete(k)
@@ -31,7 +31,7 @@ function sweep(now: number) {
 
 export type RateLimitResult = {
   ok: boolean
-  /** Seconds until the window resets — used for the Retry-After header. */
+  /** Seconds until the window resets, used for the Retry-After header. */
   retryAfter: number
   limit: number
   remaining: number
@@ -74,7 +74,7 @@ export function clientIp(headers: Headers): string {
 /**
  * Non-reversible short key for per-user limiting, derived from the Supabase
  * auth cookie. Hashing means raw session tokens never sit in the bucket map.
- * (FNV-1a — tiny and fast; collision resistance is irrelevant for buckets.)
+ * (FNV-1a, tiny and fast; collision resistance is irrelevant for buckets.)
  */
 export function hashKey(value: string): string {
   let h = 0x811c9dc5

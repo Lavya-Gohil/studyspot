@@ -4,7 +4,7 @@ import { Spinner } from './Spinner'
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /**
    * `brand` is the signature-coloured fill and is reserved for the single most
-   * important action on a screen — if two are visible at once, one is wrong.
+   * important action on a screen; if two are visible at once, one is wrong.
    * `primary` remains the neutral emphasis fill and is unchanged, so existing
    * call sites render exactly as before.
    */

@@ -2,8 +2,8 @@ import { Skeleton } from '@/components/ui/Skeleton'
 
 /**
  * The detail page does four sequential Supabase reads before it can render, so
- * the gap is long enough to notice. Shapes mirror page.tsx — host row, title,
- * detail card, CTA — so nothing jumps when the real content lands.
+ * the gap is long enough to notice. Shapes mirror page.tsx, host row, title,
+ * detail card, CTA, so nothing jumps when the real content lands.
  */
 export default function SessionDetailLoading() {
   return (

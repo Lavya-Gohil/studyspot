@@ -5,7 +5,7 @@ import { useId, useRef, type ReactNode } from 'react'
 export interface TabItem {
   value: string
   label: ReactNode
-  /** Trailing count — e.g. number of pending requests. */
+  /** Trailing count, e.g. number of pending requests. */
   count?: number
 }
 
@@ -15,7 +15,7 @@ export interface TabItem {
  * tab order.
  *
  * Panels are rendered by the caller. To link them, generate one id and give it
- * to both — otherwise `aria-controls` here and the panel's own id can never
+ * to both; otherwise `aria-controls` here and the panel's own id can never
  * agree, since a `useId()` internal to this component isn't reachable outside:
  *
  *   const base = useId()

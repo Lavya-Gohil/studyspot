@@ -27,7 +27,7 @@ interface Toast {
 
 interface ToastContextValue {
   toast: (message: ReactNode, opts?: { variant?: ToastVariant; duration?: number }) => void
-  /** Shorthand for the error case — pass friendlyDbError(err.message). */
+  /** Shorthand for the error case, pass friendlyDbError(err.message). */
   error: (message: ReactNode) => void
   success: (message: ReactNode) => void
   dismiss: (id: number) => void
@@ -47,7 +47,7 @@ const EXIT_MS = 200
  *
  * Animated with CSS rather than framer-motion, deliberately: this provider is
  * mounted in the root layout and useToast() is called from most screens, so a
- * motion-library dependency here would be paid on nearly every route — it
+ * motion-library dependency here would be paid on nearly every route, it
  * measured ~39kB on /feed alone. The enter uses the `slide-up` keyframe
  * already defined in tailwind.config.ts; the exit is a plain transition.
  * Both are disabled by the prefers-reduced-motion rule in globals.css.

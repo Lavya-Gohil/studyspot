@@ -2,7 +2,7 @@
  * Account onboarding, in route order: basic-info → location → verify →
  * profile. These read ['Profile', 'Location', 'Verify', 'Setup'] until now,
  * which labelled step 1 "Profile" (that screen only asks name and age) and
- * called the actual profile screen "Setup" — so the dot a user stood on never
+ * called the actual profile screen "Setup", so the dot a user stood on never
  * named the page in front of them. The order was always correct; see
  * STEP_TO_ROUTE in lib/supabase/middleware.ts and the onboarding_step each
  * page writes on success (2, 3, 4, 5 respectively).

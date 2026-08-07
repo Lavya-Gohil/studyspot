@@ -21,7 +21,7 @@ const MESSAGE_SELECT = `*, sender:profiles!sender_id(id, full_name, avatar_url, 
  * the message stream.
  *
  * Kept as a hook so the room's three panels stay presentational and the
- * subscription lifecycle lives in exactly one place — previously this was
+ * subscription lifecycle lives in exactly one place; previously this was
  * interleaved with layout across a single 17.6KB component.
  */
 export function useRoomChannel({
@@ -90,7 +90,7 @@ export function useRoomChannel({
         )
         let free = 0
         while (free < seatCount && taken.has(free)) free++
-        // Every seat taken — stay unseated rather than claiming an index that
+        // Every seat taken; stay unseated rather than claiming an index that
         // falls outside the rendered grid and leaves the user invisible.
         if (free < seatCount) {
           metaRef.current.seat = free
@@ -111,7 +111,7 @@ export function useRoomChannel({
     })
 
     // A joiner asks for the current timer. Everyone answers, and the
-    // updatedAt comparison above settles it — previously only the host
+    // updatedAt comparison above settles it, previously only the host
     // replied, so a room whose host had left never synced its timer at all.
     channel.on('broadcast', { event: 'sync_req' }, () => {
       if (timerRef.current.updatedAt === 0) return // nothing worth sharing yet

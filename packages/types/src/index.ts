@@ -10,7 +10,7 @@ export type MessageType = 'text' | 'system' | 'checkin'
  * Declared as a const tuple, not a bare union, so validation schemas can be
  * built from it (`z.enum(YEARS_OF_STUDY)`) instead of restating the values.
  * They had already drifted apart: profileUpdateSchema listed high_school,
- * masters and other — which Postgres rejects — while omitting year_5,
+ * masters and other, which Postgres rejects, while omitting year_5,
  * postgraduate and self_studying, which it accepts. Picking "Year 5" failed
  * with a bare "Invalid input." Deriving both the type and the schema from one
  * array makes that divergence a compile error rather than a runtime surprise.

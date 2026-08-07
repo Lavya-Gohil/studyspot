@@ -23,7 +23,7 @@ serve(async (req) => {
     } = await userClient.auth.getUser()
     if (!user) return json(req, { error: 'unauthorized' }, 401)
 
-    // Admin check stays server-side with the service role — the client's
+    // Admin check stays server-side with the service role: the client's
     // word is never trusted for authorization (OWASP A01).
     const adminClient = createClient(supabaseUrl, serviceRoleKey)
     const { data: adminProfile } = await adminClient
@@ -33,7 +33,7 @@ serve(async (req) => {
       .single()
     if (!adminProfile?.is_admin) return json(req, { error: 'forbidden' }, 403)
 
-    // Even admins get a budget — a stolen admin token can't mass-drive this.
+    // Even admins get a budget; a stolen admin token can't mass-drive this.
     const limited = rateLimit(req, `admin-verify:${user.id}`, 30, 60 * 1000)
     if (limited) return limited
 

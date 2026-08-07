@@ -8,7 +8,7 @@ import { friendlyDbError } from '@/lib/db-errors'
 /**
  * Catches the throws page.tsx makes when a read fails. Before this boundary
  * existed those failures were swallowed into notFound(), so a database blip
- * was indistinguishable from a cancelled session — `reset()` re-runs the
+ * was indistinguishable from a cancelled session; `reset()` re-runs the
  * server component, which is the right move for a transient fault.
  */
 export default function SessionDetailError({
