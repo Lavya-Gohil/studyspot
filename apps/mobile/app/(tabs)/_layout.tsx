@@ -1,11 +1,12 @@
 import { Tabs } from 'expo-router'
 import { View, Text } from 'react-native'
+import { theme } from '@/lib/theme'
 
 function TabIcon({ focused, emoji, label }: { focused: boolean; emoji: string; label: string }) {
   return (
     <View style={{ alignItems: 'center', gap: 2 }}>
       <Text style={{ fontSize: 18 }}>{emoji}</Text>
-      {focused && <Text style={{ fontSize: 10, color: '#7B61FF', fontWeight: '500' }}>{label}</Text>}
+      {focused && <Text style={{ fontSize: 10, color: theme.brand.text, fontWeight: '500' }}>{label}</Text>}
     </View>
   )
 }
@@ -16,13 +17,13 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#1C1C24',
-          borderTopColor: 'rgba(255,255,255,0.06)',
+          backgroundColor: theme.bg.elevated,
+          borderTopColor: theme.border.subtle,
           height: 60,
           paddingBottom: 8,
         },
-        tabBarActiveTintColor: '#7B61FF',
-        tabBarInactiveTintColor: '#5C5B6E',
+        tabBarActiveTintColor: theme.brand.text,
+        tabBarInactiveTintColor: theme.text.tertiary,
         tabBarShowLabel: false,
       }}
     >

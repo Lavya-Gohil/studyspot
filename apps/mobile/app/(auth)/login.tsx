@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native'
 import { useRouter } from 'expo-router'
 import { supabase } from '@/lib/supabase'
+import { theme } from '@/lib/theme'
 
 export default function LoginScreen() {
   const router = useRouter()
@@ -35,10 +36,10 @@ export default function LoginScreen() {
               value={email}
               onChangeText={setEmail}
               placeholder="you@university.edu"
-              placeholderTextColor="#5C5B6E"
+              placeholderTextColor={theme.text.tertiary}
               keyboardType="email-address"
               autoCapitalize="none"
-              style={{ height: 44, paddingHorizontal: 14, borderRadius: 6, backgroundColor: '#1C1C24', borderWidth: 1, borderColor: 'rgba(255,255,255,0.10)', color: '#F5F4FF', fontSize: 14 }}
+              style={{ height: 44, paddingHorizontal: 14, borderRadius: 6, backgroundColor: theme.bg.elevated, borderWidth: 1, borderColor: theme.border.default, color: theme.text.primary, fontSize: 14 }}
             />
           </View>
 
@@ -48,18 +49,18 @@ export default function LoginScreen() {
               value={password}
               onChangeText={setPassword}
               placeholder="Your password"
-              placeholderTextColor="#5C5B6E"
+              placeholderTextColor={theme.text.tertiary}
               secureTextEntry
-              style={{ height: 44, paddingHorizontal: 14, borderRadius: 6, backgroundColor: '#1C1C24', borderWidth: 1, borderColor: 'rgba(255,255,255,0.10)', color: '#F5F4FF', fontSize: 14 }}
+              style={{ height: 44, paddingHorizontal: 14, borderRadius: 6, backgroundColor: theme.bg.elevated, borderWidth: 1, borderColor: theme.border.default, color: theme.text.primary, fontSize: 14 }}
             />
           </View>
 
           <TouchableOpacity
             onPress={handleLogin}
             disabled={loading}
-            style={{ height: 44, borderRadius: 10, backgroundColor: '#7B61FF', alignItems: 'center', justifyContent: 'center', opacity: loading ? 0.5 : 1 }}
+            style={{ height: 44, borderRadius: 10, backgroundColor: theme.brand.primary, alignItems: 'center', justifyContent: 'center', opacity: loading ? 0.5 : 1 }}
           >
-            <Text style={{ color: 'white', fontWeight: '500', fontSize: 14 }}>
+            <Text style={{ color: theme.brand.fg, fontWeight: '500', fontSize: 14 }}>
               {loading ? 'Signing in...' : 'Sign in'}
             </Text>
           </TouchableOpacity>

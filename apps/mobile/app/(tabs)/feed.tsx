@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import type { Session } from '@studyspot/types'
 import { formatSessionTime, truncate } from '@studyspot/utils'
+import { theme } from '@/lib/theme'
 
 export default function FeedScreen() {
   const router = useRouter()
@@ -60,54 +61,54 @@ export default function FeedScreen() {
     return (
       <TouchableOpacity
         onPress={() => router.push(`/sessions/${session.id}`)}
-        style={{ backgroundColor: '#141419', borderRadius: 14, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)', padding: 16, marginBottom: 12, gap: 12 }}
+        style={{ backgroundColor: theme.bg.surface, borderRadius: 14, borderWidth: 1, borderColor: theme.border.subtle, padding: 16, marginBottom: 12, gap: 12 }}
       >
         {/* Host row */}
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-          <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#1C1C24', alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ fontSize: 14, fontWeight: '600', color: '#F5F4FF' }}>
+          <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: theme.bg.elevated, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 14, fontWeight: '600', color: theme.text.primary }}>
               {(session.host_name || '?')[0].toUpperCase()}
             </Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 14, fontWeight: '600', color: '#F5F4FF' }}>{session.host_name}</Text>
-            {session.host_college && <Text style={{ fontSize: 12, color: '#9B9AAD' }}>{session.host_college}</Text>}
+            <Text style={{ fontSize: 14, fontWeight: '600', color: theme.text.primary }}>{session.host_name}</Text>
+            {session.host_college && <Text style={{ fontSize: 12, color: theme.text.secondary }}>{session.host_college}</Text>}
           </View>
           {session.host_verification_status === 'verified' && (
-            <Text style={{ fontSize: 12, color: '#00E5A0' }}>✓ Verified</Text>
+            <Text style={{ fontSize: 12, color: theme.accent.green }}>✓ Verified</Text>
           )}
         </View>
 
         {/* Subject */}
-        <Text style={{ fontSize: 16, fontWeight: '600', color: '#F5F4FF' }}>{session.subject}</Text>
+        <Text style={{ fontSize: 16, fontWeight: '600', color: theme.text.primary }}>{session.subject}</Text>
 
         {/* Location + time */}
         <View style={{ gap: 4 }}>
-          <Text style={{ fontSize: 13, color: '#9B9AAD' }}>📍 {session.location_name}</Text>
-          <Text style={{ fontSize: 13, color: '#9B9AAD' }}>📅 {formatSessionTime(session.start_time, session.end_time)}</Text>
+          <Text style={{ fontSize: 13, color: theme.text.secondary }}>📍 {session.location_name}</Text>
+          <Text style={{ fontSize: 13, color: theme.text.secondary }}>📅 {formatSessionTime(session.start_time, session.end_time)}</Text>
         </View>
 
         {/* Pills */}
         <View style={{ flexDirection: 'row', gap: 8 }}>
-          <View style={{ paddingHorizontal: 10, paddingVertical: 3, borderRadius: 99, backgroundColor: 'rgba(123,97,255,0.15)', borderWidth: 1, borderColor: 'rgba(123,97,255,0.2)' }}>
-            <Text style={{ fontSize: 12, color: '#7B61FF', fontWeight: '500' }}>{session.vibe.replace('_', ' ')}</Text>
+          <View style={{ paddingHorizontal: 10, paddingVertical: 3, borderRadius: 99, backgroundColor: theme.brand.tint, borderWidth: 1, borderColor: 'rgba(123,97,255,0.2)' }}>
+            <Text style={{ fontSize: 12, color: theme.brand.text, fontWeight: '500' }}>{session.vibe.replace('_', ' ')}</Text>
           </View>
           <View style={{ paddingHorizontal: 10, paddingVertical: 3, borderRadius: 99, backgroundColor: 'rgba(0,229,160,0.1)', borderWidth: 1, borderColor: 'rgba(0,229,160,0.2)' }}>
-            <Text style={{ fontSize: 12, color: '#00E5A0', fontWeight: '500' }}>{remaining} spot{remaining === 1 ? '' : 's'} left</Text>
+            <Text style={{ fontSize: 12, color: theme.accent.green, fontWeight: '500' }}>{remaining} spot{remaining === 1 ? '' : 's'} left</Text>
           </View>
         </View>
 
         {session.description && (
-          <Text style={{ fontSize: 13, color: '#9B9AAD', fontStyle: 'italic' }}>"{truncate(session.description, 80)}"</Text>
+          <Text style={{ fontSize: 13, color: theme.text.secondary, fontStyle: 'italic' }}>"{truncate(session.description, 80)}"</Text>
         )}
 
         {/* CTA */}
         <TouchableOpacity
           onPress={() => handleInterest(session.id)}
           disabled={!!status || remaining === 0}
-          style={{ height: 40, borderRadius: 10, backgroundColor: status ? '#1C1C24' : '#7B61FF', alignItems: 'center', justifyContent: 'center', opacity: (status || remaining === 0) ? 0.7 : 1, borderWidth: status ? 1 : 0, borderColor: 'rgba(255,255,255,0.10)' }}
+          style={{ height: 40, borderRadius: 10, backgroundColor: status ? theme.bg.elevated : theme.brand.text, alignItems: 'center', justifyContent: 'center', opacity: (status || remaining === 0) ? 0.7 : 1, borderWidth: status ? 1 : 0, borderColor: theme.border.default }}
         >
-          <Text style={{ color: status ? '#9B9AAD' : 'white', fontWeight: '500', fontSize: 14 }}>
+          <Text style={{ color: status ? theme.text.secondary : theme.brand.fg, fontWeight: '500', fontSize: 14 }}>
             {status === 'approved' ? '✓ You\'re in — Chat' : status === 'pending' ? 'Request sent ✓' : remaining === 0 ? 'Session full' : 'Interested'}
           </Text>
         </TouchableOpacity>
@@ -116,11 +117,11 @@ export default function FeedScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#0A0A0F' }}>
+    <View style={{ flex: 1, backgroundColor: theme.bg.base }}>
       <View style={{ paddingTop: 56, paddingHorizontal: 16, paddingBottom: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Text style={{ fontSize: 24, fontWeight: '700', color: '#7B61FF' }}>StudySpot</Text>
-        <TouchableOpacity onPress={() => router.push('/sessions/create')} style={{ height: 32, paddingHorizontal: 16, borderRadius: 10, backgroundColor: '#7B61FF', alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ color: 'white', fontSize: 13, fontWeight: '500' }}>+ Create</Text>
+        <Text style={{ fontSize: 24, fontWeight: '700', color: theme.brand.text }}>StudySpot</Text>
+        <TouchableOpacity onPress={() => router.push('/sessions/create')} style={{ height: 32, paddingHorizontal: 16, borderRadius: 10, backgroundColor: theme.brand.primary, alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={{ color: theme.brand.fg, fontSize: 13, fontWeight: '500' }}>+ Create</Text>
         </TouchableOpacity>
       </View>
 
@@ -129,19 +130,19 @@ export default function FeedScreen() {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 80 }}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadFeed() }} tintColor="#7B61FF" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadFeed() }} tintColor={theme.brand.text} />}
         ListEmptyComponent={
           loading ? (
             <View style={{ padding: 40, alignItems: 'center' }}>
-              <Text style={{ color: '#9B9AAD' }}>Loading sessions...</Text>
+              <Text style={{ color: theme.text.secondary }}>Loading sessions...</Text>
             </View>
           ) : (
             <View style={{ padding: 40, alignItems: 'center', gap: 12 }}>
               <Text style={{ fontSize: 40 }}>📚</Text>
-              <Text style={{ fontSize: 18, fontWeight: '600', color: '#F5F4FF' }}>No sessions near you yet</Text>
-              <Text style={{ fontSize: 14, color: '#9B9AAD' }}>Be the first to create one.</Text>
-              <TouchableOpacity onPress={() => router.push('/sessions/create')} style={{ height: 40, paddingHorizontal: 24, borderRadius: 10, backgroundColor: '#7B61FF', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ color: 'white', fontWeight: '500' }}>Create a session</Text>
+              <Text style={{ fontSize: 18, fontWeight: '600', color: theme.text.primary }}>No sessions near you yet</Text>
+              <Text style={{ fontSize: 14, color: theme.text.secondary }}>Be the first to create one.</Text>
+              <TouchableOpacity onPress={() => router.push('/sessions/create')} style={{ height: 40, paddingHorizontal: 24, borderRadius: 10, backgroundColor: theme.brand.primary, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ color: theme.brand.fg, fontWeight: '500' }}>Create a session</Text>
               </TouchableOpacity>
             </View>
           )

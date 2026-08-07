@@ -4,6 +4,7 @@ import { Picker } from '@react-native-picker/picker'
 import { useRouter } from 'expo-router'
 import { Country, State } from 'country-state-city'
 import { supabase } from '@/lib/supabase'
+import { theme } from '@/lib/theme'
 
 export default function LocationScreen() {
   const router = useRouter()
@@ -35,17 +36,17 @@ export default function LocationScreen() {
   }
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#0A0A0F' }} contentContainerStyle={{ flexGrow: 1 }}>
+    <ScrollView style={{ flex: 1, backgroundColor: theme.bg.base }} contentContainerStyle={{ flexGrow: 1 }}>
       <View style={{ flex: 1, padding: 24, paddingTop: 60, gap: 24 }}>
         <View style={{ gap: 4 }}>
-          <Text style={{ fontSize: 24, fontWeight: '600', color: '#F5F4FF' }}>Where are you based?</Text>
-          <Text style={{ fontSize: 14, color: '#9B9AAD' }}>This helps us show you nearby study sessions.</Text>
+          <Text style={{ fontSize: 24, fontWeight: '600', color: theme.text.primary }}>Where are you based?</Text>
+          <Text style={{ fontSize: 14, color: theme.text.secondary }}>This helps us show you nearby study sessions.</Text>
         </View>
 
         <View style={{ gap: 16 }}>
           <View style={{ gap: 4 }}>
-            <Text style={{ fontSize: 11, fontWeight: '500', color: '#9B9AAD', textTransform: 'uppercase', letterSpacing: 0.5 }}>Country *</Text>
-            <View style={{ borderRadius: 6, backgroundColor: '#1C1C24', borderWidth: 1, borderColor: 'rgba(255,255,255,0.10)', overflow: 'hidden' }}>
+            <Text style={{ fontSize: 11, fontWeight: '500', color: theme.text.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Country *</Text>
+            <View style={{ borderRadius: 6, backgroundColor: theme.bg.elevated, borderWidth: 1, borderColor: theme.border.default, overflow: 'hidden' }}>
               <Picker
                 selectedValue={countryCode}
                 onValueChange={(value: string) => {
@@ -54,8 +55,8 @@ export default function LocationScreen() {
                   setCountryName(found?.name || '')
                   setStateCode('')
                 }}
-                style={{ color: '#F5F4FF', backgroundColor: '#1C1C24' }}
-                dropdownIconColor="#9B9AAD"
+                style={{ color: theme.text.primary, backgroundColor: theme.bg.elevated }}
+                dropdownIconColor={theme.text.secondary}
               >
                 <Picker.Item label="Select country..." value="" />
                 {allCountries.map((c) => (
@@ -67,13 +68,13 @@ export default function LocationScreen() {
 
           {states.length > 0 && (
             <View style={{ gap: 4 }}>
-              <Text style={{ fontSize: 11, fontWeight: '500', color: '#9B9AAD', textTransform: 'uppercase', letterSpacing: 0.5 }}>State / Region</Text>
-              <View style={{ borderRadius: 6, backgroundColor: '#1C1C24', borderWidth: 1, borderColor: 'rgba(255,255,255,0.10)', overflow: 'hidden' }}>
+              <Text style={{ fontSize: 11, fontWeight: '500', color: theme.text.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>State / Region</Text>
+              <View style={{ borderRadius: 6, backgroundColor: theme.bg.elevated, borderWidth: 1, borderColor: theme.border.default, overflow: 'hidden' }}>
                 <Picker
                   selectedValue={stateCode}
                   onValueChange={setStateCode}
-                  style={{ color: '#F5F4FF', backgroundColor: '#1C1C24' }}
-                  dropdownIconColor="#9B9AAD"
+                  style={{ color: theme.text.primary, backgroundColor: theme.bg.elevated }}
+                  dropdownIconColor={theme.text.secondary}
                 >
                   <Picker.Item label="Select state / region..." value="" />
                   {states.map((s) => (
@@ -88,9 +89,9 @@ export default function LocationScreen() {
         <TouchableOpacity
           onPress={handleContinue}
           disabled={!countryCode || loading}
-          style={{ height: 44, borderRadius: 10, backgroundColor: '#7B61FF', alignItems: 'center', justifyContent: 'center', opacity: (!countryCode || loading) ? 0.5 : 1 }}
+          style={{ height: 44, borderRadius: 10, backgroundColor: theme.brand.primary, alignItems: 'center', justifyContent: 'center', opacity: (!countryCode || loading) ? 0.5 : 1 }}
         >
-          <Text style={{ color: 'white', fontWeight: '500', fontSize: 14 }}>
+          <Text style={{ color: theme.brand.fg, fontWeight: '500', fontSize: 14 }}>
             {loading ? 'Saving...' : 'Continue →'}
           </Text>
         </TouchableOpacity>

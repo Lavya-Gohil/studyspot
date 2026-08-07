@@ -25,8 +25,10 @@ config.resolver.nodeModulesPaths = [
   path.resolve(__dirname, 'node_modules'),
   path.resolve(workspaceRoot, 'node_modules'),
 ]
-// pnpm's store means one package can resolve to several physical copies;
-// without this, React can be initialised twice and hooks throw.
-config.resolver.disableHierarchicalLookup = true
+// Hierarchical lookup stays ON, deliberately. The usual monorepo recipe
+// disables it, but that recipe assumes a hoisted layout: pnpm keeps a
+// package's transitive dependencies inside that package's own node_modules,
+// and disabling the upward walk makes react-native unable to find `invariant`
+// from its own directory.
 
 module.exports = withNativeWind(config, { input: './global.css' })

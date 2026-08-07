@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import type { Session } from '@studyspot/types'
 import { formatSessionTime } from '@studyspot/utils'
+import { theme } from '@/lib/theme'
 
 export default function ExploreScreen() {
   const router = useRouter()
@@ -38,15 +39,15 @@ export default function ExploreScreen() {
   })
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#0A0A0F' }}>
+    <View style={{ flex: 1, backgroundColor: theme.bg.base }}>
       <View style={{ paddingTop: 56, paddingHorizontal: 16, paddingBottom: 12, gap: 12 }}>
-        <Text style={{ fontSize: 24, fontWeight: '600', color: '#F5F4FF' }}>Explore</Text>
+        <Text style={{ fontSize: 24, fontWeight: '600', color: theme.text.primary }}>Explore</Text>
         <TextInput
           value={query}
           onChangeText={setQuery}
           placeholder="Search sessions..."
-          placeholderTextColor="#5C5B6E"
-          style={{ height: 44, paddingHorizontal: 16, borderRadius: 99, backgroundColor: '#1C1C24', borderWidth: 1, borderColor: 'rgba(255,255,255,0.10)', color: '#F5F4FF', fontSize: 14 }}
+          placeholderTextColor={theme.text.tertiary}
+          style={{ height: 44, paddingHorizontal: 16, borderRadius: 99, backgroundColor: theme.bg.elevated, borderWidth: 1, borderColor: theme.border.default, color: theme.text.primary, fontSize: 14 }}
         />
       </View>
 
@@ -57,16 +58,16 @@ export default function ExploreScreen() {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => router.push(`/sessions/${item.id}`)}
-            style={{ backgroundColor: '#141419', borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)', padding: 14, marginBottom: 10, gap: 6 }}
+            style={{ backgroundColor: theme.bg.surface, borderRadius: 12, borderWidth: 1, borderColor: theme.border.subtle, padding: 14, marginBottom: 10, gap: 6 }}
           >
-            <Text style={{ fontSize: 15, fontWeight: '600', color: '#F5F4FF' }}>{item.subject}</Text>
-            <Text style={{ fontSize: 13, color: '#9B9AAD' }}>📍 {item.location_name}</Text>
-            <Text style={{ fontSize: 13, color: '#9B9AAD' }}>📅 {formatSessionTime(item.start_time, item.end_time)}</Text>
+            <Text style={{ fontSize: 15, fontWeight: '600', color: theme.text.primary }}>{item.subject}</Text>
+            <Text style={{ fontSize: 13, color: theme.text.secondary }}>📍 {item.location_name}</Text>
+            <Text style={{ fontSize: 13, color: theme.text.secondary }}>📅 {formatSessionTime(item.start_time, item.end_time)}</Text>
           </TouchableOpacity>
         )}
         ListEmptyComponent={
           <View style={{ padding: 40, alignItems: 'center' }}>
-            <Text style={{ color: '#9B9AAD', fontSize: 14 }}>
+            <Text style={{ color: theme.text.secondary, fontSize: 14 }}>
               {loading ? 'Loading...' : query ? 'No sessions match your search.' : 'No sessions yet.'}
             </Text>
           </View>

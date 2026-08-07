@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase'
 import { registerPushToken } from '@/lib/notifications'
 import type { Session } from '@supabase/supabase-js'
 import '../global.css'
+import { theme } from '@/lib/theme'
 
 export default function RootLayout() {
   const [session, setSession] = useState<Session | null>(null)
@@ -30,8 +31,8 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <StatusBar style="light" backgroundColor="#0A0A0F" />
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#0A0A0F' } }}>
+      <StatusBar style="light" backgroundColor={theme.bg.base} />
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: theme.bg.base } }}>
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="sessions/[id]" options={{ presentation: 'modal' }} />

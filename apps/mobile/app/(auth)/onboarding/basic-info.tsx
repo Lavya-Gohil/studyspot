@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native'
 import { useRouter } from 'expo-router'
 import { supabase } from '@/lib/supabase'
+import { theme } from '@/lib/theme'
 
 export default function BasicInfoScreen() {
   const router = useRouter()
@@ -31,41 +32,41 @@ export default function BasicInfoScreen() {
   }
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#0A0A0F' }} contentContainerStyle={{ flexGrow: 1 }}>
+    <ScrollView style={{ flex: 1, backgroundColor: theme.bg.base }} contentContainerStyle={{ flexGrow: 1 }}>
       <View style={{ flex: 1, padding: 24, paddingTop: 60, gap: 24 }}>
         <View style={{ gap: 4 }}>
-          <Text style={{ fontSize: 24, fontWeight: '600', color: '#F5F4FF' }}>Tell us about yourself</Text>
-          <Text style={{ fontSize: 14, color: '#9B9AAD' }}>Just a couple of things to get started.</Text>
+          <Text style={{ fontSize: 24, fontWeight: '600', color: theme.text.primary }}>Tell us about yourself</Text>
+          <Text style={{ fontSize: 14, color: theme.text.secondary }}>Just a couple of things to get started.</Text>
         </View>
 
         <View style={{ gap: 16 }}>
           <View style={{ gap: 4 }}>
-            <Text style={{ fontSize: 11, fontWeight: '500', color: '#9B9AAD', textTransform: 'uppercase', letterSpacing: 0.5 }}>Full name *</Text>
+            <Text style={{ fontSize: 11, fontWeight: '500', color: theme.text.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Full name *</Text>
             <TextInput
               value={fullName}
               onChangeText={setFullName}
               placeholder="Your full name"
-              placeholderTextColor="#5C5B6E"
+              placeholderTextColor={theme.text.tertiary}
               autoComplete="name"
-              style={{ height: 44, paddingHorizontal: 14, borderRadius: 6, backgroundColor: '#1C1C24', borderWidth: 1, borderColor: 'rgba(255,255,255,0.10)', color: '#F5F4FF', fontSize: 14 }}
+              style={{ height: 44, paddingHorizontal: 14, borderRadius: 6, backgroundColor: theme.bg.elevated, borderWidth: 1, borderColor: theme.border.default, color: theme.text.primary, fontSize: 14 }}
             />
           </View>
 
           <View style={{ gap: 4 }}>
-            <Text style={{ fontSize: 11, fontWeight: '500', color: '#9B9AAD', textTransform: 'uppercase', letterSpacing: 0.5 }}>Age *</Text>
+            <Text style={{ fontSize: 11, fontWeight: '500', color: theme.text.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Age *</Text>
             <TextInput
               value={age}
               onChangeText={setAge}
               placeholder="Your age"
-              placeholderTextColor="#5C5B6E"
+              placeholderTextColor={theme.text.tertiary}
               keyboardType="number-pad"
-              style={{ height: 44, paddingHorizontal: 14, borderRadius: 6, backgroundColor: '#1C1C24', borderWidth: 1, borderColor: 'rgba(255,255,255,0.10)', color: '#F5F4FF', fontSize: 14 }}
+              style={{ height: 44, paddingHorizontal: 14, borderRadius: 6, backgroundColor: theme.bg.elevated, borderWidth: 1, borderColor: theme.border.default, color: theme.text.primary, fontSize: 14 }}
             />
             {age && ageNum < 16 && (
-              <Text style={{ fontSize: 12, color: '#EF4444' }}>You must be at least 16 to use StudySpot.</Text>
+              <Text style={{ fontSize: 12, color: theme.accent.red }}>You must be at least 16 to use StudySpot.</Text>
             )}
             {age && ageNum >= 16 && ageNum < 18 && (
-              <Text style={{ fontSize: 12, color: '#F59E0B' }}>Your profile will show an "Under 18" label to hosts.</Text>
+              <Text style={{ fontSize: 12, color: theme.accent.amber }}>Your profile will show an "Under 18" label to hosts.</Text>
             )}
           </View>
         </View>
@@ -73,9 +74,9 @@ export default function BasicInfoScreen() {
         <TouchableOpacity
           onPress={handleContinue}
           disabled={!isValid || loading}
-          style={{ height: 44, borderRadius: 10, backgroundColor: '#7B61FF', alignItems: 'center', justifyContent: 'center', opacity: (!isValid || loading) ? 0.5 : 1 }}
+          style={{ height: 44, borderRadius: 10, backgroundColor: theme.brand.primary, alignItems: 'center', justifyContent: 'center', opacity: (!isValid || loading) ? 0.5 : 1 }}
         >
-          <Text style={{ color: 'white', fontWeight: '500', fontSize: 14 }}>
+          <Text style={{ color: theme.brand.fg, fontWeight: '500', fontSize: 14 }}>
             {loading ? 'Saving...' : 'Continue →'}
           </Text>
         </TouchableOpacity>

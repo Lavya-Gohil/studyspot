@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import { formatRelativeTime } from '@studyspot/utils'
 import type { Notification } from '@studyspot/types'
+import { theme } from '@/lib/theme'
 
 const ICONS: Record<string, string> = {
   new_request: '👤', request_approved: '✓', request_declined: '✗',
@@ -31,9 +32,9 @@ export default function NotificationsScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#0A0A0F' }}>
+    <View style={{ flex: 1, backgroundColor: theme.bg.base }}>
       <View style={{ paddingTop: 56, paddingHorizontal: 16, paddingBottom: 12 }}>
-        <Text style={{ fontSize: 24, fontWeight: '600', color: '#F5F4FF' }}>Notifications</Text>
+        <Text style={{ fontSize: 24, fontWeight: '600', color: theme.text.primary }}>Notifications</Text>
       </View>
       <FlatList
         data={notifications}
@@ -46,21 +47,21 @@ export default function NotificationsScreen() {
               const data = notif.data as any
               if (data?.session_id) router.push(`/sessions/${data.session_id}`)
             }}
-            style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12, padding: 14, marginBottom: 8, borderRadius: 12, backgroundColor: notif.is_read ? '#141419' : 'rgba(123,97,255,0.05)', borderWidth: 1, borderColor: notif.is_read ? 'rgba(255,255,255,0.06)' : 'rgba(123,97,255,0.20)' }}
+            style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12, padding: 14, marginBottom: 8, borderRadius: 12, backgroundColor: notif.is_read ? theme.bg.surface : 'rgba(123,97,255,0.05)', borderWidth: 1, borderColor: notif.is_read ? theme.border.subtle : 'rgba(123,97,255,0.20)' }}
           >
             <Text style={{ fontSize: 20 }}>{ICONS[notif.type] || '🔔'}</Text>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 14, fontWeight: '600', color: '#F5F4FF' }}>{notif.title}</Text>
-              <Text style={{ fontSize: 13, color: '#9B9AAD', marginTop: 2 }}>{notif.body}</Text>
-              <Text style={{ fontSize: 12, color: '#5C5B6E', marginTop: 4 }}>{formatRelativeTime(notif.created_at)}</Text>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: theme.text.primary }}>{notif.title}</Text>
+              <Text style={{ fontSize: 13, color: theme.text.secondary, marginTop: 2 }}>{notif.body}</Text>
+              <Text style={{ fontSize: 12, color: theme.text.tertiary, marginTop: 4 }}>{formatRelativeTime(notif.created_at)}</Text>
             </View>
-            {!notif.is_read && <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#7B61FF', marginTop: 4 }} />}
+            {!notif.is_read && <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: theme.brand.primary, marginTop: 4 }} />}
           </TouchableOpacity>
         )}
         ListEmptyComponent={
           <View style={{ padding: 48, alignItems: 'center', gap: 12 }}>
             <Text style={{ fontSize: 36 }}>🔔</Text>
-            <Text style={{ fontSize: 14, color: '#9B9AAD' }}>You're all caught up!</Text>
+            <Text style={{ fontSize: 14, color: theme.text.secondary }}>You're all caught up!</Text>
           </View>
         }
       />

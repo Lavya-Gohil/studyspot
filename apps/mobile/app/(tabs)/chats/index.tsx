@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { View, Text, FlatList, TouchableOpacity } from 'react-native'
 import { useRouter } from 'expo-router'
 import { supabase } from '@/lib/supabase'
+import { theme } from '@/lib/theme'
 
 export default function ChatsScreen() {
   const router = useRouter()
@@ -38,9 +39,9 @@ export default function ChatsScreen() {
   }, [])
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#0A0A0F' }}>
+    <View style={{ flex: 1, backgroundColor: theme.bg.base }}>
       <View style={{ paddingTop: 56, paddingHorizontal: 16, paddingBottom: 12 }}>
-        <Text style={{ fontSize: 24, fontWeight: '600', color: '#F5F4FF' }}>Chats</Text>
+        <Text style={{ fontSize: 24, fontWeight: '600', color: theme.text.primary }}>Chats</Text>
       </View>
 
       <FlatList
@@ -50,22 +51,22 @@ export default function ChatsScreen() {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => router.push(`/sessions/${item.id}`)}
-            style={{ backgroundColor: '#141419', borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)', padding: 14, marginBottom: 8, flexDirection: 'row', alignItems: 'center', gap: 12 }}
+            style={{ backgroundColor: theme.bg.surface, borderRadius: 12, borderWidth: 1, borderColor: theme.border.subtle, padding: 14, marginBottom: 8, flexDirection: 'row', alignItems: 'center', gap: 12 }}
           >
-            <View style={{ width: 48, height: 48, borderRadius: 12, backgroundColor: 'rgba(123,97,255,0.15)', alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ width: 48, height: 48, borderRadius: 12, backgroundColor: theme.brand.tint, alignItems: 'center', justifyContent: 'center' }}>
               <Text style={{ fontSize: 20 }}>💬</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 15, fontWeight: '600', color: '#F5F4FF' }}>{item.subject}</Text>
-              <Text style={{ fontSize: 13, color: '#9B9AAD' }}>{item.location_name}</Text>
+              <Text style={{ fontSize: 15, fontWeight: '600', color: theme.text.primary }}>{item.subject}</Text>
+              <Text style={{ fontSize: 13, color: theme.text.secondary }}>{item.location_name}</Text>
             </View>
           </TouchableOpacity>
         )}
         ListEmptyComponent={
           <View style={{ padding: 48, alignItems: 'center', gap: 12 }}>
             <Text style={{ fontSize: 40 }}>💬</Text>
-            <Text style={{ fontSize: 16, fontWeight: '600', color: '#F5F4FF' }}>No chats yet</Text>
-            <Text style={{ fontSize: 14, color: '#9B9AAD', textAlign: 'center' }}>
+            <Text style={{ fontSize: 16, fontWeight: '600', color: theme.text.primary }}>No chats yet</Text>
+            <Text style={{ fontSize: 14, color: theme.text.secondary, textAlign: 'center' }}>
               Your group chats will appear here once you join a session.
             </Text>
           </View>

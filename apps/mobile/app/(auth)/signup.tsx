@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native'
 import { useRouter } from 'expo-router'
 import { supabase } from '@/lib/supabase'
+import { theme } from '@/lib/theme'
 
 export default function SignupScreen() {
   const router = useRouter()
@@ -36,11 +37,11 @@ export default function SignupScreen() {
               value={email}
               onChangeText={setEmail}
               placeholder="you@university.edu"
-              placeholderTextColor="#5C5B6E"
+              placeholderTextColor={theme.text.tertiary}
               keyboardType="email-address"
               autoCapitalize="none"
               className="h-11 px-4 rounded-md bg-bg-elevated border border-border-default text-text-primary text-sm"
-              style={{ borderColor: 'rgba(255,255,255,0.10)' }}
+              style={{ borderColor: theme.border.default }}
             />
           </View>
 
@@ -50,10 +51,10 @@ export default function SignupScreen() {
               value={password}
               onChangeText={setPassword}
               placeholder="Min. 8 characters"
-              placeholderTextColor="#5C5B6E"
+              placeholderTextColor={theme.text.tertiary}
               secureTextEntry
               className="h-11 px-4 rounded-md bg-bg-elevated text-text-primary text-sm"
-              style={{ borderWidth: 1, borderColor: 'rgba(255,255,255,0.10)', borderRadius: 6 }}
+              style={{ borderWidth: 1, borderColor: theme.border.default, borderRadius: 6 }}
             />
           </View>
 
