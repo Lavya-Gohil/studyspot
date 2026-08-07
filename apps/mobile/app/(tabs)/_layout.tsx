@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router'
-import { Bell, Compass, LayoutGrid, MessageCircle, User, Users } from '@/components/icons'
+import { Bell, Compass, LayoutGrid, MessageCircle, Sparkles, User, Users } from '@/components/icons'
 import type { LucideIcon } from '@/components/icons'
 import { theme } from '@/lib/theme'
 
@@ -43,6 +43,7 @@ export default function TabLayout() {
     >
       <Tabs.Screen name="feed" options={{ title: 'Feed', tabBarIcon: icon(LayoutGrid) }} />
       <Tabs.Screen name="explore" options={{ title: 'Explore', tabBarIcon: icon(Compass) }} />
+      <Tabs.Screen name="match" options={{ title: 'Match', tabBarIcon: icon(Sparkles) }} />
       <Tabs.Screen name="circles" options={{ title: 'Circles', tabBarIcon: icon(Users) }} />
       <Tabs.Screen name="chats/index" options={{ title: 'Chats', tabBarIcon: icon(MessageCircle) }} />
       <Tabs.Screen
@@ -56,6 +57,7 @@ export default function TabLayout() {
       <Tabs.Screen name="profile/stats" options={{ href: null }} />
       <Tabs.Screen name="profile/leaderboard" options={{ href: null }} />
       <Tabs.Screen name="profile/goals" options={{ href: null }} />
+      <Tabs.Screen name="profile/settings" options={{ href: null }} />
     </Tabs>
   )
 }

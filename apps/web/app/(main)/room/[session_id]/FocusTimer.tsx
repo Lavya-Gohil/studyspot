@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button'
 import { useToast } from '@/components/ui/Toast'
 import { recordFocusSession } from '@studyspot/api/focus'
 import { createClient } from '@/lib/supabase/client'
-import { secondsLeft, type TimerState } from './types'
+import { secondsLeft, type TimerState } from '@studyspot/api/room-types'
 
 const PRESETS = [
   { label: '25m', value: 25 * 60 },

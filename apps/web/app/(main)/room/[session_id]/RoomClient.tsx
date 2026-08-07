@@ -1,15 +1,16 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { VolumeX } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 import { useGlobalPresence } from '@/lib/presence'
 import { Icon } from '@/components/ui/Icon'
 import { FocusTimer } from './FocusTimer'
 import { RoomChat } from './RoomChat'
 import { RoomHeader } from './RoomHeader'
 import { SeatGrid } from './SeatGrid'
-import { useRoomChannel } from './useRoomChannel'
-import type { CurrentUser, SessionInfo } from './types'
+import { useRoomChannel } from '@studyspot/api/room'
+import type { CurrentUser, SessionInfo } from '@studyspot/api/room-types'
 
 /**
  * Virtual study room. Composition only, presence, the shared timer and chat
@@ -28,6 +29,10 @@ export function RoomClient({
   session: SessionInfo
   currentUser: CurrentUser
 }) {
+  // One client for the lifetime of the room. Constructing it inline would
+  // hand the hook a new instance on every render and tear the channel down.
+  const [supabase] = useState(() => createClient())
+
   // At least the group size, rounded up to a tidy grid of 4.
   const seatCount = useMemo(
     () => Math.max(8, Math.ceil((session.spots_total + 1) / 4) * 4),
@@ -44,7 +49,7 @@ export function RoomClient({
     toggleStatus,
     publishTimer,
     sendMessage,
-  } = useRoomChannel({ session, currentUser, seatCount })
+  } = useRoomChannel({ client: supabase, session, currentUser, seatCount })
 
   const focusingCount = members.filter((m) => m.status === 'focusing').length
 

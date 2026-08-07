@@ -108,10 +108,10 @@ export default function SessionDetailScreen() {
       <View style={{ paddingHorizontal: 16, paddingBottom: 32, paddingTop: 12 }}>
         {(userRequest?.status === 'approved' || isHost) ? (
           <TouchableOpacity
-            onPress={() => router.push(`/sessions/${id}/chat`)}
+            onPress={() => router.push(`/sessions/${id}/room`)}
             style={{ height: 48, borderRadius: 12, backgroundColor: theme.accent.greenWash, borderWidth: 1, borderColor: theme.accent.greenLine, alignItems: 'center', justifyContent: 'center' }}
           >
-            <Text style={{ color: theme.accent.green, fontWeight: '600', fontSize: 15 }}>Open group chat</Text>
+            <Text style={{ color: theme.accent.green, fontWeight: '600', fontSize: 15 }}>Open the room</Text>
           </TouchableOpacity>
         ) : userRequest?.status === 'pending' ? (
           <View style={{ height: 48, borderRadius: 12, backgroundColor: theme.bg.elevated, borderWidth: 1, borderColor: theme.border.default, alignItems: 'center', justifyContent: 'center' }}>

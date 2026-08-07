@@ -7,6 +7,7 @@ import {
   Flame,
   Target,
   TrendingUp,
+  Settings,
   Trophy,
   type LucideIcon,
 } from '@/components/icons'
@@ -110,6 +111,12 @@ export default function ProfileScreen() {
           label="Goals"
           hint="What you committed to"
           onPress={() => router.push('/(tabs)/profile/goals')}
+        />
+        <NavRow
+          icon={Settings}
+          label="Settings"
+          hint="Name, college, subjects"
+          onPress={() => router.push('/(tabs)/profile/settings')}
           last
         />
       </Card>

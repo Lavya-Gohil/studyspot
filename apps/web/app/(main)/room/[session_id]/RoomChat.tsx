@@ -8,7 +8,7 @@ import type { Message } from '@studyspot/types'
 import { Icon } from '@/components/ui/Icon'
 import { useToast } from '@/components/ui/Toast'
 import { friendlyDbError } from '@studyspot/utils/db-errors'
-import type { CurrentUser } from './types'
+import type { CurrentUser } from '@studyspot/api/room-types'
 
 /** How close to the bottom still counts as "following the conversation". */
 const STICK_THRESHOLD_PX = 80

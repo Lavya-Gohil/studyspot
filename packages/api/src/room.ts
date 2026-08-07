@@ -1,8 +1,5 @@
-'use client'
-
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import type { RealtimeChannel } from '@supabase/supabase-js'
+import type { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js'
 import type { Message } from '@studyspot/types'
 import {
   initialTimer,
@@ -11,7 +8,7 @@ import {
   type MemberStatus,
   type SessionInfo,
   type TimerState,
-} from './types'
+} from './room-types'
 
 const MESSAGE_SELECT = `*, sender:profiles!sender_id(id, full_name, avatar_url, verification_status)`
 
@@ -25,15 +22,22 @@ const MESSAGE_SELECT = `*, sender:profiles!sender_id(id, full_name, avatar_url, 
  * interleaved with layout across a single 17.6KB component.
  */
 export function useRoomChannel({
+  client: supabase,
   session,
   currentUser,
   seatCount,
 }: {
+  /**
+   * Supplied by the caller rather than constructed here, which is what lets
+   * web and mobile run the SAME hook. They share a room, so any drift in the
+   * seat-claiming or timer-ordering rules would show up as two people seeing
+   * different clocks.
+   */
+  client: SupabaseClient
   session: SessionInfo
   currentUser: CurrentUser
   seatCount: number
 }) {
-  const [supabase] = useState(() => createClient())
   const channelRef = useRef<RealtimeChannel | null>(null)
 
   const [members, setMembers] = useState<Member[]>([])

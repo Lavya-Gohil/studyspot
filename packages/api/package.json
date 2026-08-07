@@ -16,10 +16,19 @@
     "./focus": "./src/focus.ts",
     "./gamification": "./src/gamification.ts",
     "./circles": "./src/circles.ts",
-    "./goals": "./src/goals.ts"
+    "./goals": "./src/goals.ts",
+    "./room": "./src/room.ts",
+    "./room-types": "./src/room-types.ts"
   },
   "dependencies": {
     "@studyspot/types": "workspace:*",
     "@supabase/supabase-js": "^2.43.0"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.3",
+    "react": "18.3.1"
   }
 }

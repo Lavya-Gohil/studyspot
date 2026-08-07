@@ -1,7 +1,7 @@
 'use client'
 
 import { Avatar } from '@/components/profile/Avatar'
-import type { CurrentUser, Member } from './types'
+import type { CurrentUser, Member } from '@studyspot/api/room-types'
 
 /**
  * The classroom itself: a grid of seats showing who is present and whether

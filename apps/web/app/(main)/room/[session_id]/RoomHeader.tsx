@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Coffee } from 'lucide-react'
 import { VibePill } from '@/components/ui/Badge'
 import { Icon } from '@/components/ui/Icon'
-import type { MemberStatus, SessionInfo } from './types'
+import type { MemberStatus, SessionInfo } from '@studyspot/api/room-types'
 
 export function RoomHeader({
   session,

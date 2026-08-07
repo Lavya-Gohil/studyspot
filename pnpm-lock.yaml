@@ -220,6 +220,13 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.43.0
         version: 2.106.2
+    devDependencies:
+      '@types/react':
+        specifier: 18.3.3
+        version: 18.3.3
+      react:
+        specifier: 18.3.1
+        version: 18.3.1
 
   packages/types: {}
 
@@ -1715,6 +1722,9 @@ packages:
 
   '@types/react@18.3.29':
     resolution: {integrity: sha512-ch0qJdr2JY0r04NXSprbK6TXOgnaJ1Tz23fm5W+z0/CBah6BSBc3n96h7K9GOtwh0HrilNWHIBzE1Ko4Dcw/Wg==}
+
+  '@types/react@18.3.3':
+    resolution: {integrity: sha512-hti/R0pS0q1/xx+TsI73XIqk26eBsISZ2R0wUijXIngRK9R/e7Xw/cXVxQK7R5JjW+SV4zGcn5hXjudkN/pLIw==}
 
   '@types/stack-utils@2.0.3':
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
@@ -7393,6 +7403,11 @@ snapshots:
       csstype: 3.2.3
 
   '@types/react@18.3.29':
+    dependencies:
+      '@types/prop-types': 15.7.15
+      csstype: 3.2.3
+
+  '@types/react@18.3.3':
     dependencies:
       '@types/prop-types': 15.7.15
       csstype: 3.2.3
