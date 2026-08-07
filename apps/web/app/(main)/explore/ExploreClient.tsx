@@ -45,7 +45,7 @@ export function ExploreClient({ sessions, mySubjects, error }: Props) {
   )
 
   return (
-    <div className="mx-auto max-w-2xl space-y-4 px-4 py-8">
+    <div className="mx-auto max-w-6xl space-y-4 px-4 py-8">
       <div>
         <h1 className="font-display text-2xl font-bold">Explore</h1>
         <p className="mt-1 text-sm text-text-secondary">
@@ -126,9 +126,16 @@ export function ExploreClient({ sessions, mySubjects, error }: Props) {
             {filtered.length} session{filtered.length === 1 ? '' : 's'}
             {trimmed ? ` matching “${query.trim()}”` : ''}
           </p>
-          {filtered.map((session) => (
-            <SessionCard key={session.id} session={session} />
-          ))}
+          {/* A grid, not a column. Explore is where you compare options, and
+              widening the page while leaving one card per row would only make
+              each card harder to read and the scan longer. Three columns at
+              full width keeps every card near its natural size and puts nine
+              sessions on screen instead of three. */}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((session) => (
+              <SessionCard key={session.id} session={session} />
+            ))}
+          </div>
         </div>
       )}
     </div>

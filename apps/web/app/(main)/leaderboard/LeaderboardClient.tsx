@@ -82,7 +82,7 @@ export function LeaderboardClient({
   const busy = loading || pending
 
   return (
-    <div className="mx-auto max-w-2xl space-y-4 px-4 py-6">
+    <div className="mx-auto max-w-6xl space-y-4 px-4 py-6">
       <header>
         <h1 className="font-display text-2xl font-semibold text-text-primary">Leaderboard</h1>
         <p className="text-sm text-text-secondary">
@@ -139,14 +139,23 @@ export function LeaderboardClient({
         />
       ) : (
         <Card pad="md">
-          <ol className="stagger divide-y divide-border-subtle">
+          {/* CSS columns, not a grid. A ranked list read across a grid goes
+              1, 2 / 3, 4, which is not how anyone reads a leaderboard.
+              Columns flow top-to-bottom then over, so the left column is
+              1 to 13 and the right is 14 to 25: the whole board on one screen
+              without the eye ever moving backwards. `divide-y` is dropped in
+              favour of per-row borders because a divider cannot span a column
+              break correctly. */}
+          <ol className="stagger lg:columns-2 lg:gap-x-10">
             {rows.map((r, i) => {
               const me = r.user_id === currentUserId
               return (
                 <li
                   key={r.user_id}
                   style={{ ['--i' as string]: i }}
-                  className={`flex items-center gap-3 py-2.5 ${
+                  // break-inside-avoid so a row is never split across the
+                  // column boundary, which would cut a name in half.
+                  className={`flex break-inside-avoid items-center gap-3 border-b border-border-subtle py-2.5 last:border-b-0 ${
                     me ? '-mx-2 rounded-lg bg-brand-primary/[0.07] px-2' : ''
                   }`}
                 >

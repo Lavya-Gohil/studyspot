@@ -34,7 +34,7 @@ export default async function StatsPage() {
       supabase
         .from('focus_daily')
         .select('day, total_seconds')
-        .gte('day', new Date(Date.now() - 183 * 864e5).toISOString().slice(0, 10))
+        .gte('day', new Date(Date.now() - 364 * 864e5).toISOString().slice(0, 10))
         .order('day', { ascending: true }),
       supabase
         .from('user_badges')
@@ -77,7 +77,7 @@ export default async function StatsPage() {
   const hasData = sessions.length > 0
 
   return (
-    <div className="mx-auto max-w-3xl space-y-5 px-4 py-6">
+    <div className="mx-auto max-w-6xl space-y-5 px-4 py-6">
       <header className="flex items-end justify-between gap-4">
         <div>
           <h1 className="font-display text-2xl font-semibold text-text-primary">Your stats</h1>
@@ -166,16 +166,16 @@ export default async function StatsPage() {
       <Card pad="lg">
         <h2 className="font-display text-base font-semibold text-text-primary">Focus calendar</h2>
         <p className="mt-0.5 text-xs text-text-secondary">
-          Last six months, in your local days.
+          A full year, in your local days.
         </p>
-        <Heatmap data={byDay} weeks={26} endDate={localToday} className="mt-4" />
+        <Heatmap data={byDay} weeks={52} endDate={localToday} className="mt-4" />
       </Card>
 
       {/* Badges */}
       <Card pad="lg">
         <h2 className="font-display text-base font-semibold text-text-primary">Badges</h2>
         {earned && earned.length > 0 ? (
-          <ul className="stagger mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <ul className="stagger mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {earned.map((b, i) => {
               const meta = b.badges as unknown as
                 | { name: string; description: string; tier: number }
